@@ -1,6 +1,6 @@
-# 2026 Build with AI Seoul - Gemma 4 Hands-On Prep
+# 2026 Build with AI Seoul
 
-Build with AI Seoul 2026 세션 **"Build Your Own AI Office with Gemma 4"**를 위한 사전 준비 문서 저장소입니다.
+Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위한 사전 준비 문서 저장소입니다.
 
 - 세션명: `Build Your Own AI Office with Gemma 4`
 - 진행자: `박제창`
