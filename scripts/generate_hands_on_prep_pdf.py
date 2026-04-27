@@ -66,9 +66,9 @@ RULE = colors.HexColor("#CBD5E1")
 
 SESSION_NAME = "Build Your Own AI Office with Gemma 4"
 EVENT_NAME = "Build with AI Seoul 2026"
-TRACK = "Hands-On B"
+TRACK = "Hands-On A"
 PRESENTER = "박제창"
-DURATION = "1시간"
+DURATION = "13:00 ~ 14:30 (60분)"
 CHECK_DATE = "2026-04-21"
 
 DOC_FILES = [
@@ -685,6 +685,84 @@ def document_section(index: int, path: Path, styles: StyleSheet1) -> list:
     return story
 
 
+def prep_summary_page(styles: StyleSheet1) -> list:
+    return [
+        Paragraph("한장 요약: 행사 전 준비", styles["DocTitle"]),
+        p(
+            "행사 당일에는 설치와 모델 다운로드를 시작하지 않는 것을 기준으로 준비합니다. "
+            "아래 항목 중 본인 환경에 맞는 경로를 선택하고, 모델 다운로드와 1회 실행 테스트까지 끝내 주세요.",
+            styles,
+        ),
+        info_box(
+            "가장 중요한 기준",
+            [
+                "하나만 설치한다면 **LM Studio**를 우선 권장합니다. ChromeOS 또는 Intel Mac은 **Ollama**를 우선 고려하세요.",
+                "8GB 장비는 **E2B only, best-effort**입니다. 가능하면 16GB 이상 장비로 참석해 주세요.",
+            ],
+            styles,
+            warm=True,
+        ),
+        Spacer(1, 3 * mm),
+        Paragraph("설치해야 하는 소프트웨어와 LLM", styles["Section"]),
+        data_table(
+            [
+                ["참가자 유형", "설치 소프트웨어", "미리 받을 LLM", "완료 기준"],
+                [
+                    "대부분의 참가자",
+                    "LM Studio",
+                    "Gemma 4 E4B 권장, 8GB는 E2B",
+                    "앱 실행, 모델 다운로드, Chat 1회 성공",
+                ],
+                [
+                    "CLI/API도 필요한 참가자",
+                    "LM Studio + Ollama",
+                    "`gemma4:e2b` 또는 `gemma4:e4b`",
+                    "`ollama run` 1회 성공",
+                ],
+                [
+                    "ChromeOS / Intel Mac",
+                    "Ollama",
+                    "`gemma4:e2b` 우선",
+                    "Linux 환경 또는 터미널에서 1회 실행",
+                ],
+                [
+                    "고급 에이전트 실습",
+                    "LM Studio 또는 llama.cpp + OpenCode/Hermes",
+                    "32GB+는 26B A4B, 36GB+는 31B 가능",
+                    "local endpoint와 에이전트 연결 확인",
+                ],
+            ],
+            styles,
+        ),
+        Spacer(1, 3 * mm),
+        Paragraph("메모리별 LLM 선택", styles["Section"]),
+        data_table(
+            [
+                ["노트북 메모리", "권장 LLM", "권장 도구", "준비 메모"],
+                ["8GB", "Gemma 4 E2B만", "LM Studio 또는 Ollama", "속도 저하 가능, 다른 앱 종료"],
+                ["16GB", "Gemma 4 E4B", "LM Studio 우선", "가장 무난한 참가 사양"],
+                ["32GB", "E4B 또는 26B A4B", "LM Studio, 필요 시 llama.cpp", "에이전트 실습은 26B A4B 권장"],
+                ["36GB+", "26B A4B 또는 31B", "LM Studio 또는 llama.cpp", "품질 우선은 31B, 반응성 우선은 26B A4B"],
+            ],
+            styles,
+        ),
+        Spacer(1, 3 * mm),
+        Paragraph("공통 최종 체크리스트", styles["Section"]),
+        bullets(
+            [
+                "설치 권한 또는 관리자 권한 확인",
+                "디스크 여유 공간 최소 20GB, 가능하면 40GB 이상 확보",
+                "선택한 소프트웨어 설치 완료",
+                "사용할 Gemma 4 모델 다운로드 완료",
+                "행사 전 최소 1회 응답 생성 테스트 완료",
+                "실습 당일 전원 어댑터 지참",
+            ],
+            styles,
+        ),
+        PageBreak(),
+    ]
+
+
 def build_story(styles: StyleSheet1) -> list:
     story: list = []
 
@@ -719,6 +797,8 @@ def build_story(styles: StyleSheet1) -> list:
             PageBreak(),
         ]
     )
+
+    story.extend(prep_summary_page(styles))
 
     story.append(Paragraph("수록 문서", styles["DocTitle"]))
     story.append(
