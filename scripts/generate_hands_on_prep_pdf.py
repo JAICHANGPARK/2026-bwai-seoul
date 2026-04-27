@@ -378,24 +378,50 @@ def wrap_code_text(code: str, ascii_only: bool) -> str:
 
 def code_block(label: str, code: str, styles: StyleSheet1) -> KeepTogether:
     ascii_only = code.isascii()
-    title = Paragraph(rich(label), styles["CodeLabel"])
-    block = Preformatted(
+    display_label = (label or "code").strip().lower()
+    header = Paragraph(
+        rich(display_label),
+        ParagraphStyle(
+            "CodeBlockHeader",
+            parent=styles["CodeLabel"],
+            fontName=styles["CodeLabel"].fontName,
+            fontSize=8.3,
+            leading=10,
+            textColor=colors.white,
+        ),
+    )
+    body = Preformatted(
         wrap_code_text(code, ascii_only),
         ParagraphStyle(
-            "Code",
+            "CodeBlockBody",
             fontName="Courier" if ascii_only else styles["Body"].fontName,
-            fontSize=8.4,
-            leading=10.8,
+            fontSize=8.2,
+            leading=10.6,
             textColor=INK,
-            backColor=CODE_BG,
-            borderPadding=8,
-            borderColor=RULE,
-            borderWidth=0.6,
             leftIndent=0,
             rightIndent=0,
         ),
     )
-    return KeepTogether([title, Spacer(1, 2 * mm), block, Spacer(1, 3 * mm)])
+    table = Table([[header], [body]], colWidths=[CONTENT_WIDTH])
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), ACCENT_DARK),
+                ("BACKGROUND", (0, 1), (-1, 1), CODE_BG),
+                ("BOX", (0, 0), (-1, -1), 0.7, RULE),
+                ("LINEBELOW", (0, 0), (-1, 0), 0.5, colors.HexColor("#164E63")),
+                ("LEFTPADDING", (0, 0), (-1, 0), 8),
+                ("RIGHTPADDING", (0, 0), (-1, 0), 8),
+                ("TOPPADDING", (0, 0), (-1, 0), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, 0), 5),
+                ("LEFTPADDING", (0, 1), (-1, 1), 9),
+                ("RIGHTPADDING", (0, 1), (-1, 1), 9),
+                ("TOPPADDING", (0, 1), (-1, 1), 8),
+                ("BOTTOMPADDING", (0, 1), (-1, 1), 8),
+            ]
+        )
+    )
+    return KeepTogether([table, Spacer(1, 3 * mm)])
 
 
 def info_box(title: str, body: list[str], styles: StyleSheet1, warm: bool = False) -> Table:

@@ -10,18 +10,18 @@
 
 ## 먼저 결론
 
-- `llama.cpp`는 이번 세션의 **고급 / 선택형 경로**로 안내하는 편이 적절합니다.
+- `llama.cpp`는 이번 세션의 **고급 / 선택형 경로**입니다.
 - 가장 쉬운 설치 경로는 **pre-built package 설치**입니다.
 - 공식 문서 기준으로:
   - macOS / Linux: `brew install llama.cpp`
   - Windows: `winget install llama.cpp`
-- 행사 기준으로는 **소스 빌드보다 pre-built 설치**를 우선 권장합니다.
+- 이번 핸즈온에서는 **소스 빌드보다 pre-built 설치**를 우선 권장합니다.
 
 ## 왜 llama.cpp를 쓰나요?
 
 - `GGUF` 모델을 직접 로컬에서 돌릴 수 있습니다.
-- `llama-server`로 **OpenAI-compatible API server**를 띄울 수 있습니다.
-- `Hermes` 같은 에이전트가 HTTP endpoint로 붙기 쉽습니다.
+- `llama-server`로 **OpenAI 호환 API 서버**를 띄울 수 있습니다.
+- `Hermes` 같은 에이전트가 로컬 서버 주소에 붙기 쉽습니다.
 
 ## 권장 설치 경로
 
@@ -63,7 +63,7 @@ llama-server --version
 - Docker
 - 소스 빌드
 
-하지만 핸즈온 참가자에게는 일단 **패키지 매니저 설치**를 우선 안내하는 편이 안전합니다.
+핸즈온 참가자는 일단 **패키지 매니저 설치**를 우선 사용하세요.
 
 ## 소스 빌드는 언제 필요한가요?
 
@@ -108,7 +108,7 @@ Windows PowerShell:
 llama-cli -hf ggml-org/gemma-4-26b-a4b-it-GGUF:Q4_K_M
 ```
 
-### OpenAI-compatible API server 실행
+### OpenAI 호환 API 서버 실행
 
 ```bash
 llama-server -hf ggml-org/gemma-4-26b-a4b-it-GGUF:Q4_K_M
@@ -201,7 +201,7 @@ Invoke-RestMethod http://127.0.0.1:8080/v1/models
 ## 주의할 점
 
 - `llama.cpp`만 설치해도 모델 파일은 자동으로 준비되지 않습니다.
-- 대용량 모델은 다운로드 시간이 길 수 있으므로 행사 전에 미리 받아 두는 편이 좋습니다.
+- 대용량 모델은 다운로드 시간이 길 수 있으므로 행사 전에 미리 받아 두세요.
 - `GGUF` 경로를 직접 관리해야 할 수 있습니다.
 - Windows에서는 `llama.cpp` 자체는 설치 가능하지만, 그 위에 `Hermes`를 붙일 때는 `Hermes`가 WSL2 안에서 돌아가야 한다는 점을 별도로 이해해야 합니다.
 
@@ -216,8 +216,3 @@ Invoke-RestMethod http://127.0.0.1:8080/v1/models
 - [llama.cpp README](https://github.com/ggml-org/llama.cpp)
 - [llama.cpp Install Guide](https://github.com/ggml-org/llama.cpp/blob/master/docs/install.md)
 - [llama.cpp Build Guide](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md)
-
-## 문서 작성 메모
-
-- 이 가이드는 `2026-04-21` 기준 llama.cpp 공식 GitHub 문서를 바탕으로 정리했습니다.
-- 핸즈온 운영 안정성을 위해 소스 빌드보다 pre-built 설치를 우선 권장했습니다.

@@ -7,11 +7,12 @@
 - 이번 세션은 개발자, 비개발자 모두 참여 가능한 세션이므로, 하나만 설치한다면 LM Studio를 기본 권장합니다.
 - LM Studio는 macOS, Windows, Linux를 지원합니다.
 - macOS는 Apple Silicon만 지원합니다.
+- macOS 앱은 공식 문서 기준 13.4 이상이 필요하며, MLX 모델은 macOS 14.0 이상이 필요합니다.
 - Windows는 x64와 ARM을 지원합니다.
 - Linux는 Ubuntu 20.04+ AppImage가 공식 기준입니다.
 - 모델 다운로드 후에는 완전 오프라인 사용이 가능합니다.
 - Apple Silicon Mac에서는 GGUF를 기본으로 사용해도 되고, 필요하면 MLX 모델도 선택할 수 있습니다.
-- 이번 핸즈온은 채팅/실습/에이전트 흐름이 중심이므로, 가능하면 **instruction-tuned(chat-ready) 모델**을 선택하는 편이 맞습니다.
+- 이번 핸즈온은 채팅/실습/에이전트 흐름이 중심이므로, 가능하면 **instruction-tuned(chat-ready) 모델**을 선택하세요.
 - LM Studio에서는 모델 이름이 `...-it` 로 그대로 보일 수도 있고, `google/gemma-4-e4b`처럼 더 짧게 보일 수도 있으므로 **설명이나 모델 카드에서 chat-ready / instruct 계열인지** 함께 확인해 주세요.
 
 ## Windows
@@ -57,8 +58,8 @@ lms --help
 권장 대상:
 
 - Apple Silicon (M1/M2/M3/M4)
-- macOS 14.0 이상
-- MLX 모델까지 활용하려면 macOS 14 이상 권장
+- macOS 13.4 이상
+- MLX 모델까지 활용하려면 macOS 14.0 이상
 
 설치 순서:
 
@@ -77,7 +78,8 @@ lms --help
 권장 메모:
 
 - LM Studio 공식 문서는 macOS에서 16GB+ RAM 권장입니다.
-- macOS 13.x는 현재 LM Studio 공식 지원 대상이 아니므로, 행사 준비 기준으로는 macOS 14 이상을 권장합니다.
+- LM Studio 앱 자체는 macOS 13.4 이상을 지원하고, MLX 모델은 macOS 14.0 이상이 필요합니다.
+- 행사 준비 기준으로는 최신 macOS를 권장합니다.
 - 8GB Mac도 가능할 수 있지만, 작은 모델과 작은 컨텍스트만 권장합니다.
 - Apple Silicon에서도 GGUF 기반 fine-tuned 모델을 사용하는 것은 대체로 가능하지만, 양자화 방식, 채팅 템플릿, 멀티모달 지원 여부에 따라 모델별 확인이 필요합니다.
 - MLX는 선택 사항이며, 행사 준비 기준으로는 GGUF만 사용해도 충분합니다.
@@ -118,17 +120,17 @@ chmod +x LM-Studio-*.AppImage
 
 - 공식 문서는 Linux 배포 형식을 AppImage로 안내합니다.
 - 위 AppImage 실행 절차는 그 배포 형식에 맞춘 일반적인 설치 흐름입니다.
-- Ubuntu 22보다 최신 버전은 공식 문서상 충분히 테스트되지 않았다고 안내되어 있습니다.
+- Ubuntu 22.04보다 최신 버전은 공식 문서상 충분히 테스트되지 않았다고 안내되어 있습니다.
 
 ## ChromeOS
 
-이번 행사 기준으로는 LM Studio on ChromeOS를 권장하지 않습니다.
+ChromeOS에서는 LM Studio를 권장하지 않습니다.
 
 이유:
 
 - LM Studio Linux 공식 지원 기준은 Ubuntu 20.04+ AppImage입니다.
 - ChromeOS Linux 개발 환경은 Debian 기반입니다.
-- Google 공식 문서 기준 ChromeOS Linux는 GPU 가속이 미지원입니다.
+- ChromeOS Linux 환경에서는 로컬 LLM 실행에 필요한 전용 GPU/VRAM 기반 compute 가속을 기대하기 어렵습니다.
 
 즉, ChromeOS에서 LM Studio는 공식 권장 경로 밖이며, 행사 당일 설치 이슈가 생길 가능성이 있습니다.
 

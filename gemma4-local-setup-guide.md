@@ -2,7 +2,7 @@
 
 Build with AI Seoul 2026 with Google DeepMind  
 사전 준비 안내 허브 문서  
-기준 확인일: 2026-04-21
+기준 확인일: 2026-04-27
 
 ## 행사 정보
 
@@ -31,11 +31,11 @@ Build with AI Seoul 2026 with Google DeepMind
 > - 사용할 모델 다운로드 완료
 > - 최소 1회 실행 테스트 완료
 
-## Windows 참가자 안내
+## Windows 사용자 준비
 
 - 이 문서의 명령 예시는 운영체제에 따라 `bash` 또는 `PowerShell`로 구분되어 있습니다.
 - **Windows 사용자는 기본적으로 PowerShell 기준으로 따라오시는 것을 권장합니다.**
-- `ollama`, `lms`, `pi` 같은 명령은 PowerShell에서 실행하는 편이 가장 설명과 잘 맞습니다.
+- `ollama`, `lms`, `pi` 같은 명령은 PowerShell에서 실행하세요.
 - 다만 `OpenCode`는 Windows에서 공식적으로 **WSL 경로를 권장**하므로, 이 부분은 PowerShell/CMD가 아니라 **WSL 터미널 기준**으로 보시면 됩니다.
 - `Hermes Agent`도 Windows 네이티브가 아니라 **WSL2 기준**으로 봐야 합니다.
 
@@ -45,18 +45,20 @@ Build with AI Seoul 2026 with Google DeepMind
 - 하나만 설치한다면 **기본 권장 경로는 LM Studio**입니다.
 - `Hermes Agent`와 `llama.cpp`는 **선택형 고급 경로**입니다.
 - **ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
-- 이번 세션은 **개발자, 비개발자 모두 참여 가능한 세션**이므로, 기본 안내는 **누구나 따라가기 쉬운 GUI 중심 경로인 LM Studio**를 기준으로 잡았습니다.
-- 이번 핸즈온은 채팅, 실습, 에이전트 흐름이 중심이므로 **base 모델보다 instruction-tuned(chat-ready) 계열을 기준으로 준비하는 편이 맞습니다.**
+- 이번 세션은 **개발자, 비개발자 모두 참여 가능한 세션**이므로, 기본 경로는 **누구나 따라가기 쉬운 GUI 중심 경로인 LM Studio**입니다.
+- 이번 핸즈온은 채팅, 실습, 에이전트 흐름이 중심이므로 **base 모델보다 instruction-tuned(chat-ready) 계열을 기준으로 준비하세요.**
 - 모델 다운로드까지 반드시 행사 전에 끝내고 와야 합니다.
 
 ## 빠른 선택
 
 - Windows/macOS/Linux에서 하나만 설치: **LM Studio**
 - ChromeOS: **Ollama**
-- 8GB 노트북: **E2B only, best-effort**
+- 8GB 노트북: **E2B만 시도, 속도 저하 감안**
 - 16GB 노트북: **E4B**
 - 32GB 노트북: **E4B 또는 26B A4B**
 - 36GB 노트북: **26B A4B 또는 31B**
+
+`26B A4B`는 26B 규모 모델이지만, 답을 만들 때는 내부의 여러 "전문가" 부분 중 필요한 일부만 사용합니다. 이 방식을 `MoE`라고 부르며, `A4B`는 그때 실제로 계산되는 부분이 약 4B 규모라는 뜻입니다. 다만 전체 26B 규모의 모델 파일은 메모리에 올라가야 하므로, 4B 모델처럼 가볍게 실행된다는 뜻은 아닙니다.
 
 ## 문서 목록
 

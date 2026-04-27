@@ -27,7 +27,7 @@
 | 오프라인 사용 | 모델 다운로드 후 로컬 실행 | 모델 다운로드 후 완전 오프라인 사용 가능 |
 | macOS 지원 | Apple Silicon 지원, Intel Mac은 CPU 전용 | Apple Silicon만 지원, Intel Mac 미지원 |
 | Windows 지원 | 네이티브 앱, NVIDIA/AMD GPU 지원 | x64/ARM 지원, 16GB+ RAM 권장 |
-| ChromeOS | Linux 개발 환경에서 best-effort | 공식 권장 경로 아님 |
+| ChromeOS | Linux 개발 환경에서 가능하지만 느릴 수 있음 | 공식 권장 경로 아님 |
 | 행사 권장도 | 보조 또는 고급/CLI 경로 | 기본 권장 |
 
 ## 운영체제별 빠른 추천
@@ -38,37 +38,47 @@
 | macOS Apple Silicon | LM Studio | Ollama | LM Studio는 Apple Silicon 전용이며, GGUF를 기본으로 쓰고 필요하면 MLX도 활용할 수 있습니다. |
 | macOS Intel | Ollama | 없음에 가까움 | LM Studio 데스크톱 앱은 Intel Mac 미지원입니다. |
 | Linux (Ubuntu) | LM Studio | Ollama | GUI 설치가 가능하면 LM Studio를 우선 권장합니다. |
-| ChromeOS | Ollama | 가능하면 다른 노트북 준비 | Linux 개발 환경은 GPU 가속 미지원입니다. |
+| ChromeOS | Ollama | 가능하면 다른 노트북 준비 | Linux 개발 환경에서는 로컬 LLM용 전용 GPU/VRAM 가속을 기대하기 어렵습니다. |
 
 ## 메모리별 권장 모델
 
-아래 권장은 행사 당일 안정적인 진행을 기준으로 잡았습니다.  
-공식 모델 페이지의 최소 메모리는 더 낮을 수 있지만, 실제로는 운영체제와 브라우저가 메모리를 함께 사용하므로 여유를 두는 편이 안전합니다.
+아래 권장은 행사 당일 안정적인 진행을 기준으로 잡았습니다.
+모델 페이지의 표시 크기나 최소 메모리는 더 낮게 보일 수 있지만, 실제로는 운영체제와 브라우저도 메모리를 함께 사용하므로 여유가 필요합니다.
 
 | 노트북 메모리 | 행사 권장 모델 | 권장 도구 | 안내 |
 | --- | --- | --- | --- |
-| 8GB | `gemma4:e2b` / `google/gemma-4-e2b` | `best-effort` | 8GB는 공식 권장 사양보다 낮아 LM Studio/Ollama 어느 쪽도 무난한 기본 조합으로 보기 어렵습니다. E2B만 시도하고, 가능하면 16GB 이상 노트북을 권장합니다. 실제로는 속도가 많이 느리거나 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다. |
+| 8GB | `gemma4:e2b` / `google/gemma-4-e2b` | E2B만 시도 | 8GB는 공식 권장 사양보다 낮아 LM Studio/Ollama 어느 쪽도 무난한 기본 조합으로 보기 어렵습니다. E2B만 시도하고, 가능하면 16GB 이상 노트북을 권장합니다. 실제로는 속도가 많이 느리거나 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다. |
 | 16GB | `gemma4:e4b` / `google/gemma-4-e4b` | LM Studio 우선 | 가장 무난한 참가 사양입니다. 실패 시 E2B로 낮추면 됩니다. |
 | 32GB | `gemma4:e4b`, `gemma4:26b` / `google/gemma-4-26b-a4b` | LM Studio 우선 | 속도와 안정성을 우선하면 E4B, 더 큰 모델을 원하면 26B A4B를 선택하세요. |
 | 36GB | `gemma4:26b`, `gemma4:31b` / `google/gemma-4-31b` | LM Studio 우선 | 31B도 가능하지만, 반응 속도는 26B A4B가 더 나을 수 있습니다. |
 
+## `A4B`는 무슨 뜻인가요?
+
+`26B A4B`에서 `26B`는 모델 전체 파라미터 규모를 뜻하고, `A4B`는 **답을 만들 때 실제로 계산에 참여하는 부분이 약 4B 규모**라는 뜻입니다.
+
+이 방식은 `MoE(Mixture-of-Experts)` 구조라고 부릅니다. 모델 안에 여러 "전문가" 부분이 있고, 답을 만들 때마다 필요한 일부 전문가만 골라 계산하는 방식입니다. 공식 모델 카드 기준으로는 총 파라미터가 `25.2B`, 실제 계산에 참여하는 파라미터가 `3.8B`입니다.
+
+그래서 `26B A4B`는 `31B`처럼 모든 주요 계산 블록을 함께 쓰는 모델보다 더 빠르게 느껴질 수 있습니다. 다만 모델 파일은 전체 26B 규모를 메모리에 올려야 하므로, **4B 모델처럼 가볍게 실행된다는 뜻은 아닙니다.** 32GB 이상 장비에서 권장하는 이유가 이 점 때문입니다.
+
 8GB 추가 메모:
 
 - Windows와 macOS에서 LM Studio 공식 권장 메모리는 16GB 이상입니다.
-- 따라서 8GB는 "무난한 기본 조합"이 아니라, 작은 모델(E2B) 기준의 `best-effort` 준비로 이해하는 편이 안전합니다.
+- 따라서 8GB는 "무난한 기본 조합"이 아니라, 작은 모델(E2B)만 시도하는 최소 준비로 이해해 주세요.
 - 8GB Apple Silicon Mac도 E2B/E4B 실행 중 속도가 크게 떨어지거나 시스템이 멈춘 것처럼 보일 수 있으므로, 안정적인 실습 장비로 보기 어렵습니다.
-- 8GB 장비로 참석하는 경우에는 작은 컨텍스트, 브라우저 탭 최소화, 다른 앱 종료를 전제로 안내하는 편이 좋습니다.
+- 8GB 장비로 참석하는 경우에는 작은 컨텍스트, 브라우저 탭 최소화, 다른 앱 종료를 전제로 준비해 주세요.
 
-## 공식 최소 메모리 참고
+## 로컬 모델 크기 참고
 
-LM Studio 모델 페이지 기준:
+LM Studio Gemma 4 모델 페이지 기준 표시 크기:
 
-- `google/gemma-4-e2b`: 최소 시스템 메모리 4GB
-- `google/gemma-4-e4b`: 최소 시스템 메모리 6GB
-- `google/gemma-4-26b-a4b`: 최소 시스템 메모리 17GB
-- `google/gemma-4-31b`: 최소 시스템 메모리 19GB
+- `google/gemma-4-e2b`: 4.20GB
+- `google/gemma-4-e4b`: 5.90GB
+- `google/gemma-4-26b-a4b`: 17.00GB
+- `google/gemma-4-31b`: 19.00GB
 
-행사 운영 기준 권장은 위 최소치보다 보수적으로 잡는 것을 추천합니다.
+Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.2GB, `gemma4:e4b` 9.6GB, `gemma4:26b` 18GB, `gemma4:31b` 20GB로 표시됩니다.
+
+이번 핸즈온 권장은 위 표시 크기보다 여유 있게 잡았습니다. 모델 크기 외에도 실행 도구, 긴 대화 컨텍스트, 브라우저, 운영체제가 메모리를 함께 사용합니다.
 
 ## 어떤 모델을 미리 받아두면 좋을까?
 
@@ -76,10 +86,10 @@ LM Studio 모델 페이지 기준:
 
 중요:
 
-- 이번 핸즈온은 **채팅 / 질의응답 / 에이전트 흐름**이 중심이므로, 가능하면 **instruction-tuned (`-it`) 또는 chat-ready 모델**을 받는 편이 맞습니다.
+- 이번 핸즈온은 **채팅 / 질의응답 / 에이전트 흐름**이 중심이므로, 가능하면 **instruction-tuned (`-it`) 또는 chat-ready 모델**을 받으세요.
 - Hugging Face나 `llama.cpp` 예시에서는 보통 `gemma-4-...-it` 처럼 보입니다.
 - Ollama는 `gemma4:e2b`, `gemma4:e4b`, `gemma4:26b`, `gemma4:31b` 같은 런타임 태그를 쓰므로, 사용자가 별도로 `-it` 접미사를 고를 필요는 없습니다.
-- LM Studio는 모델 목록 이름이 `google/gemma-4-e4b`처럼 더 짧게 보일 수 있으므로, **채팅/실습용 instruction-tuned 또는 chat-ready 항목인지** 설명을 함께 확인하는 편이 안전합니다.
+- LM Studio는 모델 목록 이름이 `google/gemma-4-e4b`처럼 더 짧게 보일 수 있으므로, **채팅/실습용 instruction-tuned 또는 chat-ready 항목인지** 설명을 함께 확인해 주세요.
 
 - 8GB: `E2B`만 미리 다운로드
 - 8GB는 현장 안정성이 낮으므로, 가능하면 16GB 이상 장비로 변경
@@ -101,9 +111,9 @@ LM Studio 모델 페이지 기준:
 - 추가로 CLI/API 실습도 원하면 Ollama까지 설치
 - 공통 필수 조건: 행사 전 모델 다운로드와 실행 테스트까지 완료
 
-### 행사 운영 관점의 권장안
+### 권장안
 
-- 8GB: 가능하면 다른 장비 권장. 꼭 가져오면 **E2B only, best-effort**
+- 8GB: 가능하면 다른 장비 권장. 꼭 가져오면 **E2B만 시도, 속도 저하 감안**
 - 16GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-e4b`
 - 32GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-e4b` 또는 `google/gemma-4-26b-a4b`
 - 36GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-26b-a4b` 또는 `google/gemma-4-31b`
@@ -117,6 +127,8 @@ LM Studio 모델 페이지 기준:
 
 ## Ollama 태그 관련 주의
 
-- 2026-04-20 기준 Ollama 라이브러리 페이지에서 `gemma4:latest`는 9.6GB, 128K 컨텍스트의 E4B 계열로 표시됩니다.
-- 다만 `latest` 태그는 향후 변경될 수 있으므로, 행사 준비용으로는 반드시 `gemma4:e2b`, `gemma4:e4b`, `gemma4:26b`, `gemma4:31b`처럼 명시적 태그를 사용하는 것을 권장합니다.
+- 2026-04-27 기준 Ollama Gemma 4 태그 페이지에는 29개 태그가 표시됩니다.
+- `gemma4:latest`는 현재 9.6GB, 128K 컨텍스트의 E4B 계열로 표시됩니다.
+- `latest`는 향후 바뀔 수 있으므로, 사전 준비용으로는 `gemma4:e2b`, `gemma4:e4b`, `gemma4:26b`, `gemma4:31b`처럼 명시적 태그를 사용하세요.
+- `*-cloud`, `*-mlx-*`, `*-mxfp8`, `*-nvfp4`, `*-q8_0` 같은 변형 태그는 목적을 알고 선택할 때만 사용하세요.
 - 도구별 배포 포맷이 달라 다운로드 크기와 표시 용량은 서로 다를 수 있습니다.

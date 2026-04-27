@@ -64,7 +64,7 @@ llama.cpp 공식 README 기준:
 - llama.cpp는 **C/C++ 기반 LLM inference 엔진**입니다.
 - 최소한의 설정으로 다양한 하드웨어에서 로컬/클라우드 추론을 할 수 있도록 만드는 것이 목표입니다.
 - Apple Silicon, x86, NVIDIA GPU, AMD GPU 등 여러 백엔드를 지원합니다.
-- OpenAI-compatible API 서버(`llama-server`)도 제공할 수 있습니다.
+- OpenAI 호환 API 서버(`llama-server`)도 제공할 수 있습니다.
 
 이름 때문에 오해하기 쉬운데:
 
@@ -77,7 +77,7 @@ llama.cpp 공식 README 기준:
 
 입니다.
 
-실무적으로는:
+정리하면:
 
 - LM Studio는 문서상 **GGUF 모델을 `llama.cpp`로 실행**
 
@@ -138,7 +138,7 @@ LM Studio 공식 문서 기준:
 
 ## 참가자 입장에서는 무엇을 선택하면 되나요?
 
-이번 핸즈온 기준 실무 권장:
+이번 핸즈온에서는:
 
 - **Windows/Linux**: `GGUF` 중심으로 생각하면 됩니다.
 - **Apple Silicon Mac**: `GGUF 기본`, `MLX는 옵션`
@@ -156,12 +156,12 @@ LM Studio 공식 문서 기준:
 - Windows/Linux/ChromeOS까지 같이 봐야 하며
 - LM Studio, Ollama, llama.cpp 같은 로컬 도구에서 범용적으로 이해하기 쉬운 축이 `GGUF`이기 때문입니다.
 
-그래서 행사 문서에서는:
+그래서 이번 핸즈온에서는:
 
 - `GGUF`를 기본 개념
 - `MLX`를 Apple Silicon 추가 옵션
 
-으로 안내하는 편이 더 안정적입니다.
+으로 이해하면 됩니다.
 
 ## llama.cpp는 행사에서 왜 알아두면 좋나요?
 
@@ -169,11 +169,11 @@ LM Studio 공식 문서 기준:
 
 - 왜 GGUF 모델이 여러 로컬 도구에서 공통으로 보이는지
 - 왜 `Q4`, `Q5`, `Q8` 같은 양자화 모델이 자주 나오는지
-- 왜 OpenAI-compatible 로컬 서버를 만들 수 있는지
+- 왜 OpenAI 호환 로컬 서버를 만들 수 있는지
 
 즉, llama.cpp는 로컬 LLM 생태계에서 **기초 엔진 역할**을 하는 경우가 많습니다.
 
-## 아주 실무적인 한 줄 정리
+## 한 줄 정리
 
 - `GGUF`: 범용 로컬 모델 파일
 - `llama.cpp`: 그 파일을 돌려주는 대표 엔진

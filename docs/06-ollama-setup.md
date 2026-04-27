@@ -49,8 +49,25 @@ ollama run gemma4:e2b
 - Ollama Windows 설치는 공식 문서 기준 관리자 권한이 필수는 아닙니다.
 - 모델은 기본적으로 사용자 홈 디렉터리 아래에 저장됩니다.
 - 설치 후 Ollama는 백그라운드에서 실행되고, 로컬 API는 기본적으로 `http://localhost:11434`에서 동작합니다.
-- Windows에서는 **명령 프롬프트(CMD)** 도 가능하지만, 참가자 안내는 **PowerShell 기준**으로 보는 편이 안전합니다.
+- Windows에서는 **명령 프롬프트(CMD)** 도 가능하지만, 이 가이드는 **PowerShell 기준**입니다.
 - Ollama는 `gemma4:e2b`, `gemma4:e4b` 같은 런타임 태그를 사용하므로, 사용자가 따로 `-it` 접미사를 고르지 않아도 됩니다. 핸즈온에서는 이 태그들을 chat-ready 실행 경로로 이해하면 됩니다.
+
+## Gemma 4 태그 선택
+
+2026-04-27 기준 Ollama Gemma 4 태그 페이지에는 29개 태그가 표시됩니다.
+
+사전 준비에서는 목적이 명확한 로컬 기본 태그를 사용하세요.
+
+- 8GB: `gemma4:e2b`
+- 16GB: `gemma4:e4b`, 버거우면 `gemma4:e2b`
+- 32GB 이상: `gemma4:26b`
+- 36GB 이상: `gemma4:26b` 또는 `gemma4:31b`
+
+주의:
+
+- `gemma4:latest`는 현재 E4B 계열로 표시되지만, 나중에 바뀔 수 있습니다.
+- `*-cloud` 태그는 로컬에 모델을 받아 두는 경로가 아니므로, 사전 준비 기본값으로 쓰지 마세요.
+- `*-mlx-*`, `*-mxfp8`, `*-nvfp4`, `*-q8_0` 같은 변형 태그는 정밀도와 실행 목적을 알고 선택할 때만 사용하세요.
 
 ## macOS
 
@@ -92,7 +109,7 @@ ollama run gemma4:e2b
 
 권장 메모:
 
-- 첫 실행 시 CLI 경로 연결을 요청하면 허용하는 편이 편리합니다.
+- 첫 실행 시 CLI 경로 연결을 요청하면 허용하세요.
 - Apple Silicon에서는 CPU/GPU를 함께 활용하기 쉽고, 행사 진행에도 유리합니다.
 
 ## Linux (Ubuntu 등)
@@ -144,13 +161,13 @@ ollama run gemma4:e2b
 
 ## ChromeOS
 
-ChromeOS는 Ollama만 권장합니다. 다만 이 경로는 best-effort이며, Windows/macOS보다 느릴 수 있습니다.
+ChromeOS는 Ollama만 권장합니다. 다만 이 경로는 안정성이 낮을 수 있으며, Windows/macOS보다 느릴 수 있습니다.
 
 중요 제한:
 
 - Chromebook에서 Linux 개발 환경이 켜져 있어야 합니다.
 - 회사/학교 지급 기기에서는 Linux 사용이 막혀 있을 수 있습니다.
-- Google 공식 문서 기준 GPU 하드웨어 가속이 지원되지 않습니다.
+- ChromeOS Linux 환경에서는 Ollama/Gemma 4 같은 로컬 LLM 실행에서 전용 GPU/VRAM 기반 compute 가속을 기대하기 어렵습니다.
 - 따라서 ChromeOS에서는 E2B 위주로 준비하는 것을 권장합니다.
 
 설치 순서:

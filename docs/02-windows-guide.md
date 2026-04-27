@@ -59,7 +59,7 @@
 이 경로가 적합한 사람:
 
 - `Hermes + Gemma 4` AI office 데모를 직접 해 보고 싶은 분
-- 로컬 OpenAI-compatible endpoint에 에이전트를 연결해 보고 싶은 분
+- 로컬 OpenAI 호환 서버에 에이전트를 연결해 보고 싶은 분
 
 ## 추천 조합
 
@@ -74,7 +74,7 @@
 
 | 메모리 | 추천 모델 | 권장 도구 |
 | --- | --- | --- |
-| 8GB | `E2B`만 best-effort | LM Studio 우선 |
+| 8GB | `E2B`만 시도 | LM Studio 우선 |
 | 16GB | `E4B` | LM Studio 우선, 필요하면 Ollama 추가 |
 | 32GB | `E4B` 또는 `26B A4B` | LM Studio, Ollama, llama.cpp 선택 가능 |
 | 36GB+ | `26B A4B` 또는 `31B` | 고급 경로도 현실적 |
@@ -233,7 +233,7 @@ wsl -d Ubuntu
 - PowerShell에서 `wsl --status` 확인
 - WSL2 터미널에서 `hermes version`
 - `hermes doctor`
-- local endpoint 연결 1회 성공
+- 로컬 서버 주소 연결 1회 성공
 
 ## 권장 한 줄 요약
 

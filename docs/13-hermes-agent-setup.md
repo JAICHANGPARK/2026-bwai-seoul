@@ -7,15 +7,15 @@
 ## 이 문서는 누구를 위한 문서인가요?
 
 - `Hermes Agent`를 이번 핸즈온의 선택형 고급 경로로 써 보고 싶은 참가자
-- `Gemma 4 + llama.cpp` 또는 다른 OpenAI-compatible local server에 `Hermes`를 연결해 보고 싶은 참가자
+- `Gemma 4 + llama.cpp` 또는 다른 OpenAI 호환 로컬 서버에 `Hermes`를 연결해 보고 싶은 참가자
 - `CEO / CPO / PM / QA / Developer` 같은 역할 기반 AI office 데모를 직접 구성해 보고 싶은 참가자
 
 ## 먼저 결론
 
-- `Hermes Agent`는 이번 세션의 **고급 / 선택형 경로**로 안내하는 편이 적절합니다.
+- `Hermes Agent`는 이번 세션의 **고급 / 선택형 경로**입니다.
 - macOS, Linux, WSL2에서는 설치가 비교적 단순합니다.
 - **Windows 네이티브는 공식 미지원**이며, Windows 사용자는 **WSL2 안에서 설치**해야 합니다.
-- 발표자 데모나 고급 참가자 실습에는 좋지만, 모든 참가자의 기본 경로로 두기에는 운영 리스크가 있습니다.
+- 발표자 데모나 고급 참가자 실습에는 좋지만, 모든 참가자의 기본 경로로 두기에는 설치와 연결 과정이 복잡합니다.
 
 ## 사전 안내
 
@@ -51,7 +51,7 @@ source ~/.bashrc
 Windows 네이티브는 공식 미지원입니다.  
 먼저 `WSL2`를 설치한 뒤, **WSL 터미널 안에서** 위 설치 명령을 실행해야 합니다.
 
-이 문서에서는 Windows 사용자를 위해 `Hermes = WSL2 전용 선택 경로`로 안내하는 것을 권장합니다.
+Windows 사용자는 `Hermes = WSL2 전용 선택 경로`로 이해하면 됩니다.
 
 PowerShell 관리자 권한에서 먼저 할 일:
 
@@ -156,12 +156,28 @@ hermes model
 ```bash
 hermes version
 hermes doctor
-hermes status
 ```
 
 ## 로컬 모델과 연결하는 법
 
 이번 핸즈온에서는 `Hermes`가 직접 모델을 돌리는 것이 아니라, 별도 로컬 서버에 붙는 구조로 이해하면 됩니다.
+
+중요:
+
+- Hermes Agent는 다단계 tool-calling 작업을 위해 **최소 64K 토큰 컨텍스트**를 요구합니다.
+- 로컬 모델 서버의 컨텍스트가 이보다 작으면 Hermes가 시작 단계에서 거부하거나, 작업 중 불안정하게 동작할 수 있습니다.
+- 컨텍스트를 키우면 메모리 사용량도 함께 늘어나므로, 8GB/16GB 장비에서는 Hermes 경로를 무리하게 권장하지 않습니다.
+
+도구별 확인 예시:
+
+- `llama.cpp`: `llama-server ... --ctx-size 65536`
+- `Ollama`: 필요 시 `OLLAMA_CONTEXT_LENGTH=64000 ollama serve`처럼 64K 이상으로 서버를 띄운 뒤 연결
+- `LM Studio`: 서버를 켜기 전에 모델 설정에서 context length를 64K 이상으로 설정할 수 있는지 확인
+
+따라서 Hermes와 연결할 로컬 서버는 아래 두 가지를 먼저 확인해야 합니다.
+
+1. `/v1/models`에서 실제 model ID가 보이는지
+2. 해당 서버/모델이 64K 이상 컨텍스트로 실행 중인지
 
 예를 들어 `llama.cpp`의 `llama-server`를 `127.0.0.1:8080/v1`에 띄웠다면:
 
@@ -174,20 +190,21 @@ hermes model
 - Base URL: `http://127.0.0.1:8080/v1`
 - API key: `none`
 - Model name: `/v1/models`에서 보이는 모델 ID
+- Context length: `64000` 또는 `65536` 이상
 
 즉 구조는 아래와 같습니다.
 
 ```text
-Hermes Agent -> OpenAI-compatible local server -> Gemma 4
+Hermes Agent -> OpenAI 호환 로컬 서버 -> Gemma 4
 ```
 
 ## Windows 참가자에게 권하는 방식
 
-Windows에서 `Hermes`를 꼭 쓰고 싶다면 가장 안전한 운영 방식은 아래입니다.
+Windows에서 `Hermes`를 꼭 쓰고 싶다면 아래 방식으로 준비하세요.
 
 1. Windows에서 `LM Studio` 또는 `llama.cpp` 서버 실행
 2. WSL2 안에서 `Hermes` 실행
-3. `Hermes`가 로컬 서버 HTTP endpoint에 연결
+3. `Hermes`가 로컬 서버 주소에 연결
 
 이 방식은 WSL 안에서 대용량 모델을 다시 내려받고 빌드하는 부담을 줄여 줍니다.
 
@@ -215,8 +232,9 @@ macOS / Linux / WSL2:
 ```bash
 hermes version
 hermes doctor
-hermes chat -q "Hello"
 ```
+
+그 다음 `hermes` 또는 `hermes --tui`를 실행해 짧은 질문이 응답되는지 확인하세요.
 
 Windows 사용자는 위 명령을 **PowerShell이 아니라 WSL2 Ubuntu 셸 안에서** 실행하면 됩니다.
 
@@ -226,7 +244,7 @@ Windows 사용자는 위 명령을 **PowerShell이 아니라 WSL2 Ubuntu 셸 안
 hermes model
 ```
 
-에서 local endpoint를 등록한 뒤, 간단한 질문이 한 번 응답되면 충분합니다.
+에서 로컬 서버 주소를 등록한 뒤, 간단한 질문이 한 번 응답되면 충분합니다.
 
 ## 이 경로를 누구에게 권하나요?
 
@@ -244,10 +262,6 @@ hermes model
 
 - [Hermes Installation](https://hermes-agent.nousresearch.com/docs/getting-started/installation/)
 - [Hermes Quickstart](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)
+- [Hermes CLI Commands Reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands/)
 - [Hermes FAQ](https://hermes-agent.nousresearch.com/docs/reference/faq/)
 - [Hermes Docs Home](https://hermes-agent.nousresearch.com/docs/)
-
-## 문서 작성 메모
-
-- 이 가이드는 `2026-04-21` 기준 Hermes 공식 문서를 바탕으로 정리했습니다.
-- Windows 지원 범위는 **WSL2 경유만 공식 지원**으로 안내했습니다.

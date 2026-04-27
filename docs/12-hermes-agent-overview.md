@@ -103,19 +103,19 @@ Hermes Features Overview 기준으로 주요 기능은 아래와 같습니다.
 
 ## 이번 핸즈온에서 Hermes를 어떻게 보나요?
 
-이번 문서 묶음에서는 `Hermes`를 **선택형 고급 경로**로 봅니다.
+이번 핸즈온에서는 `Hermes`를 **선택형 고급 경로**로 봅니다.
 
 이유:
 
 - Windows에서는 WSL2가 필요합니다.
 - 설치와 설정 면적이 기본 경로보다 넓습니다.
-- 참가자 전원에게 강제하기엔 운영 리스크가 있습니다.
+- 모든 참가자가 필수로 준비하기에는 설치와 연결 과정이 복잡합니다.
 
 반대로 강점도 분명합니다.
 
 - role-based agent workflow를 구성하기 좋음
 - skills 실습 주제로 적합함
-- 로컬 OpenAI-compatible endpoint와 연결 가능
+- 로컬 OpenAI 호환 서버와 연결 가능
 - `Gemma 4 + llama.cpp` 또는 `Gemma 4 + LM Studio` 위에 agent layer를 얹을 수 있음
 
 ## 이번 핸즈온에서 Hermes를 어떤 그림으로 이해하면 되나요?
@@ -165,8 +165,3 @@ Gemma 4
 - [Hermes Docs Home](https://hermes-agent.nousresearch.com/docs/)
 - [Features Overview](https://hermes-agent.nousresearch.com/docs/user-guide/features/overview)
 - [Quickstart](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)
-
-## 문서 작성 메모
-
-- 이 문서는 `2026-04-21` 기준 Hermes 공식 문서를 바탕으로 정리했습니다.
-- 이번 행사 기준으로는 `Hermes = 선택형 고급 경로`라는 운영 관점을 반영했습니다.

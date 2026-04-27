@@ -41,7 +41,7 @@
 
 - Linux 개발 환경이 꺼져 있지 않은지 확인
 - 학교/회사 정책으로 Linux가 막혀 있지 않은지 확인
-- GPU 가속이 없으므로 성능 기대치를 낮추고 작은 모델만 사용
+- 로컬 LLM용 전용 GPU/VRAM 가속을 기대하기 어려우므로 성능 기대치를 낮추고 작은 모델만 사용
 
 ## 행사 전 최종 확인
 
@@ -58,13 +58,13 @@
 lms --help
 ```
 
-## 8GB 장비 참가자 사전 안내 문구 예시
+## 8GB 장비 주의사항
 
-아래처럼 강하게 안내하는 편이 안전합니다.
+8GB 메모리 노트북은 작은 모델(E2B)에서도 속도가 많이 느리거나 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다.
 
-> 8GB 메모리 노트북은 작은 모델(E2B)에서도 속도가 많이 느리거나 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다.  
-> 가능하면 16GB 이상 메모리 장비를 권장합니다.  
-> 8GB 장비로 참석하는 경우에는 `E2B`만 미리 다운로드하고, 다른 앱을 종료한 상태에서 행사 전에 반드시 1회 실행 테스트를 완료해 주세요.
+- 가능하면 16GB 이상 메모리 장비를 권장합니다.
+- 8GB 장비로 참석하는 경우에는 `E2B`만 미리 다운로드하세요.
+- 다른 앱을 종료한 상태에서 행사 전에 반드시 1회 실행 테스트를 완료해 주세요.
 
 ### Ollama 준비 완료 기준
 
@@ -114,13 +114,9 @@ hermes version
 hermes doctor
 ```
 
-간단한 실행 확인:
+그 다음 `hermes` 또는 `hermes --tui`를 실행해 짧은 질문이 응답되는지 확인하세요.
 
-```bash
-hermes chat -q "Hello"
-```
-
-로컬 모델을 붙여 볼 참가자는 `hermes model`에서 local endpoint 등록까지 확인하면 더 안전합니다.
+로컬 모델을 붙여 볼 참가자는 `hermes model`에서 로컬 서버 주소 등록까지 확인하세요.
 
 Windows 사용자는 위 명령을 PowerShell이 아니라 **WSL2 Ubuntu 셸 안에서** 실행해야 합니다.
 
@@ -161,6 +157,7 @@ Windows 사용자는 위 명령을 PowerShell이 아니라 **WSL2 Ubuntu 셸 안
 
 - [Hermes Installation](https://hermes-agent.nousresearch.com/docs/getting-started/installation/)
 - [Hermes Quickstart](https://hermes-agent.nousresearch.com/docs/getting-started/quickstart/)
+- [Hermes CLI Commands Reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands/)
 - [Hermes FAQ](https://hermes-agent.nousresearch.com/docs/reference/faq/)
 - [Hermes Docs Home](https://hermes-agent.nousresearch.com/docs/)
 
@@ -174,8 +171,3 @@ Windows 사용자는 위 명령을 PowerShell이 아니라 **WSL2 Ubuntu 셸 안
 ### ChromeOS
 
 - [Set up Linux on your Chromebook](https://support.google.com/chromebook/answer/9145439?hl=ko)
-
-## 문서 작성 메모
-
-- 이 가이드는 2026-04-21 기준 공식 문서와 모델 페이지를 바탕으로 정리했습니다.
-- ChromeOS 관련 설명은 공식 지원 범위를 우선으로 정리했으며, 행사 안정성을 위해 보수적으로 안내했습니다.
