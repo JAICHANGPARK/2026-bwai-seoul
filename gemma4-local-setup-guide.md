@@ -9,7 +9,7 @@ Build with AI Seoul 2026 with Google DeepMind
 - 세션명: **Build Your Own AI Office with Gemma 4**
 - 진행자: **박제창**
 - 트랙: **Hands-On A**
-- 진행 시간: **13:00 ~ 14:30 (60분)**
+- 진행 시간: **13:30 ~ 14:30 (60분)**
 
 ## 이 문서는 허브 문서입니다
 

@@ -68,7 +68,7 @@ SESSION_NAME = "Build Your Own AI Office with Gemma 4"
 EVENT_NAME = "Build with AI Seoul 2026"
 TRACK = "Hands-On A"
 PRESENTER = "박제창"
-DURATION = "13:00 ~ 14:30 (60분)"
+DURATION = "13:30 ~ 14:30 (60분)"
 CHECK_DATE = "2026-04-21"
 
 DOC_FILES = [
