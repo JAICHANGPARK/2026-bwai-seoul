@@ -12,7 +12,8 @@
 - Linux는 Ubuntu 20.04+ AppImage가 공식 기준입니다.
 - 모델 다운로드 후에는 완전 오프라인 사용이 가능합니다.
 - Apple Silicon Mac에서는 GGUF를 기본으로 사용해도 되고, 필요하면 MLX 모델도 선택할 수 있습니다.
-- 이번 핸즈온은 채팅/실습/에이전트 흐름이 중심이므로, 가능하면 **instruction-tuned(chat-ready) 모델**을 선택하세요.
+- 이번 핸즈온은 채팅/실습/에이전트 흐름이 중심이므로 **instruction-tuned(chat-ready) 모델**을 선택하세요.
+- `base`나 `pretrained`로 표시된 모델은 기본 준비용으로 받지 않는 편이 안전합니다.
 - LM Studio에서는 모델 이름이 `...-it` 로 그대로 보일 수도 있고, `google/gemma-4-e4b`처럼 더 짧게 보일 수도 있으므로 **설명이나 모델 카드에서 chat-ready / instruct 계열인지** 함께 확인해 주세요.
 
 ## Windows

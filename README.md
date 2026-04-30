@@ -34,6 +34,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 - 가능하면 `16GB 이상` 메모리 장비를 준비하세요.
 - 하나만 설치한다면 `LM Studio`를 설치하세요.
 - `8GB` 장비는 `E2B`만 준비하세요. 실행 속도는 많이 느릴 수 있습니다.
+- 모델은 **instruction-tuned / chat-ready** 계열을 받으세요. `base`나 `pretrained`로 표시된 모델은 이번 기본 준비용으로 권장하지 않습니다.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 분만 추가로 준비하세요.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델을 선택할 수 있지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 봐야 합니다.
 
@@ -53,6 +54,9 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 `26B`는 "파일 크기가 26GB"라는 뜻이 아니라 "모델 안에 학습된 숫자가 약 260억 개"라는 뜻입니다. 실제 다운로드 크기와 메모리 사용량은 양자화 방식, 실행 도구, 컨텍스트 길이에 따라 달라집니다.
 
 일반 사용자가 LM Studio나 Ollama에서 받는 로컬 실행용 모델은 보통 원본 BF16 가중치 그대로가 아니라 **4-bit, 5-bit, 8-bit 등으로 양자화된 배포본**입니다. 그래서 `26B`, `31B`라는 이름과 다운로드 크기가 1:1로 대응하지 않습니다.
+
+이번 핸즈온은 채팅, 질의응답, 로컬 에이전트 흐름이 중심입니다.  
+따라서 모델을 직접 고를 때는 `-it`, `instruct`, `instruction-tuned`, `chat-ready` 같은 설명이 붙은 항목을 우선하세요. `base`나 `pretrained`로 표시된 모델은 기본 준비용으로 받지 않는 편이 안전합니다.
 
 `26B A4B`는 26B 규모 모델이지만, 답을 만들 때는 내부의 여러 "전문가" 부분 중 필요한 일부만 사용합니다. 이 방식을 `MoE`라고 부르며, `A4B`는 그때 실제로 계산되는 부분이 약 4B 규모라는 뜻입니다. 단, 전체 모델 파일은 메모리에 올라가므로 4B 모델처럼 가볍지는 않습니다.
 

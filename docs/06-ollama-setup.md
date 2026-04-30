@@ -50,7 +50,8 @@ ollama run gemma4:e2b
 - 모델은 기본적으로 사용자 홈 디렉터리 아래에 저장됩니다.
 - 설치 후 Ollama는 백그라운드에서 실행되고, 로컬 API는 기본적으로 `http://localhost:11434`에서 동작합니다.
 - Windows에서는 **명령 프롬프트(CMD)** 도 가능하지만, 이 가이드는 **PowerShell 기준**입니다.
-- Ollama는 `gemma4:e2b`, `gemma4:e4b` 같은 런타임 태그를 사용하므로, 사용자가 따로 `-it` 접미사를 고르지 않아도 됩니다. 핸즈온에서는 이 태그들을 chat-ready 실행 경로로 이해하면 됩니다.
+- Ollama는 `gemma4:e2b`, `gemma4:e4b` 같은 런타임 태그를 사용하므로, 따로 `-it` 접미사를 고르지 않아도 됩니다. 핸즈온에서는 이 태그들을 chat-ready 실행 경로로 이해하면 됩니다.
+- 세부 태그를 직접 고를 때는 `it`, `instruct`, `chat-ready` 계열을 우선하고, `base` 또는 `pretrained`로 보이는 항목은 기본 준비용으로 피하세요.
 
 ## Gemma 4 태그 선택
 

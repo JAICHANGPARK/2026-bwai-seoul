@@ -110,9 +110,11 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 
 중요:
 
-- 이번 핸즈온은 **채팅 / 질의응답 / 에이전트 흐름**이 중심이므로, 가능하면 **instruction-tuned (`-it`) 또는 chat-ready 모델**을 받으세요.
-- Hugging Face나 `llama.cpp` 예시에서는 보통 `gemma-4-...-it` 처럼 보입니다.
-- Ollama는 `gemma4:e2b`, `gemma4:e4b`, `gemma4:26b`, `gemma4:31b` 같은 런타임 태그를 쓰므로, 사용자가 별도로 `-it` 접미사를 고를 필요는 없습니다.
+- 이번 핸즈온은 **채팅 / 질의응답 / 에이전트 흐름**이 중심이므로 **instruction-tuned (`-it`) 또는 chat-ready 모델**을 받으세요.
+- Hugging Face 공식 Gemma 4 컬렉션도 같은 크기에서 `google/gemma-4-26B-A4B`와 `google/gemma-4-26B-A4B-it`처럼 base 모델과 instruction-tuned 모델을 나눠 제공합니다.
+- 이번 준비에서는 `google/gemma-4-E2B-it`, `google/gemma-4-E4B-it`, `google/gemma-4-26B-A4B-it`, `google/gemma-4-31B-it`처럼 `-it`가 붙은 쪽을 기준으로 보면 됩니다.
+- `base`나 `pretrained`로 표시된 모델은 기본 준비용으로 권장하지 않습니다. 모델을 연구하거나 파인튜닝을 시작할 때는 의미가 있지만, 바로 대화하고 지시를 수행하는 실습에는 덜 적합합니다.
+- Ollama는 `gemma4:e2b`, `gemma4:e4b`, `gemma4:26b`, `gemma4:31b` 같은 런타임 태그를 쓰므로, 별도로 `-it` 접미사를 고를 필요는 없습니다.
 - LM Studio는 모델 목록 이름이 `google/gemma-4-e4b`처럼 더 짧게 보일 수 있으므로, **채팅/실습용 instruction-tuned 또는 chat-ready 항목인지** 설명을 함께 확인해 주세요.
 
 - 8GB: `E2B`만 미리 다운로드

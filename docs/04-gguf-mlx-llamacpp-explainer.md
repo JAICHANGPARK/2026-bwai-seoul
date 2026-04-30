@@ -35,6 +35,45 @@
 
 즉, **같은 모델이 여러 실행 포맷/런타임으로 제공될 수 있다**고 이해하면 됩니다.
 
+## instruction-tuned와 base 모델은 무엇이 다른가요?
+
+모델을 받을 때 `-it`, `instruct`, `instruction-tuned`, `chat-ready`, `base`, `pretrained` 같은 표현을 보게 됩니다.  
+이것은 `GGUF`, `MLX`, `Q4`, `NVFP4`처럼 파일 포맷이나 숫자 저장 방식을 말하는 것이 아니라, **모델이 어떤 방식으로 훈련되어 어떤 행동을 하도록 준비되었는지**를 말합니다.
+
+Gemma 4 공식 Hugging Face 컬렉션도 같은 크기에서 두 계열을 나눠 제공합니다.
+
+| 계열 | 예시 | 성격 |
+| --- | --- | --- |
+| base / pre-trained | `google/gemma-4-26B-A4B` | 원본에 가까운 사전학습 모델 |
+| instruction-tuned | `google/gemma-4-26B-A4B-it` | 채팅과 지시 수행에 맞게 추가 학습된 모델 |
+
+`base` 또는 `pretrained` 모델은 대량의 텍스트, 코드, 이미지 같은 데이터를 보고 다음 토큰을 예측하도록 학습한 모델입니다.  
+이 단계에서 모델은 언어와 지식, 코드 패턴, 시각 정보를 폭넓게 배웁니다. 하지만 "질문에 답하기", "요청을 단계적으로 수행하기", "대화 형식을 지키기" 같은 행동을 안정적으로 하도록 별도 조정된 상태는 아닙니다.
+
+그래서 base 모델에 바로 질문을 던지면 답을 하기도 하지만, 질문을 이어 쓰는 식으로 반응하거나, 출력 형식이 흔들리거나, 대화형 앱에서 기대하는 역할 구분을 잘 따르지 못할 수 있습니다. base 모델은 주로 모델 연구, 자체 instruction tuning, 도메인 fine-tuning, 평가 실험을 시작할 때 쓰는 출발점에 가깝습니다.
+
+`instruction-tuned` 모델은 base 모델을 바탕으로 사람이 쓴 지시문과 기대 답변 형식에 더 맞도록 추가 훈련한 모델입니다. Google의 Gemma 실행 문서도 처음 시작할 때는 instruction-tuned(IT) 모델을 추천합니다. IT 모델은 별도 추가 학습 없이도 자연어 요청에 답하기 좋고, 채팅 UI나 로컬 에이전트 흐름에 바로 연결하기 쉽습니다.
+
+차이를 실습 관점에서 보면 아래와 같습니다.
+
+| 구분 | base / pre-trained | instruction-tuned / chat-ready |
+| --- | --- | --- |
+| 주된 목적 | 모델 연구, 파인튜닝 출발점 | 바로 채팅, 질의응답, 지시 수행 |
+| 프롬프트 반응 | 텍스트를 이어 쓰는 성격이 강함 | 요청에 대한 답변을 만들도록 조정됨 |
+| 대화 형식 | 직접 템플릿을 맞추거나 추가 튜닝이 필요할 수 있음 | 도구가 제공하는 chat template과 잘 맞음 |
+| 이번 핸즈온 적합도 | 기본 준비용으로는 비추천 | 기본 준비용으로 추천 |
+
+중요한 점은 **instruction-tuned 여부와 양자화 여부는 서로 다른 축**이라는 것입니다.
+
+예를 들어 아래 표현들은 서로 다른 질문에 답합니다.
+
+- `google/gemma-4-26B-A4B-it`: 26B A4B의 instruction-tuned 모델인가?
+- `Q4`, `Q5`, `Q8`, `NVFP4`: 숫자를 어떤 크기와 정밀도로 저장했는가?
+- `GGUF`, `MLX`, `Safetensors`: 어떤 파일 포맷이나 실행 생태계로 배포되는가?
+
+즉, 같은 instruction-tuned 모델도 GGUF로 변환될 수 있고, 4-bit로 양자화될 수 있습니다. 반대로 base 모델도 GGUF나 양자화 파일로 배포될 수 있습니다.  
+이번 핸즈온에서는 먼저 **instruction-tuned / chat-ready 계열인지** 확인하고, 그다음에 내 장비에 맞는 크기와 양자화 방식을 고르면 됩니다.
+
 ## GGUF란?
 
 GGUF 공식 문서 기준:
@@ -375,5 +414,8 @@ LM Studio 공식 문서 기준:
 - [Apple MLX README](https://github.com/ml-explore/mlx)
 - [Apple MLX LM README](https://github.com/ml-explore/mlx-lm)
 - [LM Studio Docs](https://lmstudio.ai/docs)
+- [Google AI for Developers: Run Gemma](https://ai.google.dev/gemma/docs/run)
+- [Google Gemma 4 Hugging Face collection](https://huggingface.co/collections/google/gemma-4)
+- [google/gemma-4-26B-A4B-it](https://huggingface.co/google/gemma-4-26B-A4B-it)
 - [NVIDIA Gemma-4-31B-IT-NVFP4](https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4)
 - [NVIDIA Technical Blog: Introducing NVFP4](https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/)
