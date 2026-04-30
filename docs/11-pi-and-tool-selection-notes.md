@@ -4,15 +4,15 @@
 
 ## 이 문서는 누구를 위한 문서인가요?
 
-- `opencode`보다 더 가벼운 터미널 코딩 에이전트를 찾는 참가자
-- Gemma 4 local LLM을 붙일 수 있는 다른 코딩 에이전트 경로를 알고 싶은 참가자
-- 왜 이번 핸즈온에서 `gemini-cli`, `Antigravity`를 code agent로 사용하지 않았는지 궁금한 참가자
+- `opencode`보다 더 가벼운 터미널 코딩 에이전트를 찾는 분
+- Gemma 4 local LLM을 붙일 수 있는 다른 코딩 에이전트 방식을 알고 싶은 분
+- 왜 이번 핸즈온에서 `gemini-cli`, `Antigravity`를 code agent로 사용하지 않았는지 궁금한 분
 
 ## 먼저 결론
 
 - `pi`는 **좋은 경량 대안**입니다.
 - 이유는 `pi`가 스스로를 **minimal terminal coding harness** 로 설명하고, `~/.pi/agent/models.json` 을 통해 **LM Studio / Ollama / vLLM 같은 로컬 OpenAI 호환 서버**를 붙일 수 있다고 공식 문서에 적고 있기 때문입니다.
-- 이번 핸즈온은 **Gemma 4를 참가자 노트북에서 미리 내려받아 두고, 네트워크가 없거나 매우 불안정해도 로컬에서 실행 가능한 흐름**을 중요하게 봅니다.
+- 이번 핸즈온은 **Gemma 4를 각자 노트북에 미리 내려받아 두고, 네트워크가 없거나 매우 불안정해도 로컬에서 실행 가능한 흐름**을 중요하게 봅니다.
 - 반대로 `gemini-cli`와 `Antigravity`는 이번 핸즈온 기준 **Gemma 4 local LLM + LM Studio 기반의 오프라인 code agent 경로가 명확하지 않습니다.**
 
 짧게 정리하면:
@@ -85,7 +85,7 @@ Windows 메모:
 - 다만 이번 핸즈온의 code agent 메인 경로는 `OpenCode`이고, OpenCode는 Windows에서 **WSL 권장**입니다.
 - Windows에서는 `pi = PowerShell 가능`, `OpenCode = WSL 권장`으로 구분하면 됩니다.
 
-Ollama를 함께 쓰는 참가자는 `ollama launch pi --config`로 Pi의 Ollama provider 설정을 자동 생성할 수도 있습니다. 이 문서에서는 LM Studio 연결을 직접 확인하기 위해 `models.json` 수동 설정을 기준으로 설명합니다.
+Ollama를 함께 쓰는 경우에는 `ollama launch pi --config`로 Pi의 Ollama provider 설정을 자동 생성할 수도 있습니다. 이 문서에서는 LM Studio 연결을 직접 확인하기 위해 `models.json` 수동 설정을 기준으로 설명합니다.
 
 ## LM Studio와 `pi` 연결하기
 
@@ -173,7 +173,7 @@ pi --model lmstudio/google/gemma-4-e4b
 /model
 ```
 
-## `pi`에서 Gemma 4를 쓸 때 권장안
+## `pi`에서 Gemma 4를 쓸 때 추천
 
 - 8GB: 비권장
 - 16GB: `E4B`로 가벼운 코드 보조만 권장
@@ -188,18 +188,18 @@ pi --model lmstudio/google/gemma-4-e4b
 
 이번 핸즈온의 기준은 아래입니다.
 
-- 참가자 노트북에서 Gemma 4를 미리 다운로드
+- 각자 노트북에서 Gemma 4를 미리 다운로드
 - LM Studio, Ollama, llama.cpp 같은 로컬 실행 경로 사용
 - 현장 인터넷이 불안정해도 기본 실습 진행 가능
 
 `gemini-cli`는 공식 문서상 Gemini, Google 계정, Gemini API key, Vertex AI 중심의 사용 흐름이 먼저 나옵니다.
-로컬 Gemma 4를 LM Studio 또는 Ollama의 OpenAI 호환 로컬 API 주소로 붙이는 경로는 이번 사전 준비의 기본 경로로 잡기 어렵습니다.
+로컬 Gemma 4를 LM Studio 또는 Ollama의 OpenAI 호환 로컬 API 주소로 붙이는 방식은 이번 사전 준비의 기본 방식으로 잡기 어렵습니다.
 
 따라서 이번 핸즈온에서는:
 
 - 기본 고급 code agent: `OpenCode`
 - 더 가벼운 대안: `pi`
-- Gemini 중심 워크플로: 별도 실험 경로
+- Gemini 중심 워크플로: 별도 실험 항목
 
 로 구분합니다.
 
@@ -210,7 +210,7 @@ pi --model lmstudio/google/gemma-4-e4b
 이유는 단순합니다.
 
 - 공개 공식 자료는 personal Gmail account와 preview 사용 흐름을 전제로 설명합니다.
-- 설치, 에이전트 사용, rules/workflows, 보안 설정은 확인할 수 있지만, LM Studio나 localhost의 OpenAI 호환 로컬 API 주소에 로컬 Gemma 4를 연결하는 안정적인 기본 경로는 확인하기 어렵습니다.
+- 설치, 에이전트 사용, rules/workflows, 보안 설정은 확인할 수 있지만, LM Studio나 localhost의 OpenAI 호환 로컬 API 주소에 로컬 Gemma 4를 연결하는 안정적인 기본 방식은 확인하기 어렵습니다.
 - 따라서 이번 핸즈온의 핵심 조건인 **로컬 Gemma 4 + 사전 다운로드 + 오프라인 가능 실습**과는 맞지 않습니다.
 
 Antigravity는 hosted model 중심 agent IDE를 써 보고 싶은 별도 실험 주제로 보면 됩니다.

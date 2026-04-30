@@ -69,7 +69,7 @@ EVENT_NAME = "Build with AI Seoul 2026"
 TRACK = "Hands-On A"
 PRESENTER = "박제창"
 DURATION = "13:30 ~ 14:30 (60분)"
-CHECK_DATE = "2026-04-21"
+CHECK_DATE = "2026-05-01"
 
 DOC_FILES = [
     ROOT / "docs/01-hardware-and-model-selection.md",
@@ -87,6 +87,7 @@ DOC_FILES = [
     ROOT / "docs/13-hermes-agent-setup.md",
     ROOT / "docs/14-gemma4-architecture-deep-dive.md",
     ROOT / "docs/15-troubleshooting-and-final-check.md",
+    ROOT / "docs/16-gemini-cli-gemma-routing-prep.md",
 ]
 
 
@@ -732,15 +733,15 @@ def prep_summary_page(styles: StyleSheet1) -> list:
         Paragraph("설치해야 하는 소프트웨어와 LLM", styles["Section"]),
         data_table(
             [
-                ["참가자 유형", "설치 소프트웨어", "미리 받을 LLM", "완료 기준"],
+                ["내 상황", "설치 소프트웨어", "미리 받을 LLM", "완료 기준"],
                 [
-                    "대부분의 참가자",
+                    "처음 준비하는 경우",
                     "LM Studio",
                     "Gemma 4 E4B 권장, 8GB는 E2B",
                     "앱 실행, 모델 다운로드, Chat 1회 성공",
                 ],
                 [
-                    "CLI/API도 필요한 참가자",
+                    "CLI/API도 필요한 경우",
                     "LM Studio + Ollama",
                     "`gemma4:e2b` 또는 `gemma4:e4b`",
                     "`ollama run` 1회 성공",
@@ -756,6 +757,12 @@ def prep_summary_page(styles: StyleSheet1) -> list:
                     "LM Studio 또는 llama.cpp + OpenCode/Hermes",
                     "32GB+는 26B A4B, 36GB+는 31B 가능",
                     "local endpoint와 에이전트 연결 확인",
+                ],
+                [
+                    "Gemini CLI Gemma 실험 기능 확인",
+                    "Gemini CLI",
+                    "Preview는 Gemma 4 모델 선택, setup은 Gemma 3 라우터",
+                    "`gemini --model gemma-4-26b-a4b-it`, `gemini gemma setup`",
                 ],
             ],
             styles,
@@ -805,14 +812,14 @@ def build_story(styles: StyleSheet1) -> list:
                     ["행사", EVENT_NAME],
                     ["트랙", TRACK],
                     ["진행 시간", DURATION],
-                    ["수록 범위", "docs/01-15 전체 문서 원문"],
+                    ["수록 범위", "docs/01-16 전체 문서 원문"],
                     ["기준 확인일", CHECK_DATE],
                 ],
                 styles,
             ),
             Spacer(1, 14 * mm),
             Paragraph(
-                "이 PDF는 저장소의 01-15번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
+                "이 PDF는 저장소의 01-16번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
                 styles["CoverMeta"],
             ),
             Spacer(1, 2 * mm),

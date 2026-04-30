@@ -1,4 +1,4 @@
-# Windows 참가자 빠른 준비 가이드
+# Windows 빠른 준비 가이드
 
 [메인 안내로 돌아가기](../gemma4-local-setup-guide.md)
 
@@ -10,45 +10,45 @@
 
 ## 먼저 결론
 
-- Windows 참가자의 **기본 권장 경로는 LM Studio**입니다.
+- Windows에서는 **LM Studio부터 준비하는 것이 가장 무난합니다.**
 - CLI/API도 같이 써 보고 싶으면 **Ollama**를 추가로 설치하면 됩니다.
-- `llama.cpp`는 **고급 / 선택형 경로**입니다.
-- `Hermes Agent`는 Windows 네이티브가 아니라 **WSL2 안에서만 공식 지원**이므로, 모든 참가자에게 기본으로 권하지 않습니다.
+- `llama.cpp`는 터미널 사용에 익숙한 경우에만 추가로 보면 됩니다.
+- `Hermes Agent`는 Windows 네이티브가 아니라 **WSL2 안에서만 공식 지원**이므로, 처음 준비할 때는 뒤로 미뤄도 됩니다.
 
 즉 가장 현실적인 준비 순서는 아래입니다.
 
-1. **기본 참가자**: `LM Studio`
-2. **CLI까지 써 보고 싶은 참가자**: `LM Studio + Ollama`
-3. **고급 참가자**: `LM Studio 또는 llama.cpp + WSL2 안의 Hermes`
+1. **가장 쉬운 준비**: `LM Studio`
+2. **CLI까지 써 보고 싶은 경우**: `LM Studio + Ollama`
+3. **Hermes까지 해 보고 싶은 경우**: `LM Studio 또는 llama.cpp + WSL2 안의 Hermes`
 
 ## 어떤 도구를 설치하면 되나요?
 
-### 경로 A: 가장 쉬운 기본 경로
+### 방법 A: 가장 쉬운 준비
 
 설치:
 
 - `LM Studio`
 
-이 경로가 적합한 사람:
+이런 경우에 적합합니다:
 
 - GUI가 편한 분
 - 로컬 모델을 한 번 실행해 보는 것이 우선인 분
-- 핸즈온 현장에서 가장 안정적인 경로를 원하는 분
+- 핸즈온 현장에서 가장 안정적인 방법을 원하는 분
 
-### 경로 B: 기본 + CLI/API 경로
+### 방법 B: LM Studio + CLI/API
 
 설치:
 
 - `LM Studio`
 - `Ollama`
 
-이 경로가 적합한 사람:
+이런 경우에 적합합니다:
 
 - GUI와 터미널 둘 다 써 보고 싶은 분
 - 나중에 로컬 API를 붙여 보고 싶은 분
 - 발표 도중 CLI 예시도 따라가 보고 싶은 분
 
-### 경로 C: 고급 에이전트 경로
+### 방법 C: 고급 에이전트 실습
 
 설치:
 
@@ -56,7 +56,7 @@
 - `WSL2`
 - `Hermes Agent`는 WSL2 안에 설치
 
-이 경로가 적합한 사람:
+이런 경우에 적합합니다:
 
 - `Hermes + Gemma 4` AI office 데모를 직접 해 보고 싶은 분
 - 로컬 OpenAI 호환 서버에 에이전트를 연결해 보고 싶은 분
@@ -65,10 +65,10 @@
 
 | 목표 | 추천 조합 | 비고 |
 | --- | --- | --- |
-| 가장 쉬운 참가 | `LM Studio` | 기본 권장 |
-| GUI + CLI 둘 다 | `LM Studio + Ollama` | 가장 무난한 확장 경로 |
-| 직접 서버 띄우기 | `llama.cpp` | 고급 경로 |
-| Hermes까지 실습 | `LM Studio 또는 llama.cpp + WSL2 + Hermes` | 선택형 고급 경로 |
+| 가장 쉽게 준비 | `LM Studio` | 먼저 이것부터 준비 |
+| GUI + CLI 둘 다 | `LM Studio + Ollama` | 가장 무난한 추가 준비 |
+| 직접 서버 띄우기 | `llama.cpp` | 터미널에 익숙할 때만 |
+| Hermes까지 실습 | `LM Studio 또는 llama.cpp + WSL2 + Hermes` | 시간이 충분할 때만 |
 
 ## 메모리 기준 추천
 
@@ -77,7 +77,7 @@
 | 8GB | `E2B`만 시도 | LM Studio 우선 |
 | 16GB | `E4B` | LM Studio 우선, 필요하면 Ollama 추가 |
 | 32GB | `E4B` 또는 `26B A4B` | LM Studio, Ollama, llama.cpp 선택 가능 |
-| 36GB+ | `26B A4B` 또는 `31B` | 고급 경로도 현실적 |
+| 36GB+ | `26B A4B` 또는 `31B` | Hermes나 llama.cpp도 고려 가능 |
 
 중요:
 
@@ -85,9 +85,9 @@
 - 16GB가 가장 무난한 최소 기준에 가깝습니다.
 - 발표자 데모용으로는 32GB 이상이 훨씬 여유롭습니다.
 
-## Windows 참가자가 가장 먼저 해야 할 일
+## Windows에서 가장 먼저 해야 할 일
 
-### 1. 기본 경로부터 끝내기
+### 1. 쉬운 준비부터 끝내기
 
 먼저 아래 중 **하나 이상**을 반드시 끝내세요.
 
@@ -107,7 +107,7 @@
 
 ### 3. Hermes는 나중에
 
-Windows 참가자는 `Hermes`를 가장 먼저 설치하기보다:
+Windows에서는 `Hermes`를 가장 먼저 설치하기보다:
 
 1. 모델이 실제로 한 번 도는지 먼저 확인
 2. 그다음 필요하면 WSL2 + Hermes로 확장
@@ -121,7 +121,7 @@ Windows 참가자는 `Hermes`를 가장 먼저 설치하기보다:
 - `llama.cpp`: 필요 없음
 - `Hermes Agent`: **필요함**
 
-즉 Windows 참가자에게 WSL2는 **Hermes를 쓸 때만 필수**라고 이해하면 됩니다.
+즉 Windows에서 WSL2는 **Hermes를 쓸 때만 필수**라고 이해하면 됩니다.
 
 WSL2 설치는 PowerShell 관리자 권한으로 아래처럼 시작하면 됩니다.
 
@@ -168,18 +168,18 @@ WSL2:
 
 ## 설치 우선순위
 
-### 기본 참가자
+### 기본 준비
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
 2. [트러블슈팅 / 최종 체크 / 참고 링크](./15-troubleshooting-and-final-check.md)
 
-### CLI도 해 보고 싶은 참가자
+### CLI도 해 보고 싶은 경우
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
 2. [Ollama 설치 가이드](./06-ollama-setup.md)
 3. [트러블슈팅 / 최종 체크 / 참고 링크](./15-troubleshooting-and-final-check.md)
 
-### Hermes까지 해 보고 싶은 참가자
+### Hermes까지 해 보고 싶은 경우
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md) 또는 [llama.cpp 설치 가이드](./07-llamacpp-setup.md)
 2. PowerShell 관리자 권한으로 WSL2 준비
@@ -206,28 +206,28 @@ wsl -d Ubuntu
 
 ## 행사 전 최종 체크리스트
 
-아래 중 자신이 선택한 경로에 맞는 항목만 확인하면 됩니다.
+아래 중 자신이 선택한 준비 방식에 맞는 항목만 확인하면 됩니다.
 
-### LM Studio 경로
+### LM Studio 준비
 
 - 앱 설치 완료
 - Gemma 4 다운로드 완료
 - Chat 탭에서 1회 응답 생성 성공
 
-### Ollama 경로
+### Ollama 준비
 
 - `ollama --version`
 - `ollama pull gemma4:e2b` 또는 `ollama pull gemma4:e4b`
 - `ollama run gemma4:e2b` 또는 `ollama run gemma4:e4b`
 
-### llama.cpp 경로
+### llama.cpp 준비
 
 - `llama-cli --version`
 - `llama-server --version`
 - `llama-server` 또는 `llama-cli`로 1회 실행 성공
 - 필요하면 `Invoke-RestMethod http://127.0.0.1:8080/v1/models` 확인
 
-### Hermes 경로
+### Hermes 준비
 
 - WSL2 설치 완료
 - PowerShell에서 `wsl --status` 확인
@@ -237,6 +237,6 @@ wsl -d Ubuntu
 
 ## 권장 한 줄 요약
 
-- 대부분의 Windows 참가자: **LM Studio만 준비해도 충분**
+- 대부분의 경우: **LM Studio만 준비해도 충분**
 - 조금 더 해 보고 싶으면: **Ollama 추가**
-- AI office / agents까지 직접 하려면: **WSL2 + Hermes는 선택형 고급 경로**
+- AI office / agents까지 직접 하려면: **WSL2 + Hermes까지 추가 준비**

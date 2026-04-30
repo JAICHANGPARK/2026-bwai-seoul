@@ -15,12 +15,13 @@
 - 메모리로 어떤 모델을 골라야 하는지는 [메모리 기준으로 Gemma 4 모델 고르는 방법](./03-memory-based-model-selection.md) 문서를 확인해 주세요.
 - OpenCode를 개발자 에이전트처럼 연결해 보고 싶다면 [OpenCode 설치 및 LM Studio 연동 가이드](./10-opencode-lmstudio-developer-agent.md) 문서를 확인해 주세요.
 - Hermes Agent가 정확히 어떤 도구인지 먼저 이해하고 싶다면 [Hermes Agent란 무엇인가](./12-hermes-agent-overview.md) 문서를 확인해 주세요.
+- Gemini CLI에서 Gemma 4 preview 모델 선택이나 Gemma 라우팅 실험 기능을 미리 확인해 보고 싶다면 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./16-gemini-cli-gemma-routing-prep.md) 문서를 확인해 주세요.
 
 ## Ollama와 LM Studio 비교
 
 | 항목 | Ollama | LM Studio |
 | --- | --- | --- |
-| 추천 대상 | 개발자, CLI/API 선호 사용자 | 개발자, 비개발자 모두 / GUI 선호 사용자 |
+| 사용하기 좋은 경우 | 개발자, CLI/API 선호 | 개발자, 비개발자 모두 / GUI 선호 |
 | 설치 방식 | 앱 + CLI 중심 | 데스크톱 앱 중심 |
 | 모델 받기 | `ollama pull` 또는 `ollama run` | Discover 탭에서 검색/다운로드 |
 | 사용 방식 | 터미널, 로컬 API, 자동화에 강함 | 채팅 UI, 모델 관리 UI, 로컬 서버에 강함 |
@@ -82,7 +83,7 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 
 ## 어떤 모델을 미리 받아두면 좋을까?
 
-행사 표준 권장안은 아래와 같습니다.
+행사 전에 미리 받아 둘 모델은 아래처럼 고르면 됩니다.
 
 중요:
 
@@ -111,7 +112,7 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 - 추가로 CLI/API 실습도 원하면 Ollama까지 설치
 - 공통 필수 조건: 행사 전 모델 다운로드와 실행 테스트까지 완료
 
-### 권장안
+### 메모리별 추천
 
 - 8GB: 가능하면 다른 장비 권장. 꼭 가져오면 **E2B만 시도, 속도 저하 감안**
 - 16GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-e4b`
@@ -124,6 +125,23 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 - 8GB Chromebook + 큰 모델
 - Intel Mac + LM Studio
 - 행사 당일 현장에서 처음 모델 다운로드
+
+### Gemini CLI Gemma 기능은 별도 선택 경로
+
+Gemini CLI의 Gemma 기능은 현재 두 가지로 나눠서 봐야 합니다.
+
+- `v0.41.0-preview.0` 이상 preview: `experimental.gemma`를 켜면 Gemma 4 모델 선택을 실험적으로 확인할 수 있습니다.
+- `gemini gemma` / `gemini gemma setup`: LiteRT-LM으로 Gemma 3 기반 `gemma3-1b-gpu-custom`을 내려받아 로컬 라우팅 판단에 씁니다.
+
+즉, preview에서 Gemma 4 모델을 선택할 수 있어도 `gemini gemma setup`이 Gemma 4 모델을 로컬로 내려받는다는 뜻은 아닙니다.
+또한 `/model` 목록에 Gemma 4가 보여도 실제 호출 권한은 계정, API 키, 조직의 Preview Release Channel 설정에 따라 막힐 수 있습니다.
+
+따라서 행사 기본 준비는 여전히 아래 중 하나를 먼저 끝내세요.
+
+- LM Studio에서 Gemma 4 모델 다운로드 및 채팅 1회 성공
+- Ollama에서 `gemma4:e2b` 또는 `gemma4:e4b` 실행 성공
+
+Gemini CLI를 이미 쓰고 있거나 CLI 실험 기능까지 확인하고 싶은 경우에만 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./16-gemini-cli-gemma-routing-prep.md)를 추가로 보면 됩니다.
 
 ## Ollama 태그 관련 주의
 

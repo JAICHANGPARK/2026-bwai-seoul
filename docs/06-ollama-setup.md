@@ -5,12 +5,12 @@
 ## 이 문서는 언제 보면 되나요?
 
 - LM Studio 외에 CLI/API 방식도 함께 준비하고 싶을 때
-- ChromeOS 참가자일 때
+- ChromeOS를 쓸 때
 - Intel Mac처럼 LM Studio 데스크톱 앱이 맞지 않는 환경일 때
 
 ## Windows
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - Windows 10 22H2 이상
 - NVIDIA 또는 AMD GPU가 있으면 더 좋음
@@ -71,7 +71,7 @@ ollama run gemma4:e2b
 
 ## macOS
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - macOS 14 Sonoma 이상
 - Apple Silicon 권장
@@ -114,7 +114,7 @@ ollama run gemma4:e2b
 
 ## Linux (Ubuntu 등)
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - 일반 Linux 노트북 또는 데스크톱
 - NVIDIA/AMD GPU가 있으면 더 유리

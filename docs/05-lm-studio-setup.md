@@ -17,7 +17,7 @@
 
 ## Windows
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - Windows x64 또는 ARM
 - RAM 16GB 이상 권장
@@ -55,7 +55,7 @@ lms --help
 
 ## macOS
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - Apple Silicon (M1/M2/M3/M4)
 - macOS 13.4 이상
@@ -90,7 +90,7 @@ lms --help
 
 ## Linux (Ubuntu)
 
-권장 대상:
+이런 환경에 맞습니다:
 
 - Ubuntu 20.04 이상
 - x64 또는 ARM64
@@ -134,7 +134,7 @@ ChromeOS에서는 LM Studio를 권장하지 않습니다.
 
 즉, ChromeOS에서 LM Studio는 공식 권장 경로 밖이며, 행사 당일 설치 이슈가 생길 가능성이 있습니다.
 
-ChromeOS 참가자 권장안:
+ChromeOS를 쓰는 경우:
 
 1. Ollama로 준비
 2. 가능하면 Windows 또는 macOS 노트북 추가 준비

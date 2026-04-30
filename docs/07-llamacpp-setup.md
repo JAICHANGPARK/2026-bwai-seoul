@@ -4,9 +4,9 @@
 
 ## 이 문서는 누구를 위한 문서인가요?
 
-- `GGUF + llama.cpp`로 Gemma 4를 로컬에서 돌려 보고 싶은 참가자
-- `llama-server`를 띄워 `Hermes`, `OpenCode`, `Pi` 같은 에이전트와 연결하고 싶은 참가자
-- `LM Studio` 대신 CLI 기반 local server 경로를 선호하는 참가자
+- `GGUF + llama.cpp`로 Gemma 4를 로컬에서 돌려 보고 싶은 분
+- `llama-server`를 띄워 `Hermes`, `OpenCode`, `Pi` 같은 에이전트와 연결하고 싶은 분
+- `LM Studio` 대신 CLI 기반 local server 방식을 선호하는 분
 
 ## 먼저 결론
 
@@ -23,7 +23,7 @@
 - `llama-server`로 **OpenAI 호환 API 서버**를 띄울 수 있습니다.
 - `Hermes` 같은 에이전트가 로컬 서버 주소에 붙기 쉽습니다.
 
-## 권장 설치 경로
+## 권장 설치 방법
 
 ### macOS / Linux
 
@@ -55,7 +55,7 @@ llama-server --version
 
 모델 파일 경로에 공백이 있다면 큰따옴표로 감싸 주세요.
 
-## 대안 설치 경로
+## 다른 설치 방법
 
 공식 문서에는 아래도 있습니다.
 
@@ -63,7 +63,7 @@ llama-server --version
 - Docker
 - 소스 빌드
 
-핸즈온 참가자는 일단 **패키지 매니저 설치**를 우선 사용하세요.
+이번 핸즈온에서는 일단 **패키지 매니저 설치**를 우선 사용하세요.
 
 ## 소스 빌드는 언제 필요한가요?
 
@@ -80,7 +80,7 @@ cmake -B build
 cmake --build build --config Release
 ```
 
-이번 사전 준비 가이드에서는 소스 빌드를 기본 경로로 권장하지 않습니다.
+이번 사전 준비 가이드에서는 소스 빌드를 기본 설치 방법으로 권장하지 않습니다.
 
 ## 가장 간단한 실행 예시
 
@@ -205,11 +205,11 @@ Invoke-RestMethod http://127.0.0.1:8080/v1/models
 - `GGUF` 경로를 직접 관리해야 할 수 있습니다.
 - Windows에서는 `llama.cpp` 자체는 설치 가능하지만, 그 위에 `Hermes`를 붙일 때는 `Hermes`가 WSL2 안에서 돌아가야 한다는 점을 별도로 이해해야 합니다.
 
-## 누구에게 권하나요?
+## 이런 경우에 해 보세요
 
-- CLI에 익숙한 참가자
-- LM Studio보다 더 직접적인 local server 구성을 원하는 참가자
-- `Hermes + Gemma 4`를 직접 묶어 보고 싶은 참가자
+- CLI에 익숙한 경우
+- LM Studio보다 더 직접적인 local server 구성을 원하는 경우
+- `Hermes + Gemma 4`를 직접 묶어 보고 싶은 경우
 
 ## 공식 참고 링크
 

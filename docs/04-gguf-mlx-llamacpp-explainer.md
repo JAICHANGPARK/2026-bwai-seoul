@@ -4,9 +4,9 @@
 
 ## 이 문서는 누구를 위한 문서인가요?
 
-- `GGUF`, `MLX`, `llama.cpp`가 무엇인지 헷갈리는 참가자
-- LM Studio에서 왜 어떤 모델은 `GGUF`, 어떤 모델은 `MLX`로 보이는지 알고 싶은 참가자
-- Apple Silicon Mac과 Windows/Linux에서 어떤 실행 경로가 다른지 이해하고 싶은 참가자
+- `GGUF`, `MLX`, `llama.cpp`가 무엇인지 헷갈리는 분
+- LM Studio에서 왜 어떤 모델은 `GGUF`, 어떤 모델은 `MLX`로 보이는지 알고 싶은 분
+- Apple Silicon Mac과 Windows/Linux에서 실행 방식이 어떻게 다른지 이해하고 싶은 분
 
 ## 먼저 아주 짧게 정리
 
@@ -51,7 +51,7 @@ GGUF 공식 문서 기준:
 
 이라고 보면 됩니다.
 
-참가자 관점에서 중요한 점:
+실습에서 중요한 점:
 
 - Windows/Linux에서 로컬 LLM을 돌릴 때 가장 흔히 보는 포맷 중 하나가 `GGUF`입니다.
 - LM Studio, Ollama, llama.cpp 같은 도구와 함께 자주 등장합니다.
@@ -71,7 +71,7 @@ llama.cpp 공식 README 기준:
 - `llama.cpp`는 **Llama 모델만 실행하는 도구가 아닙니다.**
 - 실제로 Gemma, Qwen, Mistral 등 `llama.cpp` 호환 모델도 많이 실행합니다.
 
-참가자 관점에서 쉽게 말하면:
+쉽게 말하면:
 
 - `GGUF 파일을 실제로 돌려주는 대표적인 실행 엔진`
 
@@ -101,7 +101,7 @@ Apple `mlx-lm` 공식 README 기준:
 - MLX 형식으로 변환하고
 - LoRA/QLoRA fine-tuning도 할 수 있습니다.
 
-즉, 참가자 관점에서는:
+즉, 실습에서는:
 
 - `MLX`는 Apple Silicon 전용 경로
 - `MLX 모델`은 Apple Silicon에서 잘 맞는 실행 방식
@@ -115,7 +115,7 @@ Apple `mlx-lm` 공식 README 기준:
 | 성격 | 로컬 추론용 모델 파일 포맷 | Apple Silicon용 프레임워크/실행 생태계 |
 | 대표 실행 경로 | `llama.cpp`, LM Studio, Ollama | MLX, `mlx-lm`, LM Studio(Apple Silicon) |
 | 운영체제 | macOS, Windows, Linux 전반 | 사실상 Apple Silicon 중심 |
-| 참가자 관점 | 가장 흔한 범용 로컬 포맷 | Mac Apple Silicon에서만 고려할 선택지 |
+| 실습 기준 | 가장 흔한 범용 로컬 포맷 | Mac Apple Silicon에서만 고려할 선택지 |
 
 핵심:
 
@@ -136,7 +136,7 @@ LM Studio 공식 문서 기준:
 
 보일 수 있습니다.
 
-## 참가자 입장에서는 무엇을 선택하면 되나요?
+## 무엇을 선택하면 되나요?
 
 이번 핸즈온에서는:
 
@@ -152,7 +152,7 @@ LM Studio 공식 문서 기준:
 
 이유는 단순합니다.
 
-- 참가자 환경이 macOS만 있는 것이 아니고
+- 실습 환경이 macOS만 있는 것이 아니고
 - Windows/Linux/ChromeOS까지 같이 봐야 하며
 - LM Studio, Ollama, llama.cpp 같은 로컬 도구에서 범용적으로 이해하기 쉬운 축이 `GGUF`이기 때문입니다.
 
@@ -165,7 +165,7 @@ LM Studio 공식 문서 기준:
 
 ## llama.cpp는 행사에서 왜 알아두면 좋나요?
 
-참가자가 꼭 직접 설치할 필요는 없지만, 아래를 이해하는 데 도움이 됩니다.
+꼭 직접 설치할 필요는 없지만, 아래를 이해하는 데 도움이 됩니다.
 
 - 왜 GGUF 모델이 여러 로컬 도구에서 공통으로 보이는지
 - 왜 `Q4`, `Q5`, `Q8` 같은 양자화 모델이 자주 나오는지
@@ -183,7 +183,7 @@ LM Studio 공식 문서 기준:
 
 - 개념이 어렵다면 `GGUF 기본`으로 이해해도 충분합니다.
 - Apple Silicon Mac 사용자만 `MLX는 선택 사항`으로 추가 이해하면 됩니다.
-- `llama.cpp`는 참가자가 직접 만지는 도구가 아니더라도, LM Studio/GGUF를 이해하는 배경지식으로 알면 좋습니다.
+- `llama.cpp`는 직접 만지는 도구가 아니더라도, LM Studio/GGUF를 이해하는 배경지식으로 알면 좋습니다.
 
 ## 같이 보면 좋은 문서
 

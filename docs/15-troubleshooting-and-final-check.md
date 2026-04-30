@@ -37,6 +37,19 @@
 - Windows에서 `hermes`가 안 잡히면 먼저 PowerShell에서 `wsl --status`, `wsl -l -v`를 확인하고, WSL2 Ubuntu 셸 안에서 다시 점검
 - 로컬 모델 연결 실패 시 `hermes model`에서 base URL과 model ID를 다시 확인
 
+### Gemini CLI Gemma 4 preview / Gemma 라우팅
+
+- Gemma 4 모델 선택을 확인하려면 `gemini --version`으로 `v0.41.0-preview.0` 이상 preview인지 확인
+- `~/.gemini/settings.json` 또는 `/settings`에서 `experimental.gemma`가 켜져 있는지 확인
+- 프로젝트의 `.gemini/settings.json`이 사용자 설정을 덮어쓸 수 있으므로, 현재 프로젝트 설정도 확인
+- `/model` 목록에 Gemma 4가 보여도 실제 호출 권한이 있다는 뜻은 아님
+- `gemini --model gemma-4-26b-a4b-it`가 `You don't have access` 또는 `Preview Release Channel` 관련 메시지로 실패하면 계정/API 키/조직 관리자 설정에서 preview 모델 호출이 막힌 상태로 봄
+- `gemini gemma` 명령이 없으면 `gemini --version`으로 v0.40.0 이상인지 확인
+- `/gemma`에서 준비되지 않았다고 나오면 `/settings`에서 Gemma experimental 항목을 켠 뒤 Gemini CLI를 재시작
+- `gemini gemma setup`에서 `gemma3-1b-gpu-custom`을 받는 것은 현재 정상 동작으로 보고, Gemma 4 모델 선택 기능과 구분
+- 다운로드가 오래 걸리면 행사장 네트워크에서 진행하지 말고 행사 전에 미리 완료
+- macOS에서 LiteRT-LM 실행이 막히면 Privacy & Security에서 허용하거나 공식 문서의 quarantine 해제 안내 확인
+
 ### ChromeOS
 
 - Linux 개발 환경이 꺼져 있지 않은지 확인
@@ -116,9 +129,59 @@ hermes doctor
 
 그 다음 `hermes` 또는 `hermes --tui`를 실행해 짧은 질문이 응답되는지 확인하세요.
 
-로컬 모델을 붙여 볼 참가자는 `hermes model`에서 로컬 서버 주소 등록까지 확인하세요.
+로컬 모델을 붙여 볼 경우에는 `hermes model`에서 로컬 서버 주소 등록까지 확인하세요.
 
 Windows 사용자는 위 명령을 PowerShell이 아니라 **WSL2 Ubuntu 셸 안에서** 실행해야 합니다.
+
+### Gemini CLI Gemma 4 preview 준비 완료 기준
+
+macOS / Linux / Windows:
+
+```bash
+gemini --version
+gemini --model gemma-4-26b-a4b-it
+```
+
+Gemini CLI 세션 안에서:
+
+```text
+/model
+```
+
+아래가 확인되면 Gemma 4 preview 준비 완료입니다.
+
+- Gemini CLI 버전이 `v0.41.0-preview.0` 이상 preview
+- `experimental.gemma` 설정 활성화
+- 사용자 설정과 프로젝트 설정 중 어디에서 설정이 적용되는지 확인
+- `/model`에서 Gemma 4 모델 선택 가능 여부 확인
+- `gemma-4-26b-a4b-it` 또는 `gemma-4-31b-it`로 짧은 일반 질문 응답 성공
+
+목록에만 보이고 `You don't have access` 또는 `Preview Release Channel` 관련 오류가 나오면 Gemma 4 preview 호출 준비는 미완료입니다.
+
+### Gemini CLI Gemma 라우팅 준비 완료 기준
+
+macOS / Linux / Windows:
+
+```bash
+gemini --version
+gemini gemma setup
+gemini gemma status
+```
+
+Gemini CLI 세션 안에서:
+
+```text
+/gemma
+```
+
+아래가 확인되면 준비 완료입니다.
+
+- Gemini CLI 버전이 `v0.40.0` 이상
+- `experimental.gemma` 설정 활성화
+- `gemma3-1b-gpu-custom` 다운로드 완료
+- `gemini gemma status` 상태 확인 성공
+- `/gemma` 상태 확인 성공
+- 짧은 일반 질문에 Gemini CLI가 응답
 
 ## 공식 참고 링크
 
@@ -160,6 +223,20 @@ Windows 사용자는 위 명령을 PowerShell이 아니라 **WSL2 Ubuntu 셸 안
 - [Hermes CLI Commands Reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands/)
 - [Hermes FAQ](https://hermes-agent.nousresearch.com/docs/reference/faq/)
 - [Hermes Docs Home](https://hermes-agent.nousresearch.com/docs/)
+
+### Gemini CLI
+
+- [Gemini CLI GitHub](https://github.com/google-gemini/gemini-cli)
+- [Gemini CLI v0.41.0-preview.0 release](https://github.com/google-gemini/gemini-cli/releases/tag/v0.41.0-preview.0)
+- [Gemma 4 support PR #25604](https://github.com/google-gemini/gemini-cli/pull/25604)
+- [Gemini CLI v0.40.0 discussion](https://github.com/google-gemini/gemini-cli/discussions/26216)
+- [Gemini CLI settings reference](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/settings.md)
+- [Gemini CLI model selection reference](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/model.md)
+- [Gemini CLI CLI reference](https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/cli-reference.md)
+- [Gemini CLI Model Routing](https://geminicli.com/docs/cli/model-routing/)
+- [Gemini CLI `gemini gemma` setup](https://geminicli.com/docs/core/gemma-setup/)
+- [Gemini CLI Manual Local Model Routing](https://geminicli.com/docs/core/local-model-routing/)
+- [Gemma Terms of Use](https://ai.google.dev/gemma/terms)
 
 ### Apple MLX / Community MLX
 
