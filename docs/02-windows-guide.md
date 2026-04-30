@@ -171,13 +171,13 @@ WSL2:
 ### 기본 준비
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
-2. [트러블슈팅 / 최종 체크 / 참고 링크](./15-troubleshooting-and-final-check.md)
+2. [트러블슈팅 / 최종 체크 / 참고 링크](./16-troubleshooting-and-final-check.md)
 
 ### CLI도 해 보고 싶은 경우
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
 2. [Ollama 설치 가이드](./06-ollama-setup.md)
-3. [트러블슈팅 / 최종 체크 / 참고 링크](./15-troubleshooting-and-final-check.md)
+3. [트러블슈팅 / 최종 체크 / 참고 링크](./16-troubleshooting-and-final-check.md)
 
 ### Hermes까지 해 보고 싶은 경우
 

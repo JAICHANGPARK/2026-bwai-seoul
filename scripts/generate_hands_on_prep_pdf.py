@@ -40,6 +40,11 @@ except Exception:  # pragma: no cover - optional for rendering checks only.
     ImageDraw = None
     ImageFont = None
 
+try:
+    from pypdf import PdfReader
+except Exception:  # pragma: no cover - optional for page count fallback only.
+    PdfReader = None
+
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT / "output" / "pdf"
@@ -86,8 +91,8 @@ DOC_FILES = [
     ROOT / "docs/12-hermes-agent-overview.md",
     ROOT / "docs/13-hermes-agent-setup.md",
     ROOT / "docs/14-gemma4-architecture-deep-dive.md",
-    ROOT / "docs/15-troubleshooting-and-final-check.md",
-    ROOT / "docs/16-gemini-cli-gemma-routing-prep.md",
+    ROOT / "docs/15-gemini-cli-gemma-routing-prep.md",
+    ROOT / "docs/16-troubleshooting-and-final-check.md",
 ]
 
 
@@ -880,9 +885,11 @@ def build_pdf(styles: StyleSheet1) -> int:
     )
     story = build_story(styles)
     doc.build(story, onFirstPage=cover_background, onLaterPages=later_pages)
-    if fitz is None:
-        return 0
-    return fitz.open(PDF_PATH).page_count
+    if fitz is not None:
+        return fitz.open(PDF_PATH).page_count
+    if PdfReader is not None:
+        return len(PdfReader(PDF_PATH).pages)
+    return 0
 
 
 def _fit_text(draw, text: str, width: int, font_path: str | None) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:

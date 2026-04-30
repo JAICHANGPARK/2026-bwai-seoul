@@ -15,7 +15,7 @@
 - 메모리로 어떤 모델을 골라야 하는지는 [메모리 기준으로 Gemma 4 모델 고르는 방법](./03-memory-based-model-selection.md) 문서를 확인해 주세요.
 - OpenCode를 개발자 에이전트처럼 연결해 보고 싶다면 [OpenCode 설치 및 LM Studio 연동 가이드](./10-opencode-lmstudio-developer-agent.md) 문서를 확인해 주세요.
 - Hermes Agent가 정확히 어떤 도구인지 먼저 이해하고 싶다면 [Hermes Agent란 무엇인가](./12-hermes-agent-overview.md) 문서를 확인해 주세요.
-- Gemini CLI에서 Gemma 4 preview 모델 선택이나 Gemma 라우팅 실험 기능을 미리 확인해 보고 싶다면 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./16-gemini-cli-gemma-routing-prep.md) 문서를 확인해 주세요.
+- Gemini CLI에서 Gemma 4 preview 모델 선택이나 Gemma 라우팅 실험 기능을 미리 확인해 보고 싶다면 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./15-gemini-cli-gemma-routing-prep.md) 문서를 확인해 주세요.
 
 ## Ollama와 LM Studio 비교
 
@@ -141,7 +141,7 @@ Gemini CLI의 Gemma 기능은 현재 두 가지로 나눠서 봐야 합니다.
 - LM Studio에서 Gemma 4 모델 다운로드 및 채팅 1회 성공
 - Ollama에서 `gemma4:e2b` 또는 `gemma4:e4b` 실행 성공
 
-Gemini CLI를 이미 쓰고 있거나 CLI 실험 기능까지 확인하고 싶은 경우에만 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./16-gemini-cli-gemma-routing-prep.md)를 추가로 보면 됩니다.
+Gemini CLI를 이미 쓰고 있거나 CLI 실험 기능까지 확인하고 싶은 경우에만 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./15-gemini-cli-gemma-routing-prep.md)를 추가로 보면 됩니다.
 
 ## Ollama 태그 관련 주의
 

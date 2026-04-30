@@ -77,8 +77,8 @@ Build with AI Seoul 2026 with Google DeepMind
 12. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 13. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
-15. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
-16. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/16-gemini-cli-gemma-routing-prep.md)
+15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
+16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ## 어떤 문서를 먼저 보면 되나요?
 
@@ -87,21 +87,21 @@ Build with AI Seoul 2026 with Google DeepMind
 1. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 2. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### Windows를 쓰는 경우
 
 1. [Windows 빠른 준비 가이드](./docs/02-windows-guide.md)
 2. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### ChromeOS를 쓰는 경우
 
 1. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 2. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
 3. [Ollama 설치 가이드](./docs/06-ollama-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### Apple Silicon Mac을 쓰는 경우
 
@@ -110,7 +110,7 @@ Build with AI Seoul 2026 with Google DeepMind
 3. [GGUF, MLX, llama.cpp 개념 설명](./docs/04-gguf-mlx-llamacpp-explainer.md)
 4. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 5. [Apple Silicon + MLX 안내](./docs/08-apple-silicon-mlx.md)
-6. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+6. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### 코딩 에이전트 경험이 있는 경우
 
@@ -126,22 +126,22 @@ Build with AI Seoul 2026 with Google DeepMind
 
 ### Gemini CLI에서 Gemma 4 preview 또는 Gemma 라우팅을 확인해 보고 싶은 경우
 
-1. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/16-gemini-cli-gemma-routing-prep.md)
-2. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+1. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
+2. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### Hermes를 먼저 이해하고 싶은 경우
 
 1. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 2. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
 3. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### CLI 기반 로컬 서버를 직접 띄워 보고 싶은 경우
 
 1. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
 2. [GGUF, MLX, llama.cpp 개념 설명](./docs/04-gguf-mlx-llamacpp-explainer.md)
 3. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### 모델 구조가 궁금한 경우
 

@@ -20,12 +20,12 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 
 | 내 상황 | 먼저 볼 문서 |
 | --- | --- |
-| 처음 준비하는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [15](./docs/15-troubleshooting-and-final-check.md) |
-| Windows를 쓰는 경우 | [02](./docs/02-windows-guide.md) -> [01](./docs/01-hardware-and-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [15](./docs/15-troubleshooting-and-final-check.md) |
-| ChromeOS를 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [06](./docs/06-ollama-setup.md) -> [15](./docs/15-troubleshooting-and-final-check.md) |
+| 처음 준비하는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
+| Windows를 쓰는 경우 | [02](./docs/02-windows-guide.md) -> [01](./docs/01-hardware-and-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
+| ChromeOS를 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [06](./docs/06-ollama-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
 | Apple Silicon Mac을 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [04](./docs/04-gguf-mlx-llamacpp-explainer.md) -> [05](./docs/05-lm-studio-setup.md) -> [08](./docs/08-apple-silicon-mlx.md) |
 | 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) |
-| Gemini CLI에서 Gemma 4 preview / Gemma 라우팅을 확인해 보고 싶은 경우 | [16](./docs/16-gemini-cli-gemma-routing-prep.md) |
+| Gemini CLI에서 Gemma 4 preview / Gemma 라우팅을 확인해 보고 싶은 경우 | [15](./docs/15-gemini-cli-gemma-routing-prep.md) |
 
 ## 먼저 기억할 것
 
@@ -69,8 +69,8 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 12. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 13. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
-15. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/15-troubleshooting-and-final-check.md)
-16. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/16-gemini-cli-gemma-routing-prep.md)
+15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
+16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ## 저장소 구조
 

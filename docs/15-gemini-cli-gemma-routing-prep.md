@@ -8,6 +8,7 @@
 
 - 이미 `Gemini CLI`를 쓰고 있거나, 행사 전에 추가로 설치해 보고 싶은 분
 - Gemini CLI preview에서 `Gemma 4` 모델 선택을 확인해 보고 싶은 분
+- Gemma 4 모델이 선택은 되지만 실제 응답에서 막힐 수 있다는 점을 미리 알고 싶은 분
 - `gemini gemma setup`이 실제로 무엇을 내려받는지 헷갈리는 분
 - `LM Studio`나 `Ollama` 기본 준비와 별개로, Gemini CLI의 Gemma 실험 기능을 미리 확인하고 싶은 분
 
@@ -48,7 +49,26 @@ Gemini CLI의 Gemma 관련 기능은 현재 두 갈래로 나눠서 이해해야
 - 하지만 `gemini gemma setup`에서 내려받는 모델은 여전히 `gemma3-1b-gpu-custom`으로 보입니다.
 - 따라서 `Gemma 4 모델 선택 지원`과 `Gemma 3 로컬 라우터 설치`는 같은 기능이 아닙니다.
 - Gemini CLI preview에서 Gemma 4 모델을 선택할 수 있어도, 그것이 Gemma 4를 LiteRT-LM으로 로컬 다운로드해 실행한다는 뜻은 아닙니다.
+- `/model` 목록에서 Gemma 4를 고를 수 있고 선택 상태로 보이더라도, 실제 메시지를 보내면 권한 오류로 응답이 막힐 수 있습니다.
 - 행사 기본 사전 준비는 여전히 `LM Studio` 또는 `Ollama`입니다.
+
+## 선택 가능과 응답 가능은 다릅니다
+
+현재 Gemini CLI preview에서는 `/model` 목록에 `gemma-4-26b-a4b-it`, `gemma-4-31b-it` 같은 Gemma 4 모델이 보이고, 선택까지는 정상적으로 되는 경우가 있습니다.
+
+하지만 이것만으로 실제 실행 권한이 확인된 것은 아닙니다.  
+모델을 선택한 뒤 첫 메시지를 보냈을 때 아래처럼 접근 권한 오류가 날 수 있습니다.
+
+```text
+It seems like you don't have access to gemma-4-26b-a4b-it.
+Your admin might have disabled the access. Contact them to enable the Preview Release Channel.
+```
+
+이 경우는 "모델 선택 UI 확인"까지만 성공한 상태입니다.  
+Gemma 4 preview를 실제로 쓸 수 있다고 보려면, 모델을 선택한 뒤 짧은 메시지까지 응답에 성공해야 합니다.
+
+행사 준비 관점에서는 이 상태를 실패로 오래 붙잡지 마세요.  
+Gemini CLI preview 권한 문제는 현장에서 바로 해결하기 어려울 수 있으므로, Gemma 4 로컬 실행은 `LM Studio` 또는 `Ollama`로 먼저 준비하는 편이 안전합니다.
 
 ## 공식 문서 기준으로 알아둘 점
 
