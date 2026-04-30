@@ -42,7 +42,7 @@ Build with AI Seoul 2026 with Google DeepMind
 ## 먼저 결론
 
 - 가능하면 **Ollama와 LM Studio를 둘 다 설치**해 주세요.
-- 하나만 설치한다면 **기본 권장 경로는 LM Studio**입니다.
+- 하나만 설치한다면 **LM Studio를 먼저 설치하세요**.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 경우에만 추가로 준비하세요.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델 선택이 가능하지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 이해해 주세요.
 - **ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
@@ -58,6 +58,17 @@ Build with AI Seoul 2026 with Google DeepMind
 - 16GB 노트북: **E4B**
 - 32GB 노트북: **E4B 또는 26B A4B**
 - 36GB 노트북: **26B A4B 또는 31B**
+
+모델 이름에 붙은 `B`는 `Billion`, 즉 **10억 개**를 뜻합니다.  
+`26B`는 대략 260억 개 파라미터를 가진 모델, `31B`는 대략 310억 개 파라미터를 가진 모델이라는 뜻입니다.
+
+여기서 파라미터는 모델이 학습하면서 갖게 된 숫자 값입니다.  
+사람에게 비유하면 "기억과 계산 방식이 저장된 내부 숫자"에 가깝습니다. 숫자가 많을수록 더 복잡한 패턴을 담을 수 있지만, 보통 더 많은 메모리와 계산이 필요합니다.
+
+주의할 점은 `B`가 `GB`가 아니라는 것입니다.  
+`26B`는 파일 크기가 26GB라는 뜻이 아닙니다. 실제 다운로드 크기와 실행 중 메모리 사용량은 양자화 방식, 실행 도구, 컨텍스트 길이에 따라 달라집니다.
+
+일반 사용자가 LM Studio나 Ollama에서 받는 로컬 실행용 모델은 보통 원본 BF16 가중치 그대로가 아니라 **4-bit, 5-bit, 8-bit 등으로 양자화된 배포본**입니다. 그래서 `26B`, `31B`라는 이름과 다운로드 크기가 1:1로 대응하지 않습니다.
 
 `26B A4B`는 26B 규모 모델이지만, 답을 만들 때는 내부의 여러 "전문가" 부분 중 필요한 일부만 사용합니다. 이 방식을 `MoE`라고 부르며, `A4B`는 그때 실제로 계산되는 부분이 약 4B 규모라는 뜻입니다. 다만 전체 26B 규모의 모델 파일은 메모리에 올라가야 하므로, 4B 모델처럼 가볍게 실행된다는 뜻은 아닙니다.
 
@@ -79,6 +90,7 @@ Build with AI Seoul 2026 with Google DeepMind
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
 16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+17. [자주 묻는 질문](./docs/17-faq.md)
 
 ## 어떤 문서를 먼저 보면 되나요?
 
@@ -128,6 +140,12 @@ Build with AI Seoul 2026 with Google DeepMind
 
 1. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
 2. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+
+### 자주 묻는 질문부터 보고 싶은 경우
+
+1. [자주 묻는 질문](./docs/17-faq.md)
+2. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
+3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 
 ### Hermes를 먼저 이해하고 싶은 경우
 

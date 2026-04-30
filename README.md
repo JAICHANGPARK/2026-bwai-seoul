@@ -26,6 +26,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 | Apple Silicon Mac을 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [04](./docs/04-gguf-mlx-llamacpp-explainer.md) -> [05](./docs/05-lm-studio-setup.md) -> [08](./docs/08-apple-silicon-mlx.md) |
 | 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) |
 | Gemini CLI에서 Gemma 4 preview / Gemma 라우팅을 확인해 보고 싶은 경우 | [15](./docs/15-gemini-cli-gemma-routing-prep.md) |
+| 자주 묻는 질문을 먼저 보고 싶은 경우 | [17](./docs/17-faq.md) |
 
 ## 먼저 기억할 것
 
@@ -44,6 +45,14 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 | 16GB | `E4B` |
 | 32GB | `E4B` 또는 `26B A4B` |
 | 36GB | `26B A4B` 또는 `31B` |
+
+모델 이름의 `B`는 `Billion`, 즉 **10억 개**를 뜻합니다.  
+`26B`는 대략 260억 개 파라미터를 가진 모델이라는 뜻이고, `31B`는 대략 310억 개 파라미터를 가진 모델이라는 뜻입니다. 여기서 파라미터는 모델이 학습하면서 갖게 된 숫자 값이라고 보면 됩니다.
+
+중요한 점은 `B`가 `GB`가 아니라는 것입니다.  
+`26B`는 "파일 크기가 26GB"라는 뜻이 아니라 "모델 안에 학습된 숫자가 약 260억 개"라는 뜻입니다. 실제 다운로드 크기와 메모리 사용량은 양자화 방식, 실행 도구, 컨텍스트 길이에 따라 달라집니다.
+
+일반 사용자가 LM Studio나 Ollama에서 받는 로컬 실행용 모델은 보통 원본 BF16 가중치 그대로가 아니라 **4-bit, 5-bit, 8-bit 등으로 양자화된 배포본**입니다. 그래서 `26B`, `31B`라는 이름과 다운로드 크기가 1:1로 대응하지 않습니다.
 
 `26B A4B`는 26B 규모 모델이지만, 답을 만들 때는 내부의 여러 "전문가" 부분 중 필요한 일부만 사용합니다. 이 방식을 `MoE`라고 부르며, `A4B`는 그때 실제로 계산되는 부분이 약 4B 규모라는 뜻입니다. 단, 전체 모델 파일은 메모리에 올라가므로 4B 모델처럼 가볍지는 않습니다.
 
@@ -71,6 +80,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
 16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+17. [자주 묻는 질문](./docs/17-faq.md)
 
 ## 저장소 구조
 
@@ -89,7 +99,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 
 - `docs/`: 세션 준비용 원본 마크다운 문서
 - `gemma4-local-setup-guide.md`: 가장 먼저 볼 전체 안내 문서
-- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-16`을 하나의 PDF로 묶는 스크립트
+- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-17`을 하나의 PDF로 묶는 스크립트
 - `output/pdf/`: 생성된 PDF 산출물
 - `tmp/pdfs/`: PDF 미리보기 contact sheet 이미지
 

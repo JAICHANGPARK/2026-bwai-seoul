@@ -57,6 +57,183 @@ GGUF 공식 문서 기준:
 - LM Studio, Ollama, llama.cpp 같은 도구와 함께 자주 등장합니다.
 - `Q4`, `Q5`, `Q8` 같은 양자화 표기가 붙은 GGUF 모델을 많이 보게 됩니다.
 
+## FP32, BF16, FP16, 4-bit는 무엇인가요?
+
+LLM 모델은 아주 많은 숫자로 이루어져 있습니다.  
+이 숫자 하나하나를 어떤 형식으로 저장하고 계산할지에 따라 모델 크기와 실행 속도가 달라집니다.
+
+자주 보는 표기는 아래처럼 이해하면 됩니다.
+
+| 표기 | 의미 | 파라미터 1개당 대략 크기 | 느낌 |
+| --- | --- | --- | --- |
+| `FP32` | 32-bit floating point | 4 bytes | 정확하지만 너무 큼 |
+| `BF16` | bfloat16 | 2 bytes | LLM 원본 가중치에서 자주 쓰임 |
+| `FP16` | 16-bit floating point | 2 bytes | GPU 추론에서 흔함 |
+| `INT8` / `Q8` | 8-bit 양자화 | 1 byte 안팎 | 원본보다 작고 비교적 안정적 |
+| `INT4` / `Q4` | 4-bit 양자화 | 0.5 byte 안팎 | 훨씬 작지만 품질/지원 차이 있음 |
+
+Gemma 4를 FP32가 기본이라고 생각하면 메모리를 너무 크게 잡게 됩니다.  
+공식 Transformers 설정은 BF16 계열로 보는 것이 맞고, LM Studio/Ollama에서 받는 로컬 모델은 보통 여기서 한 번 더 줄인 양자화 모델입니다.
+
+예를 들어 31B 모델을 단순 계산하면:
+
+```text
+FP32: 31B x 4 bytes ≈ 124GB
+BF16: 31B x 2 bytes ≈ 62GB
+4-bit: 31B x 0.5 bytes ≈ 15.5GB + 오버헤드
+```
+
+즉, `31B`라는 이름만 보고 31GB라고 생각하면 안 됩니다.  
+모델 이름의 `B`는 파라미터 수이고, 실제 파일 크기는 숫자 형식과 양자화 방식에 따라 달라집니다.
+
+## BF16은 왜 많이 쓰나요?
+
+`BF16`은 `bfloat16`의 줄임말입니다.  
+FP32보다 메모리는 절반만 쓰면서, 숫자를 표현할 수 있는 범위는 FP32와 비슷하게 유지하는 16-bit 형식입니다.
+
+FP16과 BF16은 둘 다 16-bit지만 성격이 다릅니다.
+
+- `FP16`: 소수점 정밀도는 조금 더 좋지만, 표현 가능한 숫자 범위가 좁습니다.
+- `BF16`: 소수점 정밀도는 낮지만, FP32와 비슷한 넓은 숫자 범위를 가집니다.
+
+LLM에서는 계산 중 숫자가 매우 커지거나 작아질 수 있습니다.  
+그래서 BF16은 FP32보다 훨씬 가볍고, FP16보다 안정적인 경우가 많습니다.
+
+## 모델 추론에 필요한 메모리는 어떻게 계산하나요?
+
+모델 추론에 필요한 메모리는 한 숫자로 딱 떨어지지 않습니다.  
+대략 아래 항목을 더해서 생각하면 됩니다.
+
+```text
+추론 메모리 ≈ 모델 가중치 + KV cache + 입력/출력 처리 메모리 + 실행 도구 오버헤드
+```
+
+이 중에서 가장 큰 부분은 보통 **모델 가중치**입니다.  
+가중치 메모리는 아래처럼 계산합니다.
+
+```text
+가중치 메모리 ≈ 파라미터 수 x 파라미터 1개당 저장 크기
+```
+
+예를 들어 26B 모델은 파라미터가 약 260억 개입니다.
+
+```text
+BF16: 26B x 2 bytes ≈ 52GB
+4-bit: 26B x 0.5 bytes ≈ 13GB
+```
+
+BF16 기준 약 52GB였던 가중치가 4-bit에서는 약 13GB로 줄어듭니다.  
+이 차이는 **파라미터 수가 줄어서가 아니라, 파라미터 하나를 저장하는 크기가 줄어서** 생깁니다.
+
+```text
+2 bytes -> 0.5 byte
+가중치 메모리 약 1/4
+```
+
+하지만 실제 추론 메모리는 가중치 계산보다 더 듭니다.
+
+- 양자화 메타데이터
+- 일부 비양자화 레이어
+- KV cache
+- 긴 컨텍스트
+- 이미지 입력
+- 실행 도구와 GPU/CPU 오버헤드
+
+이 붙기 때문입니다. 그래서 26B 4-bit 모델이 이론상 13GB 근처로 보이더라도, 실제 LM Studio/Ollama 표시 크기는 17~18GB처럼 보일 수 있습니다.
+
+## NVIDIA GPU마다 지원 타입이 다른 이유
+
+NVIDIA GPU마다 `FP16`, `BF16`, `INT8`, `FP8`, `FP4` 같은 지원이 다른 이유는 GPU 세대마다 Tensor Core가 처리할 수 있는 숫자 형식이 다르기 때문입니다.
+
+중요한 구분:
+
+```text
+모델을 4-bit로 저장할 수 있음
+≠
+GPU가 4-bit를 전용 회로로 바로 빠르게 계산할 수 있음
+```
+
+많은 경우 4-bit 가중치를 읽은 뒤 실제 행렬 곱은 FP16/BF16으로 풀어서 계산합니다.  
+그래서 같은 모델이라도 GPU 세대, CUDA, 드라이버, 실행 도구에 따라 속도와 지원 여부가 달라질 수 있습니다.
+
+실습에서는 아래 정도만 기억하면 충분합니다.
+
+- 최신 GPU일수록 더 다양한 저정밀 타입을 빠르게 처리할 가능성이 큽니다.
+- 모델 파일의 `Q4`, `Q5`, `Q8` 표기는 저장 방식에 가깝습니다.
+- 실제 계산이 어떤 타입으로 도는지는 실행 엔진과 하드웨어 지원에 따라 달라집니다.
+- 타입 지원이 애매하면 작은 모델이나 더 보수적인 양자화 모델을 고르는 편이 안전합니다.
+
+## NVFP4는 무엇인가요?
+
+`NVFP4`는 NVIDIA가 Blackwell 세대 GPU를 중심으로 밀고 있는 **4-bit floating point 데이터 타입**입니다.  
+NVIDIA 기술 블로그도 NVFP4를 low-precision inference를 위한 data type으로 설명하고, Hugging Face의 `Gemma-4-31B-IT-NVFP4` 모델 카드도 weights와 activations를 NVFP4 data type으로 양자화했다고 설명합니다.
+
+다만 NVFP4를 "그냥 4-bit 숫자 하나"로만 이해하면 부족합니다.  
+NVFP4는 **4-bit 값 + scale 정보 + 하드웨어 가속 방식**이 함께 묶인 micro-scaled FP4 데이터 타입에 가깝습니다.
+
+즉, NVFP4는 아래 세 가지 성격을 같이 가집니다.
+
+- 데이터 타입: 숫자를 4-bit floating point로 표현하는 방식
+- 양자화 포맷: 원래 BF16/FP16 값을 NVFP4 값과 scale로 줄여 저장하는 방식
+- 실행 경로: Blackwell Tensor Core가 이 형식을 빠르게 처리하도록 설계된 하드웨어 지원 방식
+
+그래서 문서나 모델 카드에서 NVFP4를 볼 때는:
+
+```text
+NVFP4 = 4-bit floating point data type + block scaling + NVIDIA 하드웨어/런타임 지원
+```
+
+으로 이해하는 것이 가장 안전합니다.
+
+일반적인 4-bit 양자화와 비슷하게 모델을 작게 만들지만, 단순히 숫자를 4-bit로 자르는 방식은 아닙니다.
+
+NVFP4의 핵심은 **작은 블록마다 scale을 따로 두는 것**입니다.
+
+- 4-bit 값 자체는 `1 sign bit + 2 exponent bits + 1 mantissa bit` 구조입니다.
+- 값 16개마다 FP8(E4M3) scale을 공유합니다.
+- tensor 전체에는 추가 FP32 scale을 한 번 더 적용합니다.
+
+즉:
+
+```text
+원래 값 ≈ 4-bit 값 x 16개 단위 FP8 scale x tensor 단위 FP32 scale
+```
+
+이렇게 하면 4-bit처럼 작게 저장하면서도, 각 블록의 값 범위에 더 잘 맞출 수 있습니다. NVIDIA 기술 블로그 기준으로 NVFP4는 FP16 대비 약 3.5배, FP8 대비 약 1.8배 메모리 절감 효과를 목표로 합니다.
+
+## Gemma 4 31B NVFP4는 왜 주목받나요?
+
+NVIDIA는 `Gemma-4-31B-IT-NVFP4` 모델을 Hugging Face에 공개했습니다.  
+공식 모델 카드 기준으로 이 모델은 Google의 Gemma 4 31B instruction-tuned 모델을 NVIDIA Model Optimizer로 NVFP4 양자화한 버전입니다.
+
+주요 포인트:
+
+- 31B dense 모델을 NVFP4로 줄인 버전
+- weights와 activations가 NVFP4 data type으로 양자화된 버전
+- 256K context window 명시
+- text, image, video 입력 지원
+- vLLM 런타임 기준
+- NVIDIA Blackwell 호환성을 명시
+- calibration에는 `cnn_dailymail` 데이터셋 사용
+- 평가표에서 BF16 원본 대비 여러 벤치마크 손실이 0.5%p 미만으로 표시됨
+
+Hugging Face 파일 정보에 `BF16`, `F8_E4M3`, `U8` 같은 tensor type이 함께 보일 수 있습니다.  
+이것은 NVFP4가 4-bit 값만 단독으로 있는 구조가 아니라, FP8 scale이나 packing된 저장 표현을 함께 쓰는 구조이기 때문입니다. 모델 이름에 NVFP4가 붙어도 내부 파일에는 scale, metadata, 일부 보조 tensor가 같이 들어갈 수 있습니다.
+
+다만 이 모델을 행사 기본 준비로 보기는 어렵습니다.
+
+- 공식 모델 카드의 예시 serve 명령은 `--tensor-parallel-size 8`입니다.
+- 모델 카드의 test hardware는 H100으로 표시되어 있습니다.
+- Blackwell에서 가장 잘 맞도록 설계된 경로입니다.
+- 24GB GPU에서 짧은 context로 가능하다는 이야기는 조건부로 봐야 합니다.
+- 256K full context까지 한 장의 24GB GPU에서 안정적으로 된다는 뜻은 아닙니다.
+
+따라서 실습 문서에서는 이렇게 이해하면 됩니다.
+
+- **개념적으로:** NVFP4는 4-bit 양자화의 최신 고성능 경로 중 하나입니다.
+- **실습 준비로:** LM Studio/Ollama의 E2B/E4B 또는 26B A4B 준비가 우선입니다.
+- **고급 실험으로:** Blackwell/Hopper급 NVIDIA GPU, vLLM, Linux 환경이 있으면 별도 실험 항목으로 볼 수 있습니다.
+
 ## llama.cpp란?
 
 llama.cpp 공식 README 기준:
@@ -198,3 +375,5 @@ LM Studio 공식 문서 기준:
 - [Apple MLX README](https://github.com/ml-explore/mlx)
 - [Apple MLX LM README](https://github.com/ml-explore/mlx-lm)
 - [LM Studio Docs](https://lmstudio.ai/docs)
+- [NVIDIA Gemma-4-31B-IT-NVFP4](https://huggingface.co/nvidia/Gemma-4-31B-IT-NVFP4)
+- [NVIDIA Technical Blog: Introducing NVFP4](https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/)
