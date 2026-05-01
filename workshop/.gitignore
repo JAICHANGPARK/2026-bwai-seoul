@@ -1,0 +1,6 @@
+.DS_Store
+.venv/
+__pycache__/
+demo/__pycache__/
+demo/.agent_comms/
+demo/website_build/
