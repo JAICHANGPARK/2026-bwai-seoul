@@ -51,7 +51,12 @@ STATUS_STYLE = {
 
 
 def read_agent_metrics(agent_names: list[str]) -> dict[str, dict]:
-    """Read all metrics files from .agent_comms/."""
+    """Read all metrics files from .agent_comms/.
+
+    specialist.py와 orchestrator.py가 metrics_{agent}.json 파일을 계속 갱신하고,
+    dashboard는 그 파일들을 polling해서 화면을 다시 그립니다. 파일이 아직 없으면
+    해당 agent는 waiting 상태로 간주합니다.
+    """
     metrics = {}
     for name in agent_names:
         path = os.path.join(COMMS_DIR, f"metrics_{name}.json")
@@ -71,6 +76,8 @@ def fetch_server_metrics(server_url: str, enabled: bool = False) -> dict:
     Returns empty dict on failure.
     """
     if not enabled:
+        # LM Studio는 /metrics endpoint를 공식적으로 쓰지 않는 경우가 많아서,
+        # 기본값은 off입니다. 켜두면 LM Studio 로그에 GET /metrics 오류가 반복될 수 있습니다.
         return {}
 
     try:
@@ -108,7 +115,7 @@ GEMMA4_ART = "\n".join([
 
 
 def build_event_title() -> Panel:
-    """Build the event title panel above the throughput hero."""
+    """Build the workshop branding panel above the throughput hero."""
     return Panel(
         Group(
             Align.center(Text("2026 BWAI SEOUL", style="bold bright_blue")),
@@ -131,6 +138,8 @@ def build_hero(metrics: dict[str, dict], server_metrics: dict = None) -> Panel:
     total_tokens = 0
 
     for m in metrics.values():
+        # running agent의 t/s만 합산해서 "현재 병렬 처리량"으로 보여줍니다.
+        # done agent의 마지막 t/s는 최종 summary에는 쓰지만 live hero에는 더하지 않습니다.
         status = m.get("status", "waiting")
         if status == "running":
             sum_tps += m.get("tps", 0.0)
@@ -218,7 +227,11 @@ def build_orchestrator_panel(metrics: dict[str, dict]) -> Panel:
 # ─── Agent Grid ────────────────────────────────────────────
 
 def build_agent_card(agent: dict, metrics: dict[str, dict]) -> Text:
-    """Build a single compact agent card as a Text renderable."""
+    """Build a single compact agent card as a Text renderable.
+
+    Rich Table 안에 들어갈 짧은 한 줄 UI입니다. agent 이름이 길면 잘라서
+    대시보드가 좁은 노트북 화면에서도 무너지지 않게 합니다.
+    """
     name = agent["name"]
     emoji = agent.get("emoji", "🤖")
     ansi_color = agent.get("color", "1;37")
@@ -247,7 +260,11 @@ def build_agent_card(agent: dict, metrics: dict[str, dict]) -> Text:
 
 
 def build_agent_grid(agents: list[dict], metrics: dict[str, dict], n_cols: int = 3) -> Panel:
-    """Build a compact grid of agent mini-cards."""
+    """Build a compact grid of agent mini-cards.
+
+    실제 agent 수는 --tasks에 따라 바뀌므로, 고정 레이아웃 대신 Table에
+    n_cols개씩 채우는 방식으로 렌더링합니다.
+    """
     sub_agents = [a for a in agents if a["name"] != "orchestrator"]
 
     if not sub_agents:
@@ -310,6 +327,8 @@ def build_dashboard(agents: list[dict], metrics: dict[str, dict], server_metrics
     └──────────────┴──────────────────┘
     """
     layout = Layout()
+    # 왼쪽은 워크샵 브랜딩과 큰 throughput 숫자, 오른쪽은 상태 모니터링입니다.
+    # ratio를 사용하면 터미널 크기가 달라져도 상대 비율을 유지합니다.
     layout.split_row(
         Layout(name="left", ratio=2),
         Layout(name="right", ratio=3),
@@ -343,7 +362,8 @@ def main():
     scenario = get_scenario(args.scenario, n_agents=args.tasks)
     agents = scenario["agents"]
 
-    # Add orchestrator to agent list for tracking
+    # Add orchestrator to agent list for tracking. orchestrator도 metrics 파일을 쓰므로
+    # agent들과 같은 방식으로 dashboard에 표시할 수 있습니다.
     agents.insert(0, {
         "name": "orchestrator",
         "emoji": "🧠",
@@ -361,11 +381,16 @@ def main():
     with Live(console=console, refresh_per_second=4, screen=True) as live:
         while True:
             now = time.time()
+            # Live loop는 다음 세 가지를 반복합니다:
+            # 1. metrics JSON 파일 읽기
+            # 2. Rich layout 다시 만들기
+            # 3. 모든 agent가 완료되면 잠깐 보여준 뒤 종료
             metrics = read_agent_metrics(agent_names)
             server_metrics = fetch_server_metrics(args.server_url, enabled=args.server_metrics == "on")
             live.update(build_dashboard(agents, metrics, server_metrics))
 
-            # Exit once all agents are done for EXIT_DELAY seconds
+            # Exit once all agents are done for EXIT_DELAY seconds. 바로 닫지 않는 이유는
+            # 마지막 완료 상태가 화면에 잠깐 보이도록 하기 위해서입니다.
             if metrics:
                 all_done = (
                     all(
@@ -385,7 +410,8 @@ def main():
 
             time.sleep(POLL_INTERVAL)
 
-    # Final summary
+    # Final summary: live screen을 닫은 뒤에도 마지막 처리량 요약을 남겨서
+    # 참가자가 창이 닫히기 전에 총 토큰과 처리량을 확인할 수 있게 합니다.
     console.clear()
     metrics = read_agent_metrics(agent_names)
     server_metrics = fetch_server_metrics(args.server_url, enabled=args.server_metrics == "on")

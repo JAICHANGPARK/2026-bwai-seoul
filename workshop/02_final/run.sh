@@ -19,8 +19,11 @@
 #   bash run.sh --scenario novel_writing --topic "서울의 독립출판사를 배경으로 한 미스터리 소설" --tasks 10
 #   bash run.sh --scenario short_story_writing --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 #   bash run.sh --scenario story_review_selection --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
 #   bash run.sh --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   bash run.sh --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   bash run.sh --scenario publication_contract --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   bash run.sh --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   bash run.sh --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
 # ─────────────────────────────────────────────────────────────
 
 PORT="1234"
@@ -32,6 +35,9 @@ HIRES="2"
 SELECT="3"
 REASONING="off"
 
+# CLI parsing is intentionally implemented without external dependencies so the
+# workshop can run on a fresh macOS machine after only uv sync. Every option is
+# forwarded either to dashboard.py, orchestrator.py, or specialist.py.
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --port)     PORT="$2";     shift 2 ;;
@@ -46,7 +52,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: bash run.sh --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
             echo ""
             echo "Options:"
-            echo "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, story_revision, publication_offer_email)  [default: translate]"
+            echo "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, publication_contract, story_revision, marketing_copy)  [default: translate]"
             echo "  --topic      Topic or text to work on             [required]"
             echo "  --port       OpenAI-compatible server port        [default: 1234]"
             echo "  --tasks      Number of LLMs to use                [default: scenario default]"
@@ -76,6 +82,10 @@ if [ ! -f "$PYTHON" ]; then
 fi
 
 # ─── Load agents from scenario ──────────────────────────────
+#
+# Before opening Terminal windows, ask scenarios.py which agents exist for the
+# selected scenario. This keeps the shell script generic: adding a new scenario
+# only requires changing demo/scenarios.py, not this launcher.
 
 N_AGENTS_ARG=""
 if [ -n "$N_AGENTS" ]; then
@@ -108,6 +118,10 @@ done <<< "$AGENT_DATA"
 NUM_AGENTS=${#NAMES[@]}
 
 # ─── Calculate window layout ────────────────────────────────
+#
+# macOS Terminal windows are positioned with AppleScript bounds. The dashboard
+# gets a full-width top band, and orchestrator + specialist agents fill a grid
+# below it. This visual layout makes the parallel workflow easy to explain live.
 
 bounds=$(osascript -e 'tell application "Finder" to get bounds of window of desktop' 2>/dev/null)
 IFS=', ' read -r _ _ SCREEN_X2 SCREEN_Y2 <<< "$bounds"
@@ -141,6 +155,8 @@ APPLESCRIPT="tell application \"Terminal\"
 "
 
 queue_window() {
+    # Queue one Terminal command into the AppleScript program. $5 is the command
+    # that will run inside the new window, and $6 is the visible window title.
     APPLESCRIPT+="    set W to do script \"$5\"
     set custom title of window 1 to \"$6\"
     set bounds of window 1 to {$1, $2, $3, $4}
@@ -148,6 +164,8 @@ queue_window() {
 }
 
 # Dashboard → top row
+# Dashboard only reads metrics files; it does not call the LLM. It needs the
+# scenario and task count so it knows which agent names to watch.
 dash_cmd="cd \\\"$DEMO_DIR\\\" && LLM_MODEL='$MODEL' \\\"$PYTHON\\\" dashboard.py --server-url 'http://127.0.0.1:${PORT}' --scenario '$SCENARIO' --topic '$TOPIC'"
 if [ -n "$N_AGENTS" ]; then
     dash_cmd+=" --tasks $N_AGENTS"
@@ -155,6 +173,8 @@ fi
 queue_window 0 "$USABLE_Y1" "$SCREEN_X2" "$DASH_Y2" "$dash_cmd" "⚡ Dashboard"
 
 # Orchestrator → first grid cell
+# Orchestrator creates task JSON files, waits for result JSON files, and writes
+# final HTML/Markdown outputs.
 orch_cmd="cd \\\"$DEMO_DIR\\\" && LLM_MODEL='$MODEL' \\\"$PYTHON\\\" orchestrator.py --scenario '$SCENARIO' --api-url '$API_URL' --topic '$TOPIC' --reasoning '$REASONING'"
 if [ -n "$N_AGENTS" ]; then
     orch_cmd+=" --tasks $N_AGENTS"
@@ -190,6 +210,8 @@ for (( i=0; i<TOTAL_CELLS; i++ )); do
         queue_window "$x1" "$y1" "$x2" "$y2" "$orch_cmd" "🧠 Orchestrator"
     else
         ai=$((i - 1))
+        # Each specialist waits for task_<name>.json, calls LM Studio, then writes
+        # result_<name>.json. The model name is passed via LLM_MODEL env var.
         spec_cmd="cd \\\"$DEMO_DIR\\\" && LLM_MODEL='$MODEL' \\\"$PYTHON\\\" specialist.py --name '${NAMES[$ai]}' --emoji '${EMOJIS[$ai]}' --color '${COLORS[$ai]}' --api-url '$API_URL' --reasoning '$REASONING'"
         queue_window "$x1" "$y1" "$x2" "$y2" "$spec_cmd" "${NAMES[$ai]}"
     fi

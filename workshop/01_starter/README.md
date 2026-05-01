@@ -16,4 +16,4 @@ uv sync
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
 ```
 
-단계별 추가 코드는 상위 폴더의 [HANDS_ON.md](../HANDS_ON.md)를 참고하세요.
+단계별 추가 코드는 [03_labs/README.md](../03_labs/README.md)를 참고하세요.

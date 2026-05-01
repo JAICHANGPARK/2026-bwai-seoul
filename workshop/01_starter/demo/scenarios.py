@@ -1,8 +1,9 @@
 """
 Starter scenario definitions for the hands-on workshop.
 
-Copy this file to demo/scenarios.py when you want participants to start
-from the minimal translate scenario and add new scenarios step by step.
+01_starter intentionally contains only the translate scenario. During the
+hands-on, participants add resume/interview/story scenarios to this file and
+compare their result with 02_final/demo/scenarios.py.
 """
 
 import html
@@ -14,6 +15,10 @@ _COLORS = [
     "1;31", "0;31", "1;37", "0;37", "1;35", "1;36", "1;33", "1;32", "1;34", "0;36",
 ]
 
+# Agent metadata is deliberately simple dictionaries. run.sh/run.ps1 read this
+# list before launching terminal windows, and orchestrator.py uses the same list
+# to create per-agent tasks. Keeping the structure plain makes the workshop easy
+# to inspect without learning a framework first.
 _LANG_EMOJIS = [
     "🇫🇷", "🇪🇸", "🇩🇪", "🇯🇵", "🇨🇳", "🇰🇷", "🇸🇦", "🇮🇳", "🇧🇷", "🇷🇺",
     "🇮🇹", "🇹🇷", "🇻🇳", "🇹🇭", "🇳🇱", "🇵🇱", "🇸🇪", "🇬🇷", "🇮🇩", "🇺🇦",
@@ -28,6 +33,12 @@ _LANG_NAMES = [
 
 
 def make_translate_agents(n: int = 10) -> list[dict]:
+    """Create one translation agent per target language.
+
+    The important field is direct_instruction. orchestrator.py replaces {topic}
+    with the CLI --topic value and sends the resulting instruction to the
+    specialist process for this agent.
+    """
     return [
         {
             "name": _LANG_NAMES[i % len(_LANG_NAMES)],
@@ -40,11 +51,18 @@ def make_translate_agents(n: int = 10) -> list[dict]:
 
 
 TRANSLATE_SYSTEM = (
+    # System prompt = scenario-wide behavior contract.
+    # It applies to every translation specialist and keeps outputs clean enough
+    # for the HTML renderer to display without post-processing.
     "You are a precise translator. Output only the translated text, "
     "without commentary or markdown fences."
 )
 
 TRANSLATE_PLAN = {
+    # PLAN is kept in starter so participants can see the general architecture.
+    # In many later scenarios we set direct_plan=True, so this planning prompt is
+    # not called. It remains useful when you want the orchestrator LLM to create
+    # agent-specific instructions dynamically.
     "system": (
         'Output a JSON array with {n_agents} objects. Each has "name" and "instruction". '
         "Use agent names exactly as provided. Output ONLY valid JSON."
@@ -58,6 +76,7 @@ TRANSLATE_PLAN = {
 
 
 def translate_card(agent, result, task=None):
+    """Render one translation result inside a card on the generated HTML page."""
     name = agent["name"]
     emoji = agent["emoji"]
     text = result.strip().strip("`").strip()
@@ -71,6 +90,7 @@ def translate_card(agent, result, task=None):
 
 
 def strip_markdown_fence(text):
+    """Remove ``` fences when a model wraps Markdown despite being asked not to."""
     text = text.strip()
     if not text.startswith("```"):
         return text
@@ -82,8 +102,16 @@ def strip_markdown_fence(text):
 
 
 def render_markdown(text):
-    """Render simple generated Markdown into static HTML cards."""
+    """Render simple generated Markdown into static HTML cards.
+
+    This is intentionally a tiny renderer, not a full Markdown implementation.
+    It supports only the structures generated in the workshop prompts: headings,
+    bullet/numbered lists, bold text, inline code, and paragraphs. The limited
+    scope keeps the dependency footprint small and makes the output predictable.
+    """
     def inline(value):
+        # Escape HTML first so model output cannot inject arbitrary tags, then
+        # restore a small subset of Markdown inline formatting.
         escaped = html.escape(value)
         escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
         escaped = re.sub(r"`([^`]+)`", r"<code>\1</code>", escaped)
@@ -150,6 +178,12 @@ def render_markdown(text):
 
 
 def markdown_card(agent, result, task=None, max_height="680px"):
+    """Shared card renderer for Markdown-heavy scenarios.
+
+    Later hands-on steps reuse this function through small wrappers such as
+    resume_card and interview_review_card. The wrappers differ only by max
+    height, which keeps scenario code focused on prompts rather than HTML.
+    """
     name = agent["name"]
     filename = task.get("filename", f"{name}.md") if task else f"{name}.md"
     source = task.get("source_filename", "") if task else ""
@@ -202,7 +236,25 @@ def publication_offer_email_card(agent, result, task=None):
     return markdown_card(agent, result, task, max_height="680px")
 
 
+def contract_negotiation_card(agent, result, task=None):
+    return markdown_card(agent, result, task, max_height="680px")
+
+
+def publication_contract_card(agent, result, task=None):
+    return markdown_card(agent, result, task, max_height="680px")
+
+
+def marketing_copy_card(agent, result, task=None):
+    return markdown_card(agent, result, task, max_height="680px")
+
+
 SCENARIOS = {
+    # Registry entry contract:
+    # - make_agents: returns agent metadata
+    # - plan: optional planning prompts
+    # - system_prompt: common specialist system message
+    # - render_card: HTML renderer for each result
+    # - default_n: used when --tasks is omitted
     "translate": {
         "make_agents": make_translate_agents,
         "plan": TRANSLATE_PLAN,
@@ -215,7 +267,12 @@ SCENARIOS = {
 
 
 def get_scenario(name: str, n_agents: int = None) -> dict:
-    """Get a scenario by name. Generates agents dynamically."""
+    """Get a scenario by name and generate its agents.
+
+    run.sh/run.ps1 call this function to know how many specialist windows to
+    open. orchestrator.py calls it again to get the same scenario definition for
+    planning, dispatch, and final rendering.
+    """
     if name not in SCENARIOS:
         available = ", ".join(SCENARIOS.keys())
         raise KeyError(f"Unknown scenario '{name}'. Available: {available}")

@@ -13,6 +13,10 @@ import time
 from openai import OpenAI
 
 # ─── Shared Paths ───────────────────────────────────────────
+#
+# 이 데모는 별도의 메시지 브로커나 DB를 쓰지 않고, 같은 폴더 안의 JSON 파일로
+# orchestrator와 specialist agent들이 통신합니다. 구조가 단순해서 핸즈온에서
+# "작업 배정 -> 결과 수집" 흐름을 파일 시스템만으로 눈으로 확인할 수 있습니다.
 
 COMMS_DIR = os.path.join(os.path.dirname(__file__), ".agent_comms")
 BUILD_DIR = os.path.join(os.path.dirname(__file__), "website_build")
@@ -31,7 +35,12 @@ WHITE = "\033[1;37m"
 # ─── Metrics ────────────────────────────────────────────────
 
 def write_metrics(name: str, status: str, tokens: int, elapsed: float, tps: float = None):
-    """Write metrics to .agent_comms/metrics_{name}.json atomically."""
+    """Write metrics to .agent_comms/metrics_{name}.json atomically.
+
+    dashboard.py는 이 JSON 파일들을 주기적으로 읽어 agent별 상태와 tokens/sec를
+    표시합니다. 임시 파일에 먼저 쓰고 os.replace로 교체하는 이유는 dashboard가
+    파일을 읽는 순간에 JSON이 반쯤 쓰인 상태가 되는 것을 피하기 위해서입니다.
+    """
     if tps is None:
         tps = tokens / elapsed if elapsed > 0 else 0.0
     metrics = {
@@ -72,6 +81,9 @@ def stream_llm(
         The full response text (content only, excluding reasoning tokens).
     """
     base_url = api_url.rsplit("/chat/completions", 1)[0]
+    # OpenAI SDK는 base_url만 주면 LM Studio의 OpenAI-compatible endpoint에도
+    # 그대로 붙을 수 있습니다. LM Studio는 실제 API key를 검증하지 않으므로
+    # dummy key를 사용합니다.
     client = OpenAI(base_url=base_url, api_key="sk-no-key")
     reasoning = (reasoning or "off").lower()
 
@@ -81,6 +93,9 @@ def stream_llm(
     start_t = time.time()
 
     def create_response(use_reasoning_controls: bool):
+        # 모든 specialist와 orchestrator planning 호출이 이 request builder를 탑니다.
+        # 모델 이름은 run.sh/run.ps1이 환경변수 LLM_MODEL로 넘겨주며, LM Studio에서
+        # 모델 ID를 자동 감지하지 못하는 경우 --model로 직접 지정할 수 있습니다.
         request = {
             "model": os.environ.get("LLM_MODEL", "default"),
             "messages": messages,
@@ -89,6 +104,9 @@ def stream_llm(
             "stream_options": {"include_usage": True},
         }
         if use_reasoning_controls:
+            # Gemma 계열 서버/런타임마다 thinking 옵션 이름이 조금 다를 수 있어
+            # 흔히 쓰이는 camelCase와 snake_case를 함께 보냅니다. 서버가 모르는
+            # 옵션을 거절하면 아래 except 블록에서 한 번 더 plain request로 재시도합니다.
             enable_thinking = reasoning == "on"
             request["extra_body"] = {
                 "enableThinking": enable_thinking,
@@ -119,6 +137,8 @@ def stream_llm(
             # Handle reasoning tokens (thinking models)
             rc = getattr(delta, "reasoning_content", None) or getattr(delta, "reasoning", None)
             if rc:
+                # reasoning/thinking 토큰은 터미널에서는 흐리게 보여주되 최종 결과
+                # Markdown/HTML에는 섞지 않습니다. 결과물 파싱 안정성을 위한 분리입니다.
                 sys.stdout.write(f"\033[2;37m{rc}\033[0m")
                 sys.stdout.flush()
 
@@ -134,6 +154,8 @@ def stream_llm(
 
                 now = time.time()
                 if (now - last_poll_t) >= poll_interval:
+                    # 토큰이 들어올 때마다 파일을 쓰면 디스크 I/O가 많아지므로
+                    # 짧은 interval로 묶어서 dashboard에 충분히 부드럽게 갱신합니다.
                     tps = chunks_since_poll / (now - last_poll_t)
                     tokens = server_tokens if server_tokens is not None else chunk_count
                     write_metrics(agent_name, "running", tokens, now - start_t, tps)
@@ -147,6 +169,9 @@ def stream_llm(
 
     except Exception as e:
         if use_reasoning_controls and not full and chunk_count == 0:
+            # 일부 OpenAI-compatible 서버는 reasoning 관련 extra body를 알 수 없는
+            # 필드로 보고 요청 자체를 거절합니다. 워크샵 진행이 막히지 않도록,
+            # 아직 출력이 시작되지 않은 경우에만 옵션 없이 재시도합니다.
             sys.stdout.write(
                 "\n\033[33m[reasoning controls unsupported; retrying without them]\033[0m\n"
             )

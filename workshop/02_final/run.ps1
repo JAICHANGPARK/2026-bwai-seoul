@@ -6,7 +6,11 @@
 # Examples:
 #   .\run.ps1 --scenario translate --topic "Hello world"
 #   .\run.ps1 --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
+#   .\run.ps1 --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   .\run.ps1 --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   .\run.ps1 --scenario publication_contract --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
 #   .\run.ps1 --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   .\run.ps1 --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
 
 $ErrorActionPreference = "Stop"
 
@@ -19,11 +23,14 @@ $Hires = "2"
 $Select = "3"
 $Reasoning = "off"
 
+# The Windows launcher mirrors run.sh but uses PowerShell windows instead of
+# macOS Terminal + AppleScript. Keep this file dependency-free so participants
+# can run it after installing only uv and LM Studio.
 function Show-Usage {
     Write-Host "Usage: .\run.ps1 --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, story_revision, publication_offer_email)  [default: translate]"
+    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, publication_contract, story_revision, marketing_copy)  [default: translate]"
     Write-Host "  --topic      Topic or text to work on             [required]"
     Write-Host "  --port       OpenAI-compatible server port        [default: 1234]"
     Write-Host "  --tasks      Number of LLMs to use                [default: scenario default]"
@@ -46,6 +53,8 @@ function Read-Value {
     return $Values[$Index + 1]
 }
 
+# Manual argument parsing keeps the script compatible with Windows PowerShell
+# and PowerShell 7 without requiring advanced parameter binding.
 for ($i = 0; $i -lt $args.Count; $i++) {
     switch ($args[$i]) {
         "--port" {
@@ -99,6 +108,8 @@ for ($i = 0; $i -lt $args.Count; $i++) {
 }
 
 function Quote-PowerShellString {
+    # Child windows are launched with generated PowerShell code. Single-quote
+    # escaping prevents paths/topics containing spaces or quotes from breaking it.
     param([string]$Value)
     return "'" + ($Value -replace "'", "''") + "'"
 }
@@ -111,6 +122,8 @@ function New-PowerShellArrayLiteral {
 function Resolve-Python {
     param([string]$Root)
 
+    # uv creates different virtualenv executable paths depending on OS/shell.
+    # Check Windows first, then Unix-style paths for users running PowerShell Core.
     $candidates = @(
         (Join-Path $Root ".venv\Scripts\python.exe"),
         (Join-Path $Root ".venv\bin\python.exe"),
@@ -150,6 +163,8 @@ function Resolve-ModelName {
     }
 
     try {
+        # LM Studio exposes /v1/models. When the user leaves --model as default,
+        # use the first loaded model ID so participants do not have to type it.
         $models = Invoke-RestMethod -Uri "$ServerUrl/v1/models" -TimeoutSec 2
         $firstModel = @($models.data)[0]
         if ($firstModel -and $firstModel.id) {
@@ -172,9 +187,13 @@ function New-EncodedChildCommand {
         [string[]]$Arguments
     )
 
+    # Start-Process quoting gets fragile with Korean text and nested arguments.
+    # Encode the whole child script as UTF-16LE Base64, which is what
+    # powershell.exe/pwsh.exe expects for -EncodedCommand.
     $argumentLiteral = New-PowerShellArrayLiteral $Arguments
     $lines = @(
         '$ErrorActionPreference = "Stop"',
+        # Force UTF-8 so Korean Markdown and emoji render correctly in child windows.
         'if (Get-Command chcp.com -ErrorAction SilentlyContinue) { chcp.com 65001 | Out-Null }',
         '$utf8 = New-Object System.Text.UTF8Encoding $false',
         '[Console]::InputEncoding = $utf8',
@@ -201,6 +220,8 @@ function Start-DemoWindow {
         [string[]]$Arguments
     )
 
+    # Every process gets its own window: one dashboard, one orchestrator, and one
+    # specialist per agent. This mirrors the visual layout of the macOS launcher.
     $encodedCommand = New-EncodedChildCommand `
         -Title $Title `
         -Python $Python `
@@ -248,6 +269,8 @@ for agent in scenario["agents"]:
     print(f"{agent['name']}|{agent['emoji']}|{agent['color']}")
 '@
 
+# Ask scenarios.py for agent metadata before opening windows. This keeps the
+# launcher generic; new scenarios only need to be registered in demo/scenarios.py.
 $agentData = & $Python -c $loadAgentsScript
 if ($LASTEXITCODE -ne 0 -or -not $agentData) {
     throw "Failed to load scenario '$Scenario'"
@@ -272,6 +295,7 @@ foreach ($line in $agentData) {
 }
 
 $dashboardArgs = @(
+    # dashboard.py reads metrics JSON files and renders status/throughput.
     "dashboard.py",
     "--server-url", $ServerUrl,
     "--scenario", $Scenario,
@@ -282,6 +306,8 @@ if ($Tasks) {
 }
 
 $orchestratorArgs = @(
+    # orchestrator.py creates task JSON files, collects result JSON files, and
+    # assembles the generated HTML/Markdown outputs.
     "orchestrator.py",
     "--scenario", $Scenario,
     "--api-url", $ApiUrl,
@@ -316,6 +342,8 @@ Start-DemoWindow `
 
 foreach ($agent in $agents) {
     $specialistArgs = @(
+        # specialist.py waits for task_<name>.json, calls LM Studio, and writes
+        # result_<name>.json for the orchestrator to collect.
         "specialist.py",
         "--name", $agent.Name,
         "--emoji", $agent.Emoji,

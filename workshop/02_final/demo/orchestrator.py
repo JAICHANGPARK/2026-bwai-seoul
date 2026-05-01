@@ -49,7 +49,11 @@ def open_in_browser(path: str):
 
 
 def write_website_index(current_run_id: str = None, current_scenario_slug: str = None) -> str:
-    """Write a stable index page that links to generated outputs."""
+    """Write a stable index page that links to generated outputs.
+
+    각 시나리오는 latest.html, scenario별 HTML, runs/<run_id>/index.html을 만듭니다.
+    이 함수는 그 결과들을 한 곳에서 열 수 있는 "결과 홈"을 생성합니다.
+    """
     os.makedirs(BUILD_DIR, exist_ok=True)
     index_path = os.path.join(BUILD_DIR, "index.html")
 
@@ -57,6 +61,8 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
         return os.path.relpath(path, BUILD_DIR).replace(os.sep, "/")
 
     scenario_pages = []
+    # BUILD_DIR 바로 아래의 *.html 파일은 시나리오별 최신 결과입니다.
+    # index/latest는 별도 역할이 있으므로 목록에서는 제외합니다.
     for filename in sorted(os.listdir(BUILD_DIR)):
         path = os.path.join(BUILD_DIR, filename)
         if not os.path.isfile(path):
@@ -86,6 +92,8 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
                 })
 
     markdown_dirs = []
+    # save_markdown=True인 시나리오는 결과를 폴더별 Markdown으로 저장합니다.
+    # 폴더마다 간단한 index.html을 만들어 참가자가 산출물을 브라우저에서 열 수 있게 합니다.
     for dirname in sorted(os.listdir(BUILD_DIR)):
         path = os.path.join(BUILD_DIR, dirname)
         if not os.path.isdir(path) or dirname == "runs":
@@ -218,7 +226,11 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
 
 
 def load_markdown_files(input_dir: str) -> list[dict]:
-    """Load Markdown files from a generated output directory."""
+    """Load Markdown files from a generated output directory.
+
+    input_dir는 BUILD_DIR 아래의 상대 폴더명입니다. 예를 들어 interview_review는
+    이전 단계 resume이 만든 website_build/resumes/*.md를 읽습니다.
+    """
     if not input_dir:
         return []
 
@@ -252,7 +264,11 @@ _SHORT_STORY_REF_RE = re.compile(
 
 
 def extract_selected_section(text: str) -> str:
-    """Return the Markdown body under the main selected-stories heading."""
+    """Return the Markdown body under the main selected-stories heading.
+
+    story_revision은 심사 보고서 전체가 아니라 "선정작" 섹션을 우선 파싱합니다.
+    예비/탈락 섹션에 등장한 작품까지 개정 대상으로 잡는 것을 줄이기 위해서입니다.
+    """
     lines = text.splitlines()
     selected_lines = []
     in_section = False
@@ -295,7 +311,13 @@ def rank_selected_short_stories(
     story_docs: list[dict],
     limit: int,
 ) -> list[dict]:
-    """Rank unique selected story manuscripts from reviewer reports."""
+    """Rank unique selected story manuscripts from reviewer reports.
+
+    여러 편집자가 같은 작품을 선정할 수 있으므로 먼저 파일명을 기준으로 중복 제거합니다.
+    정렬 기준은 votes(몇 개 보고서에서 선정됐는지), score(선정 순위 가중치),
+    best_rank, first_seen 순입니다. 이렇게 해야 story_revision agent들이 같은 작품을
+    중복 개정하지 않고 서로 다른 선정작을 맡습니다.
+    """
     available_stories = {
         os.path.splitext(doc["filename"])[0]: doc
         for doc in story_docs
@@ -366,7 +388,12 @@ def assign_story_revision_targets(
 
 
 def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
-    """Build one task per agent without asking the LLM to plan."""
+    """Build one task per agent without asking the LLM to plan.
+
+    direct_plan=True인 핸즈온 시나리오의 핵심 함수입니다. agent factory가 만든
+    direct_instruction 템플릿에 topic, 이전 Markdown 입력, hire/select 옵션 등을
+    채워 넣어 specialist가 실행할 최종 instruction을 만듭니다.
+    """
     agents = scenario["agents"]
     source_docs = load_input_markdown_files(scenario)
     auxiliary_docs = {
@@ -375,6 +402,8 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
     }
 
     if scenario.get("name") == "story_revision":
+        # story_revision은 단순히 slot 번호로 작품을 고르게 하면 중복 개정이 생길 수 있습니다.
+        # 그래서 dispatch 전에 선정 보고서를 파싱해 agent별 개정 대상 원고를 명시적으로 배정합니다.
         agents = assign_story_revision_targets(
             agents,
             source_docs,
@@ -385,6 +414,8 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
 
     aggregate_source = None
     if scenario.get("aggregate_input_markdown"):
+        # aggregate_input_markdown=True이면 여러 Markdown 파일을 하나의 큰 입력으로 합칩니다.
+        # 채용 결정/심사처럼 "전체 후보를 비교"해야 하는 단계에서 사용합니다.
         aggregate_docs = list(source_docs)
         for input_dir in scenario.get("auxiliary_input_markdown_dirs", []):
             aggregate_docs.extend(auxiliary_docs.get(input_dir, []))
@@ -410,6 +441,8 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
     tasks = []
 
     for i, agent in enumerate(agents):
+        # aggregate_source가 있으면 모든 agent가 같은 전체 입력을 봅니다.
+        # 없으면 agent 순서와 Markdown 파일 순서를 1:1로 매칭합니다.
         source = aggregate_source or (source_docs[i] if i < len(source_docs) else {
             "filename": "NO_INPUT_FILE_FOUND.md",
             "text": (
@@ -418,6 +451,8 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
             ),
         })
         instruction = agent.get("direct_instruction", "Work on: {topic}")
+        # direct_instruction은 간단한 template string입니다. 복잡한 템플릿 엔진 대신
+        # 명시적인 replace만 사용해서 참가자가 데이터 흐름을 쉽게 따라갈 수 있게 했습니다.
         instruction = (
             instruction
             .replace("{topic}", topic)
@@ -444,7 +479,12 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
 
 
 def clean_generated_dirs(scenario: dict):
-    """Clean transient state and only the current scenario output folder."""
+    """Clean transient state and only the current scenario output folder.
+
+    .agent_comms는 매 실행마다 비워야 이전 task/result 파일이 섞이지 않습니다.
+    Markdown 산출물은 현재 시나리오의 output folder만 지우고, preserve_build_dirs에
+    해당하는 이전 단계 산출물은 다음 시나리오 입력으로 남겨둡니다.
+    """
     os.makedirs(COMMS_DIR, exist_ok=True)
     for name in os.listdir(COMMS_DIR):
         path = os.path.join(COMMS_DIR, name)
@@ -475,6 +515,8 @@ def plan_tasks(api_url: str, scenario: dict, topic: str, reasoning: str = "off")
     print(f"{CYAN}{'━' * 60}{RESET}\n")
 
     if scenario.get("direct_plan"):
+        # 핸즈온에서는 대부분 direct_plan=True를 사용합니다. 이 모드에서는 LLM에게
+        # "작업 계획 JSON"을 만들게 하지 않고, Python 코드에 정의된 agent 지시를 바로 사용합니다.
         tasks = build_direct_tasks(scenario, topic)
         print(f"{GREEN}✅ Direct plan: {len(tasks)} tasks{RESET}\n")
         for task in tasks:
@@ -529,7 +571,11 @@ def plan_tasks(api_url: str, scenario: dict, topic: str, reasoning: str = "off")
 # ─── Step 2: Dispatch ───────────────────────────────────────
 
 def dispatch(tasks: list[dict], agents: list[dict], system_prompt: str = ""):
-    """Write task files so specialist agents can pick them up."""
+    """Write task files so specialist agents can pick them up.
+
+    task_{agent}.json 파일 하나가 specialist 한 명에게 전달되는 작업 봉투입니다.
+    이 파일 기반 dispatch 덕분에 여러 터미널 프로세스가 별도 서버 없이 협업합니다.
+    """
     print(f"{CYAN}{'━' * 60}{RESET}")
     print(f"{CYAN}  🚀 STEP 2: DISPATCHING{RESET}")
     print(f"{CYAN}{'━' * 60}{RESET}\n")
@@ -556,7 +602,11 @@ def dispatch(tasks: list[dict], agents: list[dict], system_prompt: str = ""):
 # ─── Step 3: Collect ────────────────────────────────────────
 
 def collect(tasks: list[dict], agents: list[dict]) -> dict[str, str]:
-    """Wait for all agents to write their result files."""
+    """Wait for all agents to write their result files.
+
+    specialist가 result_{agent}.json을 쓰면 읽고 삭제합니다. pending set이 빌 때까지
+    polling하므로 agent별 완료 시간이 달라도 결과를 모두 모을 수 있습니다.
+    """
     print(f"{YELLOW}⏳ Waiting for agents...{RESET}\n")
 
     results = {}
@@ -587,7 +637,13 @@ def collect(tasks: list[dict], agents: list[dict]) -> dict[str, str]:
 # ─── Step 4: Assemble ───────────────────────────────────────
 
 def assemble(scenario: dict, topic: str, results: dict, tasks: list = None):
-    """Build the final HTML page from all agent results."""
+    """Build the final HTML page from all agent results.
+
+    같은 결과 HTML을 세 위치에 저장합니다:
+    - latest.html: 방금 실행한 결과
+    - <scenario>.html: 시나리오별 최신 결과
+    - runs/<run_id>/index.html: 실행 이력 archive
+    """
     print(f"{CYAN}{'━' * 60}{RESET}")
     print(f"{CYAN}  🔧 STEP 3: ASSEMBLING{RESET}")
     print(f"{CYAN}{'━' * 60}{RESET}\n")
@@ -621,7 +677,12 @@ def assemble(scenario: dict, topic: str, results: dict, tasks: list = None):
     return index_path
 
 def save_markdown_files(scenario: dict, results: dict, tasks: list = None):
-    """Save each result as a Markdown file for scenarios that request it."""
+    """Save each result as a Markdown file for scenarios that request it.
+
+    Markdown으로 저장된 결과는 다음 시나리오의 입력 데이터가 됩니다. 예를 들어
+    resume -> interview_review -> hiring_decision 흐름은 모두 이 파일 저장/읽기
+    계약 위에서 이어집니다.
+    """
     if not scenario.get("save_markdown"):
         return []
 
@@ -680,6 +741,8 @@ def main():
     args = parser.parse_args()
 
     scenario = get_scenario(args.scenario, n_agents=args.tasks)
+    # scenario dict는 registry에서 온 정적 설정이고, 아래 런타임 값들은 이번 실행에만
+    # 필요한 metadata입니다. build_page, archive path, instruction template에 사용됩니다.
     scenario["name"] = args.scenario
     scenario["slug"] = slugify(args.scenario)
     scenario["run_id"] = f"{time.strftime('%Y%m%d-%H%M%S')}_{scenario['slug']}"
