@@ -224,6 +224,12 @@ Gemini CLI 세션 안에서:
 - [Hermes FAQ](https://hermes-agent.nousresearch.com/docs/reference/faq/)
 - [Hermes Docs Home](https://hermes-agent.nousresearch.com/docs/)
 
+### uv
+
+- [uv Installation](https://docs.astral.sh/uv/getting-started/installation/)
+- [uv First steps](https://docs.astral.sh/uv/getting-started/first-steps/)
+- [uv Tools Guide](https://docs.astral.sh/uv/guides/tools/)
+
 ### Gemini CLI
 
 - [Gemini CLI GitHub](https://github.com/google-gemini/gemini-cli)

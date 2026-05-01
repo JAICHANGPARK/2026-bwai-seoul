@@ -8,7 +8,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 - 진행 시간: `13:30 ~ 14:30 (60분)`
 - 기준 확인일: `2026-05-01`
 
-이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서를 모아두었습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 되고, 필요에 따라 `Ollama`, `llama.cpp`, `OpenCode`, `Hermes Agent`, `MLX`, `Gemini CLI`도 함께 볼 수 있습니다.
+이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서를 모아두었습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 되고, 필요에 따라 `Ollama`, `llama.cpp`, `OpenCode`, `Hermes Agent`, `uv`, `MLX`, `Gemini CLI`도 함께 볼 수 있습니다.
 
 ## 빠른 시작
 
@@ -24,9 +24,10 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 | Windows를 쓰는 경우 | [02](./docs/02-windows-guide.md) -> [01](./docs/01-hardware-and-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
 | ChromeOS를 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [06](./docs/06-ollama-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
 | Apple Silicon Mac을 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [04](./docs/04-gguf-mlx-llamacpp-explainer.md) -> [05](./docs/05-lm-studio-setup.md) -> [08](./docs/08-apple-silicon-mlx.md) |
-| 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) |
+| 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) -> [18](./docs/18-uv-setup.md) (필요 시) |
 | Gemini CLI에서 Gemma 4 preview / Gemma 라우팅을 확인해 보고 싶은 경우 | [15](./docs/15-gemini-cli-gemma-routing-prep.md) |
 | 자주 묻는 질문을 먼저 보고 싶은 경우 | [17](./docs/17-faq.md) |
+| `uv` 또는 `uvx`를 미리 설치하고 싶은 경우 | [18](./docs/18-uv-setup.md) |
 
 ## 먼저 기억할 것
 
@@ -36,6 +37,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 - `8GB` 장비는 `E2B`만 준비하세요. 실행 속도는 많이 느릴 수 있습니다.
 - 모델은 **instruction-tuned / chat-ready** 계열을 받으세요. `base`나 `pretrained`로 표시된 모델은 이번 기본 준비용으로 권장하지 않습니다.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 분만 추가로 준비하세요.
+- `uv`는 로컬 LLM 실행 도구가 아니라 Python 기반 도구와 실행 환경을 관리하는 보조 도구입니다. `Hermes Agent` 설치 중 문제가 날 때만 별도로 확인해도 됩니다.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델을 선택할 수 있지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 봐야 합니다.
 
 메모리별 모델 추천:
@@ -85,6 +87,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
 16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 17. [자주 묻는 질문](./docs/17-faq.md)
+18. [uv 설치 가이드](./docs/18-uv-setup.md)
 
 ## 저장소 구조
 
@@ -103,7 +106,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 
 - `docs/`: 세션 준비용 원본 마크다운 문서
 - `gemma4-local-setup-guide.md`: 가장 먼저 볼 전체 안내 문서
-- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-17`을 하나의 PDF로 묶는 스크립트
+- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-18`을 하나의 PDF로 묶는 스크립트
 - `output/pdf/`: 생성된 PDF 산출물
 - `tmp/pdfs/`: PDF 미리보기 contact sheet 이미지
 

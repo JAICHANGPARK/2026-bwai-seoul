@@ -96,6 +96,8 @@ wsl -d Ubuntu
 - `hermes` 명령 연결
 - setup wizard 실행
 
+자동 설치가 실패하거나 `uv`만 미리 준비하고 싶다면 [uv 설치 가이드](./18-uv-setup.md)를 먼저 확인하세요.
+
 ## 설치 순서
 
 ### 1. Windows 사용자는 먼저 WSL2 준비

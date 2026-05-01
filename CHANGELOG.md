@@ -7,6 +7,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전
 ### 추가
 
 - `docs/17-faq.md`를 추가해 자주 헷갈리는 질문을 한곳에서 확인할 수 있도록 정리했습니다.
+- `docs/18-uv-setup.md`를 추가해 `uv`와 `uvx` 설치, 업그레이드, Hermes Agent와의 관계를 별도 문서로 정리했습니다.
 - `docs/15-gemini-cli-gemma-routing-prep.md`를 추가해 Gemini CLI preview, Gemma 4 모델 선택, Gemma 로컬 라우팅 준비 흐름을 별도 문서로 분리했습니다.
 - Gemini CLI가 무엇인지, 로컬 Gemma 라우팅이 무엇인지, `gemini gemma setup`이 실제로 어떤 모델을 내려받는지 설명을 보강했습니다.
 - Gemma 4 preview 모델은 목록에서 선택 가능해도 계정/API 키/조직 설정에 따라 실제 호출이 막힐 수 있다는 주의사항을 추가했습니다.
@@ -17,7 +18,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전
 ### 변경
 
 - 문서 순서를 조정해 Gemini CLI 사전 준비 문서를 15번, 트러블슈팅과 최종 체크 문서를 16번, FAQ를 17번으로 정리했습니다.
-- `README.md`와 `gemma4-local-setup-guide.md`의 문서 목록을 최신 17개 문서 구성에 맞게 갱신했습니다.
+- `README.md`와 `gemma4-local-setup-guide.md`의 문서 목록을 최신 18개 문서 구성에 맞게 갱신했습니다.
 - 모델 선택 안내를 `instruction-tuned / chat-ready` 계열 기준으로 명확히 바꿨습니다.
 - Hugging Face 공식 Gemma 4 모델 예시로 `google/gemma-4-E2B-it`, `google/gemma-4-E4B-it`, `google/gemma-4-26B-A4B-it`, `google/gemma-4-31B-it`를 안내했습니다.
 - `base`나 `pretrained`로 표시된 모델은 모델 연구나 파인튜닝 출발점에는 의미가 있지만, 이번 핸즈온 기본 준비용으로는 권장하지 않는다고 정리했습니다.

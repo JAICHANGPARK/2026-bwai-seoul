@@ -44,6 +44,7 @@ Build with AI Seoul 2026 with Google DeepMind
 - 가능하면 **Ollama와 LM Studio를 둘 다 설치**해 주세요.
 - 하나만 설치한다면 **LM Studio를 먼저 설치하세요**.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 경우에만 추가로 준비하세요.
+- `uv`는 로컬 LLM 실행 도구가 아니라 Python 기반 도구와 실행 환경을 관리하는 보조 도구입니다. `Hermes Agent` 설치 중 문제가 날 때만 별도로 확인해도 됩니다.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델 선택이 가능하지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 이해해 주세요.
 - **ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
 - 이번 세션은 **개발자, 비개발자 모두 참여 가능한 세션**이므로, 처음 준비한다면 **GUI로 따라가기 쉬운 LM Studio**부터 설치하면 됩니다.
@@ -94,6 +95,7 @@ Build with AI Seoul 2026 with Google DeepMind
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
 16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 17. [자주 묻는 질문](./docs/17-faq.md)
+18. [uv 설치 가이드](./docs/18-uv-setup.md)
 
 ## 어떤 문서를 먼저 보면 되나요?
 
@@ -135,9 +137,10 @@ Build with AI Seoul 2026 with Google DeepMind
 4. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 5. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
 6. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
-7. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
-8. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
-9. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
+7. [uv 설치 가이드](./docs/18-uv-setup.md) (Hermes 설치 중 오류가 날 때)
+8. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
+9. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
+10. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 
 ### Gemini CLI에서 Gemma 4 preview 또는 Gemma 라우팅을 확인해 보고 싶은 경우
 
@@ -154,8 +157,9 @@ Build with AI Seoul 2026 with Google DeepMind
 
 1. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 2. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
-3. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+3. [uv 설치 가이드](./docs/18-uv-setup.md) (Hermes 설치 중 오류가 날 때)
+4. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### CLI 기반 로컬 서버를 직접 띄워 보고 싶은 경우
 
@@ -182,6 +186,7 @@ Build with AI Seoul 2026 with Google DeepMind
   - Ollama: `ollama --version`, `ollama run gemma4:e2b`
   - LM Studio: 앱 실행, 모델 다운로드, 채팅 1회 성공
   - llama.cpp: `llama-cli --version`, `llama-server --version`
+  - uv: `uv --version`, `uvx --version` (Hermes 등 Python 기반 CLI 도구를 직접 준비하는 경우)
   - Hermes: `hermes version`, `hermes doctor`
   - Gemini CLI Gemma 4 preview: `gemini --version`, `/settings`에서 `experimental.gemma` 확인, `gemini --model gemma-4-26b-a4b-it`, 세션 안에서 `/model`
   - Gemini CLI Gemma 라우팅: `gemini gemma setup`, `gemini gemma status`, 세션 안에서 `/gemma`

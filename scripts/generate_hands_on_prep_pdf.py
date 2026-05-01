@@ -94,6 +94,7 @@ DOC_FILES = [
     ROOT / "docs/15-gemini-cli-gemma-routing-prep.md",
     ROOT / "docs/16-troubleshooting-and-final-check.md",
     ROOT / "docs/17-faq.md",
+    ROOT / "docs/18-uv-setup.md",
 ]
 
 
@@ -818,14 +819,14 @@ def build_story(styles: StyleSheet1) -> list:
                     ["행사", EVENT_NAME],
                     ["트랙", TRACK],
                     ["진행 시간", DURATION],
-                    ["수록 범위", "docs/01-17 전체 문서 원문"],
+                    ["수록 범위", "docs/01-18 전체 문서 원문"],
                     ["기준 확인일", CHECK_DATE],
                 ],
                 styles,
             ),
             Spacer(1, 14 * mm),
             Paragraph(
-                "이 PDF는 저장소의 01-17번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
+                "이 PDF는 저장소의 01-18번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
                 styles["CoverMeta"],
             ),
             Spacer(1, 2 * mm),
