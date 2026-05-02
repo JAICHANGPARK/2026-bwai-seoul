@@ -282,20 +282,19 @@ def make_interview_review_agents(n: int = 10) -> list[dict]:
 
 
 def make_interview_dialogue_agents(n: int = 10) -> list[dict]:
-    """Create agents that turn resumes into interview transcripts."""
+    """Create agents that run real multi-turn interviews from resumes."""
     return [
         {
             "name": f"interview_dialogue_{i+1:02d}",
             "emoji": "🗣️",
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
-                "Simulate a realistic Korean job interview dialogue for {topic}.\n"
+                "Run a realistic Korean multi-turn job interview for {topic}.\n"
                 "Source resume file: {source_filename}\n\n"
                 "<resume>\n{resume_text}\n</resume>\n\n"
-                "Write a multi-turn Markdown transcript between a senior interviewer and the candidate. "
-                "Include evidence-based questions, follow-up questions, candidate answers, interviewer notes, "
-                "and a compensation negotiation section. The candidate may elaborate plausible context only when "
-                "it is consistent with the resume; mark anything that needs verification."
+                "Use this resume as the factual base. The execution engine will alternate interviewer question turns "
+                "and candidate answer turns, then write a final interviewer evaluation. Ask evidence-based questions, "
+                "use follow-up questions, and verify concerns raised by the resume."
             ),
             "filename": f"{i+1:02d}_interview_dialogue_{i+1:02d}.md",
         }
@@ -721,8 +720,8 @@ Required structure:
 
 
 INTERVIEW_DIALOGUE_SYSTEM = """
-You are a senior Korean publishing-company interviewer and a realistic fictional candidate simulator.
-You are conducting interviews for fiction planning editor roles: manuscript editing, novel acquisition, IP development, and editorial planning.
+You are a senior Korean publishing-company interviewer evaluating fiction planning editor candidates.
+You are conducting a real multi-turn interview: one interviewer question, one candidate answer, repeated across turns.
 
 Output ONLY Markdown.
 Do not include explanations outside the transcript.
@@ -735,18 +734,11 @@ Include a short compensation negotiation conversation near the end.
 Required structure:
 # [Candidate or Source File] - 면접 대화록
 ## 면접 설정
-## 핵심 검증 포인트
 ## 질의응답 대화
-### Q1. [질문 제목]
+### Turn 1
 **면접관:**
 **지원자:**
-**면접관 꼬리질문:**
-**지원자 추가 답변:**
-**면접관 메모:**
-## 처우협의 대화
 ## 면접관 최종 평가
-## 추가 검증 필요 사항
-## 채용 추천
 """.strip()
 
 
@@ -1127,7 +1119,7 @@ INTERVIEW_DIALOGUE_PLAN = {
     "user": (
         'Create {n_agents} interview dialogue simulation tasks for "{topic}".\n'
         "Agents: {agent_list}\n"
-        "Each task reads one generated resume and writes a multi-turn interviewer-candidate Q&A transcript."
+        "Each task reads one generated resume and runs a real multi-turn interviewer-candidate Q&A."
     ),
 }
 
@@ -1776,6 +1768,8 @@ SCENARIOS = {
         "title": "Interview Dialogues",
         "default_n": 10,
         "direct_plan": True,
+        "execution_mode": "interview_multiturn",
+        "interview_turns": 4,
         "input_markdown_dir": "resumes",
         "save_markdown": True,
         "markdown_dir": "interview_dialogues",

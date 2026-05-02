@@ -626,7 +626,7 @@ def plan_tasks(api_url: str, scenario: dict, topic: str, reasoning: str = "off")
 
 # ─── Step 2: Dispatch ───────────────────────────────────────
 
-def dispatch(tasks: list[dict], agents: list[dict], system_prompt: str = ""):
+def dispatch(tasks: list[dict], agents: list[dict], scenario: dict):
     """Write task files so specialist agents can pick them up.
 
     task_{agent}.json 파일 하나가 specialist 한 명에게 전달되는 작업 봉투입니다.
@@ -637,16 +637,23 @@ def dispatch(tasks: list[dict], agents: list[dict], system_prompt: str = ""):
     print(f"{CYAN}{'━' * 60}{RESET}\n")
 
     task_id = f"task_{int(time.time())}"
+    system_prompt = scenario.get("system_prompt", "")
+    execution_mode = scenario.get("execution_mode", "single")
 
     for task in tasks:
         name = task["name"]
         path = os.path.join(COMMS_DIR, f"task_{name}.json")
+        task_payload = {
+            "task_id": task_id,
+            "instruction": task["instruction"],
+            "system_prompt": system_prompt,
+            "execution_mode": execution_mode,
+            "source_filename": task.get("source_filename", ""),
+        }
+        if execution_mode == "interview_multiturn":
+            task_payload["interview_turns"] = scenario.get("interview_turns", 4)
         with open(path, "w") as f:
-            json.dump({
-                "task_id": task_id,
-                "instruction": task["instruction"],
-                "system_prompt": system_prompt,
-            }, f)
+            json.dump(task_payload, f)
 
         agent = next((a for a in agents if a["name"] == name), None)
         emoji = agent["emoji"] if agent else "📦"
@@ -830,7 +837,7 @@ def main():
 
     tasks = plan_tasks(args.api_url, scenario, args.topic, reasoning=args.reasoning)
     agents = scenario["agents"]
-    dispatch(tasks, agents, system_prompt=scenario.get("system_prompt", ""))
+    dispatch(tasks, agents, scenario)
     results = collect(tasks, agents)
     save_markdown_files(scenario, results, tasks)
     assemble(scenario, args.topic, results, tasks=tasks)
