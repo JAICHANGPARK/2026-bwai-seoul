@@ -16,6 +16,9 @@
 #   bash run.sh --scenario interview_dialogue --topic "도서 출판사 소설 기획자" --tasks 10
 #   bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획자" --hires 2
 #   bash run.sh --scenario hiring_decision_from_dialogue --topic "도서 출판사 소설 기획자" --hires 2
+#   bash run.sh --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
+#   bash run.sh --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
+#   bash run.sh --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2
 #   bash run.sh --scenario novel_writing --topic "서울의 독립출판사를 배경으로 한 미스터리 소설" --tasks 10
 #   bash run.sh --scenario short_story_writing --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 #   bash run.sh --scenario story_review_selection --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
@@ -52,7 +55,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
             echo ""
             echo "Options:"
-            echo "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
+            echo "  --scenario   Scenario name (translate, resume, interview_review, hiring_decision, marketer_resume, marketer_interview_review, marketer_hiring_decision, interview_dialogue, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
             echo "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
             echo "  --port       OpenAI-compatible server port        [default: 1234]"
             echo "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"

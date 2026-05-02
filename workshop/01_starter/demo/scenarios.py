@@ -153,6 +153,7 @@ TRANSLATE_PLAN = {
 # Step 3 resume
 # Step 4 interview_review
 # Step 5 hiring_decision
+# Hiring extension marketer_resume, marketer_interview_review, marketer_hiring_decision
 # Step 6 interview_dialogue and hiring_decision_from_dialogue
 # Optional novel_writing
 # Step 7 short_story_writing
@@ -366,8 +367,9 @@ SCENARIOS = {
     #
     # Step 0~2 do not add registry entries. Starting from Step 3, add the
     # registry entries in the same order as the lab guide:
-    # resume, interview_review, hiring_decision, interview_dialogue,
-    # hiring_decision_from_dialogue, optional novel_writing,
+    # resume, interview_review, hiring_decision,
+    # marketer_resume, marketer_interview_review, marketer_hiring_decision,
+    # interview_dialogue, hiring_decision_from_dialogue, optional novel_writing,
     # short_story_writing, story_review_selection, publication_offer_email,
     # contract_negotiation, contract_draft, story_revision, marketing_copy.
     #

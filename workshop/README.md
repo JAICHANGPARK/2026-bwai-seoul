@@ -162,9 +162,13 @@ bash run.sh --scenario translate --topic "Gemma 4 is a family of models released
 bash run.sh --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
 bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획자" --tasks 10
 bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획자" --hires 2
+
+bash run.sh --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
+bash run.sh --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
+bash run.sh --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2
 ```
 
-`resume`은 가상의 지원자 이력서를 `resumes/`에 저장합니다. `interview_review`는 저장된 이력서를 읽어 면접관 평가를 `interview_reviews/`에 저장하고, `hiring_decision`은 평가 결과를 모아 최종 채용 결정을 `hiring_decisions/`에 저장합니다.
+`resume`은 가상의 소설 기획자/편집자 이력서를 `resumes/`에 저장합니다. `interview_review`는 저장된 이력서를 읽어 면접관 평가를 `interview_reviews/`에 저장하고, `hiring_decision`은 평가 결과를 모아 최종 채용 결정을 `hiring_decisions/`에 저장합니다. 같은 방식으로 `marketer_resume`, `marketer_interview_review`, `marketer_hiring_decision`은 북 마케터 채용 결과를 `marketer_hiring_decisions/`에 저장합니다.
 
 면접 대화 시뮬레이션까지 확장하려면 아래 흐름을 추가로 실행합니다.
 
@@ -187,9 +191,9 @@ bash run.sh --scenario story_revision
 bash run.sh --scenario marketing_copy --tasks 10
 ```
 
-단편소설 흐름은 실제 출판사 업무에 가깝게 `심사/선정 -> 출간 의향 확인 -> 계약 조건 협의 -> 계약서 초안 작성 -> 개정 작업 -> 마케팅 문구` 순서로 구성했습니다. `publication_offer_email`, `contract_negotiation`, `contract_draft`, `story_revision`은 `story_review_selection` 결과에서 선정작 수를 자동으로 추론하므로 `--select 3 --tasks 3`를 반복해서 넣지 않아도 됩니다. `marketing_copy`는 선정작 수와 1:1로 묶지 않고, 기본 10개 agent가 선정작을 순환 배정받아 온라인 서점, SNS, 보도자료 등 여러 문구 변형을 생성합니다.
+단편소설 흐름은 실제 출판사 업무에 가깝게 `심사/선정 -> 출간 의향 확인 -> 계약 조건 협의 -> 계약서 초안 작성 -> 개정 작업 -> 마케팅 문구` 순서로 구성했습니다. `story_review_selection`, `publication_offer_email`, `contract_negotiation`, `contract_draft`, `story_revision`은 초반에 생성한 `hiring_decisions/`를 함께 읽어 채용된 편집팀의 관점을 반영합니다. 오퍼/계약/개정 단계는 선정작 수를 자동으로 추론하므로 `--select 3 --tasks 3`를 반복해서 넣지 않아도 됩니다. `marketing_copy`는 선정작 수와 1:1로 묶지 않고, 기본 10개 agent가 선정작과 채용된 마케터 팀의 관점을 순환 배정받아 온라인 서점, SNS, 보도자료 등 여러 문구 변형을 생성합니다.
 
-`story_revision`은 `story_review_selection`의 선정 보고서, `short_story_writing`의 원본 단편 원고, `contract_draft`의 출간 조건 맥락을 함께 읽고 개정 원고를 `revised_stories/`에 저장합니다. 선정 보고서의 `선정작` 섹션에서 작품 파일명을 먼저 추출하고 중복을 제거한 뒤 agent별로 하나씩 배정하므로, 같은 작품이 여러 번 개정되지 않습니다. `marketing_copy`는 개정 원고와 계약서 초안 맥락을 바탕으로 온라인 서점, SNS, 뉴스레터, 보도자료용 문구를 생성합니다.
+`story_revision`은 `story_review_selection`의 선정 보고서, `short_story_writing`의 원본 단편 원고, `contract_draft`의 출간 조건 맥락, 편집자 최종 채용 결정 맥락을 함께 읽고 개정 원고를 `revised_stories/`에 저장합니다. 선정 보고서의 `선정작` 섹션에서 작품 파일명을 먼저 추출하고 중복을 제거한 뒤 agent별로 하나씩 배정하므로, 같은 작품이 여러 번 개정되지 않습니다. `marketing_copy`는 개정 원고, 계약서 초안, 마케터 최종 채용 결정 맥락을 바탕으로 온라인 서점, SNS, 뉴스레터, 보도자료용 문구를 생성합니다.
 
 ## 새 시나리오 추가
 

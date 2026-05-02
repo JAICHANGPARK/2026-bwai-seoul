@@ -6,6 +6,9 @@
 # Examples:
 #   .\run.ps1 --scenario translate --topic "Hello world"
 #   .\run.ps1 --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
+#   .\run.ps1 --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
+#   .\run.ps1 --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
+#   .\run.ps1 --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2
 #   .\run.ps1 --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편"
 #   .\run.ps1 --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편"
 #   .\run.ps1 --scenario contract_draft --topic "문예지 신인상 투고용 도시 미스터리 단편"
@@ -30,7 +33,7 @@ function Show-Usage {
     Write-Host "Usage: .\run.ps1 --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
+    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, hiring_decision, marketer_resume, marketer_interview_review, marketer_hiring_decision, interview_dialogue, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
     Write-Host "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
     Write-Host "  --port       OpenAI-compatible server port        [default: 1234]"
     Write-Host "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"

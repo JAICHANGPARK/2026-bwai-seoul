@@ -318,6 +318,71 @@ def make_hiring_decision_from_dialogue_agents(n: int = 1) -> list[dict]:
     ]
 
 
+def make_marketer_resume_agents(n: int = 10) -> list[dict]:
+    """Create independent resume-writing agents for publishing marketers."""
+    return [
+        {
+            "name": f"marketer_resume_{i+1:02d}",
+            "emoji": "📈",
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                "Create one complete Korean Markdown resume for a fictional "
+                "book publishing company marketer. Topic: {topic}. "
+                f"This is marketer resume #{i+1}; make the candidate's channel focus, "
+                "campaign history, reader/community strategy, launch performance, "
+                "analytics tools, and collaboration style clearly different from the other resumes. "
+                "Output Markdown only."
+            ),
+            "filename": f"{i+1:02d}_marketer_resume_{i+1:02d}.md",
+        }
+        for i in range(n)
+    ]
+
+
+def make_marketer_interview_review_agents(n: int = 10) -> list[dict]:
+    """Create agents that review one marketer resume each."""
+    return [
+        {
+            "name": f"marketer_interview_{i+1:02d}",
+            "emoji": "🧑‍💼",
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                "Review the following marketer resume as a senior publishing marketing lead for {topic}.\n"
+                "Source resume file: {source_filename}\n\n"
+                "<resume>\n{resume_text}\n</resume>\n\n"
+                "Write one structured Korean Markdown interview review. "
+                "Evaluate evidence about book launch strategy, target readers, paid/owned/earned channels, "
+                "copywriting, campaign analytics, author collaboration, and sales coordination. "
+                "If evidence is weak, say what must be verified in the interview."
+            ),
+            "filename": f"{i+1:02d}_marketer_interview_review_{i+1:02d}.md",
+        }
+        for i in range(n)
+    ]
+
+
+def make_marketer_hiring_decision_agents(n: int = 1) -> list[dict]:
+    """Create final committee agents for publishing marketer hiring."""
+    return [
+        {
+            "name": f"marketer_hiring_committee_{i+1:02d}",
+            "emoji": "🏁",
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                "You are the final hiring committee for {topic}.\n"
+                "Select exactly {hire_count} marketers from the interview reviews below.\n"
+                "Input source: {source_filename}\n\n"
+                "<marketer_interview_reviews>\n{resume_text}\n</marketer_interview_reviews>\n\n"
+                "Write a final Korean Markdown marketer hiring decision. "
+                "Prioritize candidates who can create launch positioning, bookstore copy, SNS/newsletter campaigns, "
+                "press angles, reader targeting, and measurable campaign plans for fiction publishing."
+            ),
+            "filename": f"{i+1:02d}_marketer_hiring_decision.md",
+        }
+        for i in range(n)
+    ]
+
+
 def make_novel_writing_agents(n: int = 10) -> list[dict]:
     roles = [
         ("concept", "소설 기획서와 핵심 독자 타깃을 작성"),
@@ -399,11 +464,12 @@ def make_story_review_selection_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are editor #{i+1}, a {perspective}.\n"
-                "Review all submitted short stories for the publication theme: {topic}.\n"
+                "Review all submitted short stories for the publication theme: {topic} as part of the hired editorial team.\n"
+                "Use the editor hiring decision below as editorial-board context when it is available.\n"
                 "Select exactly {select_count} stories for publication consideration.\n"
                 "When listing selected stories, include each exact source Markdown filename.\n"
                 "Input source: {source_filename}\n\n"
-                "<short_stories>\n{resume_text}\n</short_stories>\n\n"
+                "<short_stories_and_editorial_team_context>\n{resume_text}\n</short_stories_and_editorial_team_context>\n\n"
                 "Write a Korean Markdown editorial review and selection report."
             ),
             "filename": f"{i+1:02d}_story_selection_{slug}.md",
@@ -424,15 +490,15 @@ def make_story_revision_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean fiction editor rewriting selected short story assignment #{i+1}.\n"
-                "Use the editorial selection reports, original short-story manuscripts, and contract draft context below.\n"
+                "Use the editorial selection reports, original short-story manuscripts, contract draft context, and editor hiring decision below.\n"
                 "Assigned selected story: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
                 "Revise only the assigned story above. Do not choose or rewrite any other story, "
                 "even if other selected stories appear in the review reports.\n"
                 "Locate the matching original manuscript and revise the story based on the review notes, "
-                "editorial strengths, risks, and requested changes that apply to this assigned story.\n"
+                "editorial strengths, hired editor team context, risks, and requested changes that apply to this assigned story.\n"
                 "Input source: {source_filename}\n\n"
-                "<review_results_original_stories_and_contract_context>\n{resume_text}\n</review_results_original_stories_and_contract_context>\n\n"
+                "<review_results_original_stories_contract_and_editor_context>\n{resume_text}\n</review_results_original_stories_contract_and_editor_context>\n\n"
                 "Output one revised Korean Markdown manuscript only. "
                 "If the assigned story or matching source story cannot be identified, "
                 "write a short Korean Markdown internal note explaining what is missing."
@@ -453,13 +519,13 @@ def make_publication_offer_email_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are an acquisitions editor writing publication offer email #{i+1}.\n"
-                "Use the story selection results and original manuscripts below.\n"
+                "Use the story selection results, original manuscripts, and editor hiring decision below.\n"
                 "Assigned selected story: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
-                "Draft an initial publication-intent email for the assigned selected story only.\n"
+                "Draft an initial publication-intent email for the assigned selected story only, using the hired editorial team's rationale as context.\n"
                 "If the assigned story does not exist, write a brief internal note saying there is no selected story for this task.\n"
                 "Input source: {source_filename}\n\n"
-                "<selection_results_and_original_stories>\n{resume_text}\n</selection_results_and_original_stories>\n\n"
+                "<selection_results_original_stories_and_editor_context>\n{resume_text}\n</selection_results_original_stories_and_editor_context>\n\n"
                 "Output one Korean Markdown email draft only, including subject, recipient placeholder, opening, selected-work rationale, intent-to-publish note, contract-discussion agenda, schedule, and closing."
             ),
             "filename": f"{i+1:02d}_publication_offer_email.md",
@@ -478,13 +544,13 @@ def make_contract_negotiation_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean publishing rights editor preparing contract negotiation memo #{i+1}.\n"
-                "Use the publication offer emails, selection reports, and original manuscripts below.\n"
+                "Use the publication offer emails, selection reports, original manuscripts, and editor hiring decision below.\n"
                 "Assigned selected story: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
-                "Prepare negotiation notes for the assigned selected story only.\n"
+                "Prepare negotiation notes for the assigned selected story only, reflecting the hired editorial team's priorities.\n"
                 "This is a fictional workshop artifact, not legal advice and not a binding contract.\n"
                 "Input source: {source_filename}\n\n"
-                "<offer_selection_and_story_materials>\n{resume_text}\n</offer_selection_and_story_materials>\n\n"
+                "<offer_selection_story_and_editor_context>\n{resume_text}\n</offer_selection_story_and_editor_context>\n\n"
                 "Output one Korean Markdown negotiation memo only, covering proposed rights scope, manuscript delivery, revision expectations, schedule, compensation placeholders, risk points, author questions, publisher concessions, and next actions."
             ),
             "filename": f"{i+1:02d}_contract_negotiation.md",
@@ -503,13 +569,13 @@ def make_contract_draft_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean publishing operations editor preparing publication contract draft #{i+1}.\n"
-                "Use the negotiation memo, publication offer, and selection materials below.\n"
+                "Use the negotiation memo, publication offer, selection materials, and editor hiring decision below.\n"
                 "Assigned selected story: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
-                "Prepare a non-binding publication contract draft for the assigned selected story only.\n"
+                "Prepare a non-binding publication contract draft for the assigned selected story only, keeping the hired editorial team's publication priorities visible.\n"
                 "This is a fictional workshop artifact, not legal advice, not a substitute for lawyer review, and not a binding legal contract.\n"
                 "Input source: {source_filename}\n\n"
-                "<negotiation_offer_and_selection_materials>\n{resume_text}\n</negotiation_offer_and_selection_materials>\n\n"
+                "<negotiation_offer_selection_and_editor_context>\n{resume_text}\n</negotiation_offer_selection_and_editor_context>\n\n"
                 "Output one Korean Markdown contract draft only, including draft clauses, term sheet, required author materials, internal approval notes, signature workflow, and open legal-review items."
             ),
             "filename": f"{i+1:02d}_contract_draft.md",
@@ -535,10 +601,11 @@ def make_marketing_copy_agents(n: int = 10) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean publishing marketer writing launch copy package #{i+1} for {channel}.\n"
-                "Use the revised stories, contract drafts, and selection notes below.\n"
+                "Use the revised stories, contract drafts, selection notes, and marketer hiring decisions below.\n"
                 "Assigned revised/selected story material: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
-                "Write copy for the assigned story only. If the assigned story cannot be identified, write a brief internal note.\n"
+                "Write copy for the assigned story only, using the hired marketer team's strengths as the marketing lens. "
+                "If the assigned story cannot be identified, write a brief internal note.\n"
                 "Input source: {source_filename}\n\n"
                 "<publication_materials>\n{resume_text}\n</publication_materials>\n\n"
                 "Output one Korean Markdown marketing copy package only, including positioning, target readers, one-line hook, short synopsis, bookstore copy, SNS posts, newsletter blurb, press headline, and caution notes."
@@ -703,6 +770,77 @@ Required structure:
 ## 최종 결론
 """.strip()
 
+MARKETER_RESUME_SYSTEM = """
+You are a senior Korean resume writer for publishing and media marketing roles.
+Create one realistic but fully fictional resume for a book publishing company marketer.
+
+Output ONLY Markdown.
+Do not include explanations or markdown fences.
+Do not use real personal data, real phone numbers, real emails, or real company-confidential facts.
+Use fictional names, fictional employers, fictional campaigns, and fictional metrics.
+Make the resume specific to book publishing marketing, fiction launches, reader communities, and sales-channel coordination.
+
+Required structure:
+# [Fictional Korean Name] - 도서 출판사 북 마케터 이력서
+## 프로필
+## 핵심 역량
+## 경력
+## 주요 마케팅 캠페인
+## 성과 지표
+## 사용 도구
+## 학력 및 자격
+## 포트폴리오 요약
+""".strip()
+
+MARKETER_INTERVIEW_REVIEW_SYSTEM = """
+You are a senior publishing marketing lead and hiring committee reviewer.
+You are reviewing candidates for book marketing, fiction launch campaigns, reader targeting, channel strategy, and sales enablement roles.
+
+Output ONLY Markdown.
+Do not include explanations outside the review.
+Do not invent facts not present in the resume.
+When a claim needs verification, state the interview question that would verify it.
+Use a realistic, strict marketing lead tone.
+For treatment negotiation, make fictional but plausible recommendations based only on resume seniority and role fit.
+
+Required structure:
+# [Candidate or Source File] - 북 마케터 면접 리뷰
+## 한줄 평가
+## 직무 적합도
+## 강점 근거
+## 우려점 및 검증 리스크
+## 면접 질문 7개
+## 캠페인 과제 제안
+## 처우협의 포인트
+## 예상 연봉/직급 제안
+## 평가 루브릭
+## 채용 추천
+""".strip()
+
+MARKETER_HIRING_DECISION_SYSTEM = """
+You are a final hiring committee for a Korean book publishing company.
+You must choose a fixed number of book marketers from the provided interview reviews.
+
+Output ONLY Markdown.
+Select exactly the requested number of hires.
+Use only the evidence in the marketer interview reviews.
+When scores are close, explain the tie-breaker.
+Prefer candidates who can support fiction launch positioning, bookstore detail pages, SNS/newsletter campaigns, press angles, reader acquisition, and measurable marketing plans.
+Include treatment negotiation guidance, but keep it fictional and scenario-based.
+
+Required structure:
+# 북 마케터 최종 채용 의사결정
+## 선발 인원
+## 최종 합격자
+## 예비 합격자
+## 탈락자 요약
+## 비교 평가표
+## 캠페인 역량 비교
+## 처우협의 전략
+## 오퍼 리스크
+## 최종 결론
+""".strip()
+
 NOVEL_WRITING_SYSTEM = """
 You are a professional Korean fiction writer and publishing editor.
 Create polished Markdown for a publishable novel development package.
@@ -736,7 +874,8 @@ You must review all submitted stories and select a fixed number for publication 
 
 Output ONLY Markdown.
 Select exactly the requested number of stories.
-Use only the submitted story texts as evidence.
+Use only the submitted story texts as evidence for story quality.
+Use the final editor hiring decision as editorial-board context when it is available.
 For every selected story, include the exact source Markdown filename from the input.
 Be clear about editorial strengths, market fit, revision needs, and publication risk.
 
@@ -754,12 +893,13 @@ Required structure:
 
 STORY_REVISION_SYSTEM = """
 You are a senior Korean fiction editor and revision writer.
-You revise selected short stories using editorial review reports, original manuscripts, and agreed publication context.
+You revise selected short stories using editorial review reports, original manuscripts, agreed publication context, and hired editorial-team context.
 
 Output ONLY Markdown.
 Revise the actual story text, not just a summary or plan.
 Preserve the core premise and authorial identity of the original manuscript unless the review explicitly requires a change.
 Apply concrete editorial feedback about structure, characterization, pacing, scene clarity, tone, market fit, and ending.
+Use the final editor hiring decision as editorial-team context when it is available.
 Use contract draft context only as publication constraints; do not write legal terms into the manuscript.
 Do not copy existing works, real living authors' style, or copyrighted characters.
 If the selected story or original manuscript cannot be identified, output a short internal note instead.
@@ -781,6 +921,7 @@ You are a Korean publishing editor drafting professional publication offer email
 Output ONLY Markdown.
 Draft email text only. Do not claim the email was actually sent.
 Keep terms fictional and use placeholders for personal/contact details.
+Use the final editor hiring decision as editorial-team context when it is available.
 Make the offer warm, specific to the selected work, and clear that contract terms still need discussion.
 
 Required structure:
@@ -800,6 +941,7 @@ You are a Korean publishing rights editor preparing a contract-term negotiation 
 Output ONLY Markdown.
 This is a fictional workshop artifact, not legal advice and not a binding contract.
 Use placeholders for money, dates, addresses, personal information, and legal entity details.
+Use the final editor hiring decision as editorial-team context when it is available.
 Keep the memo close to a real publishing workflow: rights scope, compensation, manuscript delivery, revision, approval, schedule, and unresolved negotiation points.
 
 Required structure:
@@ -821,6 +963,7 @@ You are a Korean publishing operations editor preparing a non-binding publicatio
 Output ONLY Markdown.
 This is a fictional workshop artifact, not legal advice, not a substitute for lawyer review, and not a binding legal contract.
 Do not invent real personal information, real bank details, real registration numbers, or real legal entity data.
+Use the final editor hiring decision as editorial-team context when it is available.
 Focus on a readable contract draft that an editorial team can pass to legal review before signing.
 
 Required structure:
@@ -842,6 +985,7 @@ You are a Korean publishing marketer creating launch copy for selected and revis
 
 Output ONLY Markdown.
 Use the revised manuscript and editorial context as evidence.
+Use the hired marketer decision as marketing team context when it is available.
 Do not claim awards, bestseller status, media quotes, or author facts that are not present in the source material.
 Write commercially useful copy that can support bookstore detail pages, SNS, newsletter, and press outreach.
 
@@ -986,6 +1130,48 @@ HIRING_DECISION_FROM_DIALOGUE_PLAN = {
         'Create final hiring committee decision tasks for "{topic}".\n'
         "Agents: {agent_list}\n"
         "Each task reads all interview dialogue transcripts and selects the required number of hires."
+    ),
+}
+
+MARKETER_RESUME_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name", '
+        '"instruction", and "filename". Use agent names exactly as provided. '
+        "Output ONLY valid JSON."
+    ),
+    "user": (
+        'Create {n_agents} different fictional Korean Markdown resumes for "{topic}".\n'
+        "Agents: {agent_list}\n"
+        "Each instruction should ask for one complete resume for a book publishing marketer, "
+        "with differentiated seniority, channel focus, campaign type, reader segment, tools, and achievements."
+    ),
+}
+
+
+MARKETER_INTERVIEW_REVIEW_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name", '
+        '"instruction", and "filename". Use agent names exactly as provided. '
+        "Output ONLY valid JSON."
+    ),
+    "user": (
+        'Create {n_agents} marketer interview review tasks for "{topic}".\n'
+        "Agents: {agent_list}\n"
+        "Each task reviews one generated marketer resume from the marketer_resumes folder."
+    ),
+}
+
+
+MARKETER_HIRING_DECISION_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name", '
+        '"instruction", and "filename". Use agent names exactly as provided. '
+        "Output ONLY valid JSON."
+    ),
+    "user": (
+        'Create final marketer hiring committee decision tasks for "{topic}".\n'
+        "Agents: {agent_list}\n"
+        "Each task reads all marketer interview reviews and selects the required number of hires."
     ),
 }
 
@@ -1581,6 +1767,51 @@ SCENARIOS = {
         "markdown_dir": "hiring_decisions_from_dialogue",
         "preserve_build_dirs": ["resumes", "interview_dialogues"],
     },
+    "marketer_resume": {
+        "make_agents": make_marketer_resume_agents,
+        "plan": MARKETER_RESUME_PLAN,
+        "system_prompt": MARKETER_RESUME_SYSTEM,
+        "render_card": resume_card,
+        "title": "Publishing Marketer Resumes",
+        "default_n": 10,
+        "direct_plan": True,
+        "save_markdown": True,
+        "markdown_dir": "marketer_resumes",
+        "preserve_build_dirs": ["resumes", "interview_reviews", "hiring_decisions"],
+    },
+    "marketer_interview_review": {
+        "make_agents": make_marketer_interview_review_agents,
+        "plan": MARKETER_INTERVIEW_REVIEW_PLAN,
+        "system_prompt": MARKETER_INTERVIEW_REVIEW_SYSTEM,
+        "render_card": interview_review_card,
+        "title": "Publishing Marketer Interview Reviews",
+        "default_n": 10,
+        "direct_plan": True,
+        "input_markdown_dir": "marketer_resumes",
+        "save_markdown": True,
+        "markdown_dir": "marketer_interview_reviews",
+        "preserve_build_dirs": ["resumes", "interview_reviews", "hiring_decisions", "marketer_resumes"],
+    },
+    "marketer_hiring_decision": {
+        "make_agents": make_marketer_hiring_decision_agents,
+        "plan": MARKETER_HIRING_DECISION_PLAN,
+        "system_prompt": MARKETER_HIRING_DECISION_SYSTEM,
+        "render_card": hiring_decision_card,
+        "title": "Publishing Marketer Hiring Decision",
+        "default_n": 1,
+        "direct_plan": True,
+        "input_markdown_dir": "marketer_interview_reviews",
+        "aggregate_input_markdown": True,
+        "save_markdown": True,
+        "markdown_dir": "marketer_hiring_decisions",
+        "preserve_build_dirs": [
+            "resumes",
+            "interview_reviews",
+            "hiring_decisions",
+            "marketer_resumes",
+            "marketer_interview_reviews",
+        ],
+    },
     "novel_writing": {
         "make_agents": make_novel_writing_agents,
         "plan": NOVEL_WRITING_PLAN,
@@ -1614,10 +1845,11 @@ SCENARIOS = {
         "default_n": 3,
         "direct_plan": True,
         "input_markdown_dir": "short_stories",
+        "auxiliary_input_markdown_dirs": ["hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "story_selections",
-        "preserve_build_dirs": ["short_stories"],
+        "preserve_build_dirs": ["hiring_decisions", "short_stories"],
     },
     "publication_offer_email": {
         "make_agents": make_publication_offer_email_agents,
@@ -1632,11 +1864,11 @@ SCENARIOS = {
         "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "story_selections",
-        "auxiliary_input_markdown_dirs": ["short_stories"],
+        "auxiliary_input_markdown_dirs": ["short_stories", "hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "publication_offer_emails",
-        "preserve_build_dirs": ["short_stories", "story_selections"],
+        "preserve_build_dirs": ["hiring_decisions", "short_stories", "story_selections"],
     },
     "contract_negotiation": {
         "make_agents": make_contract_negotiation_agents,
@@ -1651,11 +1883,11 @@ SCENARIOS = {
         "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "publication_offer_emails",
-        "auxiliary_input_markdown_dirs": ["story_selections", "short_stories"],
+        "auxiliary_input_markdown_dirs": ["story_selections", "short_stories", "hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "contract_negotiations",
-        "preserve_build_dirs": ["short_stories", "story_selections", "publication_offer_emails"],
+        "preserve_build_dirs": ["hiring_decisions", "short_stories", "story_selections", "publication_offer_emails"],
     },
     "contract_draft": {
         "make_agents": make_contract_draft_agents,
@@ -1670,11 +1902,11 @@ SCENARIOS = {
         "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "contract_negotiations",
-        "auxiliary_input_markdown_dirs": ["publication_offer_emails", "story_selections"],
+        "auxiliary_input_markdown_dirs": ["publication_offer_emails", "story_selections", "hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "contract_drafts",
-        "preserve_build_dirs": ["short_stories", "story_selections", "publication_offer_emails", "contract_negotiations"],
+        "preserve_build_dirs": ["hiring_decisions", "short_stories", "story_selections", "publication_offer_emails", "contract_negotiations"],
     },
     "story_revision": {
         "make_agents": make_story_revision_agents,
@@ -1690,11 +1922,12 @@ SCENARIOS = {
         "selected_story_filename_mode": "revision",
         "direct_plan": True,
         "input_markdown_dir": "story_selections",
-        "auxiliary_input_markdown_dirs": ["short_stories", "contract_drafts"],
+        "auxiliary_input_markdown_dirs": ["short_stories", "contract_drafts", "hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "revised_stories",
         "preserve_build_dirs": [
+            "hiring_decisions",
             "short_stories",
             "story_selections",
             "publication_offer_emails",
@@ -1715,7 +1948,7 @@ SCENARIOS = {
         "selected_story_filename_mode": "marketing",
         "direct_plan": True,
         "input_markdown_dir": "revised_stories",
-        "auxiliary_input_markdown_dirs": ["contract_drafts", "story_selections"],
+        "auxiliary_input_markdown_dirs": ["contract_drafts", "story_selections", "marketer_hiring_decisions"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "marketing_copy",
@@ -1726,6 +1959,7 @@ SCENARIOS = {
             "contract_negotiations",
             "contract_drafts",
             "revised_stories",
+            "marketer_hiring_decisions",
         ],
     },
 
