@@ -12,17 +12,49 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 
 `code` 기본 10개 agent에는 Dart가 포함됩니다.
 
-주요 완성 흐름:
+## 최종 실행 순서
+
+**0. 기본 실행**
+
+```bash
+bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
+```
+
+**1. 편집자 채용**
 
 ```bash
 bash run.sh --scenario resume --topic "도서 출판사 소설 기획편집자" --tasks 10
 bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획편집자" --tasks 10
 bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획편집자" --hires 2
+```
 
+**2. 마케터 채용**
+
+```bash
 bash run.sh --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
 bash run.sh --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
 bash run.sh --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2
+```
 
+**3. 선택 확장: 실제 멀티턴 면접**
+
+```bash
+bash run.sh --scenario interview_dialogue --topic "도서 출판사 소설 기획편집자" --tasks 3
+bash run.sh --scenario hiring_decision_from_dialogue --topic "도서 출판사 소설 기획편집자" --hires 2
+```
+
+`interview_dialogue`는 후보자 1명마다 질문/답변을 여러 번 생성하므로 처음에는 `--tasks 3`으로 확인하는 편이 좋습니다.
+
+**4. 선택 확장: 장편 소설 기획**
+
+```bash
+bash run.sh --scenario novel_writing --topic "도시 미스터리 장편소설 기획" --tasks 10
+```
+
+**5. 단편소설 출판 흐름**
+
+```bash
 bash run.sh --scenario short_story_writing --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 bash run.sh --scenario story_review_selection --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
 bash run.sh --scenario publication_offer_email

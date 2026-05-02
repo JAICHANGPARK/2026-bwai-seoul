@@ -1,9 +1,9 @@
 """
 Starter scenario definitions for the hands-on workshop.
 
-01_starter intentionally contains only the translate scenario. During the
-hands-on, participants add resume/interview/story scenarios to this file and
-compare their result with 02_final/demo/scenarios.py.
+01_starter intentionally contains only the translate and code scenarios.
+During the hands-on, participants add resume/interview/story scenarios to this
+file and compare their result with 02_final/demo/scenarios.py.
 """
 
 import html
@@ -530,7 +530,7 @@ SCENARIOS = {
 
     # TODO Step 3~13:
     # Paste each registry entry from workshop/03_labs/README.md here, inside
-    # this dict, after the translate entry.
+    # this dict, after the code entry.
     #
     # Step 0~2 do not add registry entries because translate and code are
     # already registered. Starting from Step 3, add entries in the same order

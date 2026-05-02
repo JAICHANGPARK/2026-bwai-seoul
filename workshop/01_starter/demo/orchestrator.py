@@ -404,7 +404,12 @@ def assign_selected_story_targets(
     mode: str = "unique",
     filename_mode: str = "",
 ) -> list[dict]:
-    """Attach selected story metadata to agents for later publishing labs."""
+    """Attach selected story metadata to agents.
+
+    mode="unique" assigns each selected story once. mode="cycle" is useful for
+    marketing copy because ten copywriters can create multiple variants across
+    three selected works without producing "missing story" placeholder outputs.
+    """
     assignments = rank_selected_short_stories(selection_docs, story_docs, max(limit, 1))
     assigned_agents = []
 
