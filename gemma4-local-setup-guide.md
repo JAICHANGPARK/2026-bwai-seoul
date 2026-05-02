@@ -2,7 +2,7 @@
 
 Build with AI Seoul 2026 with Google DeepMind  
 사전 준비 전체 안내 문서  
-기준 확인일: 2026-05-01
+기준 확인일: 2026-05-02
 
 ## 행사 정보
 
@@ -45,6 +45,7 @@ Build with AI Seoul 2026 with Google DeepMind
 - 하나만 설치한다면 **LM Studio를 먼저 설치하세요**.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 경우에만 추가로 준비하세요.
 - `uv`는 로컬 LLM 실행 도구가 아니라 Python 기반 도구와 실행 환경을 관리하는 보조 도구입니다. `Hermes Agent` 설치 중 문제가 날 때만 별도로 확인해도 됩니다.
+- 핸즈온에서 `workshop/01_starter` 코드를 수정하므로 `Visual Studio Code` 또는 `Google Antigravity` 중 하나를 준비하세요.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델 선택이 가능하지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 이해해 주세요.
 - **ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
 - 이번 세션은 **개발자, 비개발자 모두 참여 가능한 세션**이므로, 처음 준비한다면 **GUI로 따라가기 쉬운 LM Studio**부터 설치하면 됩니다.
@@ -96,6 +97,7 @@ Build with AI Seoul 2026 with Google DeepMind
 16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 17. [자주 묻는 질문](./docs/17-faq.md)
 18. [uv 설치 가이드](./docs/18-uv-setup.md)
+19. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
 
 ## 어떤 문서를 먼저 보면 되나요?
 
@@ -104,14 +106,16 @@ Build with AI Seoul 2026 with Google DeepMind
 1. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 2. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### Windows를 쓰는 경우
 
 1. [Windows 빠른 준비 가이드](./docs/02-windows-guide.md)
 2. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
 
 ### ChromeOS를 쓰는 경우
 
@@ -127,7 +131,14 @@ Build with AI Seoul 2026 with Google DeepMind
 3. [GGUF, MLX, llama.cpp 개념 설명](./docs/04-gguf-mlx-llamacpp-explainer.md)
 4. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 5. [Apple Silicon + MLX 안내](./docs/08-apple-silicon-mlx.md)
-6. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+6. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+7. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+
+### 핸즈온 코드를 직접 수정해야 하는 경우
+
+1. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+2. [uv 설치 가이드](./docs/18-uv-setup.md)
+3. [workshop/03_labs/README.md](./workshop/03_labs/README.md)
 
 ### 코딩 에이전트 경험이 있는 경우
 
@@ -183,6 +194,7 @@ Build with AI Seoul 2026 with Google DeepMind
 - 실습 당일 전원 어댑터 지참
 - 행사 전에 모델 다운로드 완료
 - 행사 전 테스트 완료
+  - 코드 편집기: VS Code `code --version` 또는 Antigravity 앱 실행 + `workshop/01_starter` 폴더 열기
   - Ollama: `ollama --version`, `ollama run gemma4:e2b`
   - LM Studio: 앱 실행, 모델 다운로드, 채팅 1회 성공
   - llama.cpp: `llama-cli --version`, `llama-server --version`

@@ -74,7 +74,7 @@ EVENT_NAME = "Build with AI Seoul 2026"
 TRACK = "Hands-On A"
 PRESENTER = "박제창"
 DURATION = "13:30 ~ 14:30 (60분)"
-CHECK_DATE = "2026-05-01"
+CHECK_DATE = "2026-05-02"
 
 DOC_FILES = [
     ROOT / "docs/01-hardware-and-model-selection.md",
@@ -95,6 +95,7 @@ DOC_FILES = [
     ROOT / "docs/16-troubleshooting-and-final-check.md",
     ROOT / "docs/17-faq.md",
     ROOT / "docs/18-uv-setup.md",
+    ROOT / "docs/19-code-editor-setup.md",
 ]
 
 
@@ -819,14 +820,14 @@ def build_story(styles: StyleSheet1) -> list:
                     ["행사", EVENT_NAME],
                     ["트랙", TRACK],
                     ["진행 시간", DURATION],
-                    ["수록 범위", "docs/01-18 전체 문서 원문"],
+                    ["수록 범위", "docs/01-19 전체 문서 원문"],
                     ["기준 확인일", CHECK_DATE],
                 ],
                 styles,
             ),
             Spacer(1, 14 * mm),
             Paragraph(
-                "이 PDF는 저장소의 01-18번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
+                "이 PDF는 저장소의 01-19번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
                 styles["CoverMeta"],
             ),
             Spacer(1, 2 * mm),

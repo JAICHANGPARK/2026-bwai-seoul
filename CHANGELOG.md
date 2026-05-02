@@ -2,6 +2,18 @@
 
 Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전 준비 문서의 주요 변경 이력입니다.
 
+## 2026-05-02
+
+### 추가
+
+- `docs/19-code-editor-setup.md`를 추가해 Visual Studio Code와 Google Antigravity 설치, 선택 기준, 핸즈온 코드 열기 방법을 정리했습니다.
+
+### 변경
+
+- `README.md`, `gemma4-local-setup-guide.md`, PDF 생성 스크립트의 문서 목록을 최신 19개 문서 구성에 맞게 갱신했습니다.
+- 핸즈온 코드 수정 준비 항목에 `Visual Studio Code` 또는 `Google Antigravity` 중 하나를 설치하도록 안내를 추가했습니다.
+- `output/pdf/gemma4-hands-on-prep-guide.pdf`를 최신 문서 기준으로 다시 생성할 수 있도록 수록 범위를 `docs/01-19`로 갱신했습니다.
+
 ## 2026-05-01
 
 ### 추가

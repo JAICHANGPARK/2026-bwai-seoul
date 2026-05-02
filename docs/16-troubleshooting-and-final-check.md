@@ -230,6 +230,15 @@ Gemini CLI 세션 안에서:
 - [uv First steps](https://docs.astral.sh/uv/getting-started/first-steps/)
 - [uv Tools Guide](https://docs.astral.sh/uv/guides/tools/)
 
+### 코드 편집기
+
+- [Visual Studio Code Download](https://code.visualstudio.com/Download)
+- [VS Code setup overview](https://code.visualstudio.com/docs/setup/setup-overview)
+- [VS Code command line](https://code.visualstudio.com/docs/configure/command-line)
+- [Google Antigravity](https://antigravity.google/)
+- [Google Antigravity Download](https://antigravity.google/download)
+- [Getting Started with Google Antigravity - Google Codelabs](https://codelabs.developers.google.com/getting-started-google-antigravity)
+
 ### Gemini CLI
 
 - [Gemini CLI GitHub](https://github.com/google-gemini/gemini-cli)

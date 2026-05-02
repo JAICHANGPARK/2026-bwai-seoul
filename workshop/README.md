@@ -9,6 +9,7 @@
 ## 준비물
 
 - **macOS + Terminal** 또는 **Windows + PowerShell**
+- 코드 수정을 위한 **Visual Studio Code 또는 Google Antigravity**: 자세한 설치 방법은 [코드 편집기 설치 가이드](../docs/19-code-editor-setup.md)를 참고하세요.
 - Python 패키지 관리를 위한 **[uv](https://github.com/astral-sh/uv)**
 - **LM Studio** 로컬 OpenAI 호환 서버
 
