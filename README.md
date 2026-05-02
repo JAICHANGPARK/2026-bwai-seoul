@@ -1,6 +1,6 @@
 # 2026 Build with AI Seoul
 
-Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위한 사전 준비 문서 저장소입니다.
+Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위한 사전 준비 문서와 핸즈온 실습 코드 저장소입니다.
 
 - 세션명: `Build Your Own AI Office with Gemma 4`
 - 진행자: `박제창`
@@ -8,13 +8,19 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 - 진행 시간: `13:30 ~ 14:30 (60분)`
 - 기준 확인일: `2026-05-01`
 
-이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서를 모아두었습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 되고, 필요에 따라 `Ollama`, `llama.cpp`, `OpenCode`, `Hermes Agent`, `uv`, `MLX`, `Gemini CLI`도 함께 볼 수 있습니다.
+이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서와, 당일 실습에서 사용할 `workshop/` 코드가 들어 있습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 되고, 핸즈온 실습은 [workshop/03_labs/README.md](./workshop/03_labs/README.md)를 보면서 [workshop/01_starter](./workshop/01_starter)에서 진행하면 됩니다.
 
 ## 빠른 시작
 
-먼저 아래 문서부터 보세요.
+행사 전 준비는 아래 문서부터 보세요.
 
 - [gemma4-local-setup-guide.md](./gemma4-local-setup-guide.md)
+
+행사 당일 핸즈온은 아래 순서로 보면 됩니다.
+
+1. [workshop/03_labs/README.md](./workshop/03_labs/README.md)를 엽니다.
+2. [workshop/01_starter](./workshop/01_starter) 폴더에서 실습합니다.
+3. 막히면 [workshop/02_final](./workshop/02_final)을 정답 코드로 참고합니다.
 
 본인 상황에 맞게 아래 순서로 보면 됩니다.
 
@@ -64,6 +70,13 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 
 ## 문서 구성
 
+### 핸즈온 실습 코드
+
+- [workshop/README.md](./workshop/README.md): 워크샵 코드 폴더 안내
+- [workshop/03_labs/README.md](./workshop/03_labs/README.md): 단계별 핸즈온 문서
+- [workshop/01_starter](./workshop/01_starter): 직접 수정하며 시작하는 코드
+- [workshop/02_final](./workshop/02_final): 전체 시나리오가 포함된 최종 완성 코드
+
 ### 전체 안내 문서
 
 - [gemma4-local-setup-guide.md](./gemma4-local-setup-guide.md): 가장 먼저 볼 전체 안내 문서
@@ -95,6 +108,10 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 .
 ├── gemma4-local-setup-guide.md
 ├── docs/
+├── workshop/
+│   ├── 01_starter/
+│   ├── 02_final/
+│   └── 03_labs/
 ├── scripts/
 │   └── generate_hands_on_prep_pdf.py
 ├── output/
@@ -105,6 +122,10 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 ```
 
 - `docs/`: 세션 준비용 원본 마크다운 문서
+- `workshop/`: 당일 핸즈온 실습 코드와 단계별 문서
+- `workshop/01_starter/`: 시작 코드
+- `workshop/02_final/`: 최종 완성 코드
+- `workshop/03_labs/`: 단계별 실습 문서
 - `gemma4-local-setup-guide.md`: 가장 먼저 볼 전체 안내 문서
 - `scripts/generate_hands_on_prep_pdf.py`: `docs/01-18`을 하나의 PDF로 묶는 스크립트
 - `output/pdf/`: 생성된 PDF 산출물

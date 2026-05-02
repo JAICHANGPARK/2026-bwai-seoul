@@ -1,16 +1,16 @@
 # run.ps1 - Launch the multi-agent demo with PowerShell windows.
 #
 # Usage:
-#   .\run.ps1 --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
+#   .\run.ps1 --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
 #
 # Examples:
 #   .\run.ps1 --scenario translate --topic "Hello world"
 #   .\run.ps1 --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
-#   .\run.ps1 --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   .\run.ps1 --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   .\run.ps1 --scenario publication_contract --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   .\run.ps1 --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   .\run.ps1 --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   .\run.ps1 --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   .\run.ps1 --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   .\run.ps1 --scenario contract_draft --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   .\run.ps1 --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   .\run.ps1 --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 
 $ErrorActionPreference = "Stop"
 
@@ -27,16 +27,16 @@ $Reasoning = "off"
 # macOS Terminal + AppleScript. Keep this file dependency-free so participants
 # can run it after installing only uv and LM Studio.
 function Show-Usage {
-    Write-Host "Usage: .\run.ps1 --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
+    Write-Host "Usage: .\run.ps1 --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, publication_contract, story_revision, marketing_copy)  [default: translate]"
-    Write-Host "  --topic      Topic or text to work on             [required]"
+    Write-Host "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
+    Write-Host "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
     Write-Host "  --port       OpenAI-compatible server port        [default: 1234]"
-    Write-Host "  --tasks      Number of LLMs to use                [default: scenario default]"
+    Write-Host "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"
     Write-Host "  --model      OpenAI-compatible model name         [default: default]"
     Write-Host "  --hires      Number of hires for hiring_decision  [default: 2]"
-    Write-Host "  --select     Number of stories to select          [default: 3]"
+    Write-Host "  --select     Number of stories to select in story_review_selection [default: 3]"
     Write-Host "  --reasoning  Enable model thinking/reasoning      [default: off]"
 }
 

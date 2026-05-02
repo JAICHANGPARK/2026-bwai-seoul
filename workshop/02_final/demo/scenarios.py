@@ -31,6 +31,7 @@ Then run:  bash run.sh --scenario my_scenario --topic "My Topic"
 
 import html
 import re
+from pathlib import Path
 
 
 # ─── Palettes ───────────────────────────────────────────────
@@ -71,6 +72,68 @@ _CODE_EMOJIS = [
     "🟣", "🔷", "🐘", "🔴", "λ", "💧",
     "🌙", "🐪", "📊", "🔮", "🎯", "⚡",
 ]
+
+_BUILD_DIR = Path(__file__).resolve().parent / "website_build"
+_SHORT_STORY_REF_RE = re.compile(
+    r"(?:short_stories/)?(?P<stem>\d{2}_short_story_[A-Za-z0-9_-]+)(?:\.md)?"
+)
+
+
+def _extract_selected_section(text: str) -> str:
+    """Return only the body under the Markdown heading named 선정작."""
+    lines = text.splitlines()
+    selected_lines = []
+    in_section = False
+    selected_level = 0
+
+    for line in lines:
+        heading = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip().strip("#").strip()
+            normalized_title = re.sub(r"[*_`]", "", title)
+
+            if in_section and level <= selected_level:
+                break
+            if normalized_title == "선정작" or normalized_title.startswith("선정작 "):
+                in_section = True
+                selected_level = level
+                continue
+
+        if in_section:
+            selected_lines.append(line)
+
+    return "\n".join(selected_lines).strip()
+
+
+def _infer_selected_story_count(default: int) -> int:
+    """Infer selected-story count from story_selections/*.md for downstream stages."""
+    selection_dir = _BUILD_DIR / "story_selections"
+    story_dir = _BUILD_DIR / "short_stories"
+    if not selection_dir.is_dir():
+        return default
+
+    known_stems = set()
+    if story_dir.is_dir():
+        for path in story_dir.glob("*.md"):
+            match = _SHORT_STORY_REF_RE.search(path.name)
+            if match:
+                known_stems.add(match.group("stem"))
+
+    selected_stems = []
+    seen = set()
+    for path in sorted(selection_dir.glob("*.md")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        selected_section = _extract_selected_section(text)
+        for match in _SHORT_STORY_REF_RE.finditer(selected_section or text):
+            stem = match.group("stem")
+            if known_stems and stem not in known_stems:
+                continue
+            if stem not in seen:
+                selected_stems.append(stem)
+                seen.add(stem)
+
+    return len(selected_stems) or default
 
 
 
@@ -338,6 +401,7 @@ def make_story_review_selection_agents(n: int = 3) -> list[dict]:
                 f"You are editor #{i+1}, a {perspective}.\n"
                 "Review all submitted short stories for the publication theme: {topic}.\n"
                 "Select exactly {select_count} stories for publication consideration.\n"
+                "When listing selected stories, include each exact source Markdown filename.\n"
                 "Input source: {source_filename}\n\n"
                 "<short_stories>\n{resume_text}\n</short_stories>\n\n"
                 "Write a Korean Markdown editorial review and selection report."
@@ -360,7 +424,7 @@ def make_story_revision_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean fiction editor rewriting selected short story assignment #{i+1}.\n"
-                "Use the editorial selection reports, original short-story manuscripts, and contract package context below.\n"
+                "Use the editorial selection reports, original short-story manuscripts, and contract draft context below.\n"
                 "Assigned selected story: {selected_story_filename}\n"
                 "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
                 "Revise only the assigned story above. Do not choose or rewrite any other story, "
@@ -389,10 +453,13 @@ def make_publication_offer_email_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are an acquisitions editor writing publication offer email #{i+1}.\n"
-                "Use the story selection results below. Draft an initial publication-intent email for selected story slot #{slot}.\n"
-                "If that slot does not exist, write a brief internal note saying there is no selected story for this slot.\n"
+                "Use the story selection results and original manuscripts below.\n"
+                "Assigned selected story: {selected_story_filename}\n"
+                "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
+                "Draft an initial publication-intent email for the assigned selected story only.\n"
+                "If the assigned story does not exist, write a brief internal note saying there is no selected story for this task.\n"
                 "Input source: {source_filename}\n\n"
-                "<selection_results>\n{resume_text}\n</selection_results>\n\n"
+                "<selection_results_and_original_stories>\n{resume_text}\n</selection_results_and_original_stories>\n\n"
                 "Output one Korean Markdown email draft only, including subject, recipient placeholder, opening, selected-work rationale, intent-to-publish note, contract-discussion agenda, schedule, and closing."
             ),
             "filename": f"{i+1:02d}_publication_offer_email.md",
@@ -411,10 +478,13 @@ def make_contract_negotiation_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean publishing rights editor preparing contract negotiation memo #{i+1}.\n"
-                "Use the publication offer emails and selection reports below. Prepare negotiation notes for selected story slot #{slot}.\n"
+                "Use the publication offer emails, selection reports, and original manuscripts below.\n"
+                "Assigned selected story: {selected_story_filename}\n"
+                "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
+                "Prepare negotiation notes for the assigned selected story only.\n"
                 "This is a fictional workshop artifact, not legal advice and not a binding contract.\n"
                 "Input source: {source_filename}\n\n"
-                "<offer_and_selection_materials>\n{resume_text}\n</offer_and_selection_materials>\n\n"
+                "<offer_selection_and_story_materials>\n{resume_text}\n</offer_selection_and_story_materials>\n\n"
                 "Output one Korean Markdown negotiation memo only, covering proposed rights scope, manuscript delivery, revision expectations, schedule, compensation placeholders, risk points, author questions, publisher concessions, and next actions."
             ),
             "filename": f"{i+1:02d}_contract_negotiation.md",
@@ -424,29 +494,32 @@ def make_contract_negotiation_agents(n: int = 3) -> list[dict]:
     ]
 
 
-def make_publication_contract_agents(n: int = 3) -> list[dict]:
-    """Create agents that draft non-binding contract package summaries."""
+def make_contract_draft_agents(n: int = 3) -> list[dict]:
+    """Create agents that draft non-binding publication contract drafts."""
     return [
         {
-            "name": f"publication_contract_{i+1:02d}",
+            "name": f"contract_draft_{i+1:02d}",
             "emoji": "📑",
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
-                f"You are a Korean publishing operations editor preparing contract package #{i+1}.\n"
-                "Use the negotiation memo and publication offer materials below. Prepare a non-binding contract package summary for selected story slot #{slot}.\n"
+                f"You are a Korean publishing operations editor preparing publication contract draft #{i+1}.\n"
+                "Use the negotiation memo, publication offer, and selection materials below.\n"
+                "Assigned selected story: {selected_story_filename}\n"
+                "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
+                "Prepare a non-binding publication contract draft for the assigned selected story only.\n"
                 "This is a fictional workshop artifact, not legal advice, not a substitute for lawyer review, and not a binding legal contract.\n"
                 "Input source: {source_filename}\n\n"
-                "<negotiation_and_offer_materials>\n{resume_text}\n</negotiation_and_offer_materials>\n\n"
-                "Output one Korean Markdown contract package only, including term sheet, clauses-to-review checklist, required author materials, internal approval checklist, signature workflow, and open legal-review items."
+                "<negotiation_offer_and_selection_materials>\n{resume_text}\n</negotiation_offer_and_selection_materials>\n\n"
+                "Output one Korean Markdown contract draft only, including draft clauses, term sheet, required author materials, internal approval notes, signature workflow, and open legal-review items."
             ),
-            "filename": f"{i+1:02d}_publication_contract.md",
+            "filename": f"{i+1:02d}_contract_draft.md",
             "slot": str(i + 1),
         }
         for i in range(n)
     ]
 
 
-def make_marketing_copy_agents(n: int = 3) -> list[dict]:
+def make_marketing_copy_agents(n: int = 10) -> list[dict]:
     """Create agents that write launch marketing copy for revised stories."""
     channels = [
         ("bookstore", "online bookstore detail page and search snippets"),
@@ -462,14 +535,17 @@ def make_marketing_copy_agents(n: int = 3) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 f"You are a Korean publishing marketer writing launch copy package #{i+1} for {channel}.\n"
-                "Use the revised stories, contract package summaries, and selection notes below.\n"
-                "Write copy for selected story slot #{slot}. If the slot cannot be identified, write a brief internal note.\n"
+                "Use the revised stories, contract drafts, and selection notes below.\n"
+                "Assigned revised/selected story material: {selected_story_filename}\n"
+                "Selection rank: {selected_story_rank}; selected-list mentions: {selected_story_votes}\n"
+                "Write copy for the assigned story only. If the assigned story cannot be identified, write a brief internal note.\n"
                 "Input source: {source_filename}\n\n"
                 "<publication_materials>\n{resume_text}\n</publication_materials>\n\n"
                 "Output one Korean Markdown marketing copy package only, including positioning, target readers, one-line hook, short synopsis, bookstore copy, SNS posts, newsletter blurb, press headline, and caution notes."
             ),
             "filename": f"{i+1:02d}_marketing_copy_{slug}.md",
             "slot": str(i + 1),
+            "variant_slug": slug,
         })
     return agents
 
@@ -661,6 +737,7 @@ You must review all submitted stories and select a fixed number for publication 
 Output ONLY Markdown.
 Select exactly the requested number of stories.
 Use only the submitted story texts as evidence.
+For every selected story, include the exact source Markdown filename from the input.
 Be clear about editorial strengths, market fit, revision needs, and publication risk.
 
 Required structure:
@@ -683,7 +760,7 @@ Output ONLY Markdown.
 Revise the actual story text, not just a summary or plan.
 Preserve the core premise and authorial identity of the original manuscript unless the review explicitly requires a change.
 Apply concrete editorial feedback about structure, characterization, pacing, scene clarity, tone, market fit, and ending.
-Use contract package context only as publication constraints; do not write legal terms into the manuscript.
+Use contract draft context only as publication constraints; do not write legal terms into the manuscript.
 Do not copy existing works, real living authors' style, or copyrighted characters.
 If the selected story or original manuscript cannot be identified, output a short internal note instead.
 
@@ -738,21 +815,22 @@ Required structure:
 """.strip()
 
 
-PUBLICATION_CONTRACT_SYSTEM = """
-You are a Korean publishing operations editor preparing a non-binding contract package summary.
+CONTRACT_DRAFT_SYSTEM = """
+You are a Korean publishing operations editor preparing a non-binding publication contract draft.
 
 Output ONLY Markdown.
 This is a fictional workshop artifact, not legal advice, not a substitute for lawyer review, and not a binding legal contract.
 Do not invent real personal information, real bank details, real registration numbers, or real legal entity data.
-Focus on what an editorial team would prepare before formal contract review and signing.
+Focus on a readable contract draft that an editorial team can pass to legal review before signing.
 
 Required structure:
-# 출간 계약 패키지 초안
+# 출간 계약서 초안
 ## 계약 대상 작품
 ## 조건 합의 요약
-## 계약 주요 조항 체크리스트
+## 계약 주요 조항 초안
+## 특약 및 검토 필요 조항
 ## 작가 제출 필요 자료
-## 출판사 내부 승인 체크리스트
+## 출판사 내부 승인 메모
 ## 서명 및 보관 절차
 ## 법무 검토 필요 항목
 ## 다음 액션
@@ -992,16 +1070,16 @@ CONTRACT_NEGOTIATION_PLAN = {
 }
 
 
-PUBLICATION_CONTRACT_PLAN = {
+CONTRACT_DRAFT_PLAN = {
     "system": (
         'Output a JSON array with {n_agents} objects. Each has "name", '
         '"instruction", and "filename". Use agent names exactly as provided. '
         "Output ONLY valid JSON."
     ),
     "user": (
-        'Create {n_agents} publication contract package tasks for "{topic}".\n'
+        'Create {n_agents} publication contract draft tasks for "{topic}".\n'
         "Agents: {agent_list}\n"
-        "Each task prepares one fictional, non-binding contract package summary."
+        "Each task prepares one fictional, non-binding publication contract draft."
     ),
 }
 
@@ -1337,9 +1415,14 @@ def contract_negotiation_card(agent, result, task=None):
     return publication_offer_email_card(agent, result, task)
 
 
-def publication_contract_card(agent, result, task=None):
-    """Render contract package summaries with the same Markdown card shell."""
+def contract_draft_card(agent, result, task=None):
+    """Render contract drafts with the same Markdown card shell."""
     return publication_offer_email_card(agent, result, task)
+
+
+def publication_contract_card(agent, result, task=None):
+    """Backward-compatible renderer name for older lab snippets."""
+    return contract_draft_card(agent, result, task)
 
 
 def marketing_copy_card(agent, result, task=None):
@@ -1543,8 +1626,13 @@ SCENARIOS = {
         "render_card": publication_offer_email_card,
         "title": "Publication Offer Emails",
         "default_n": 3,
+        "default_n_from_selected_stories": True,
+        "selected_story_targeting": "unique",
+        "selected_story_selection_dir": "story_selections",
+        "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "story_selections",
+        "auxiliary_input_markdown_dirs": ["short_stories"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "publication_offer_emails",
@@ -1557,27 +1645,35 @@ SCENARIOS = {
         "render_card": contract_negotiation_card,
         "title": "Contract Negotiation Memos",
         "default_n": 3,
+        "default_n_from_selected_stories": True,
+        "selected_story_targeting": "unique",
+        "selected_story_selection_dir": "story_selections",
+        "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "publication_offer_emails",
-        "auxiliary_input_markdown_dirs": ["story_selections"],
+        "auxiliary_input_markdown_dirs": ["story_selections", "short_stories"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "contract_negotiations",
         "preserve_build_dirs": ["short_stories", "story_selections", "publication_offer_emails"],
     },
-    "publication_contract": {
-        "make_agents": make_publication_contract_agents,
-        "plan": PUBLICATION_CONTRACT_PLAN,
-        "system_prompt": PUBLICATION_CONTRACT_SYSTEM,
-        "render_card": publication_contract_card,
-        "title": "Publication Contract Packages",
+    "contract_draft": {
+        "make_agents": make_contract_draft_agents,
+        "plan": CONTRACT_DRAFT_PLAN,
+        "system_prompt": CONTRACT_DRAFT_SYSTEM,
+        "render_card": contract_draft_card,
+        "title": "Contract Draft Writing",
         "default_n": 3,
+        "default_n_from_selected_stories": True,
+        "selected_story_targeting": "unique",
+        "selected_story_selection_dir": "story_selections",
+        "selected_story_story_dir": "short_stories",
         "direct_plan": True,
         "input_markdown_dir": "contract_negotiations",
-        "auxiliary_input_markdown_dirs": ["publication_offer_emails"],
+        "auxiliary_input_markdown_dirs": ["publication_offer_emails", "story_selections"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
-        "markdown_dir": "publication_contracts",
+        "markdown_dir": "contract_drafts",
         "preserve_build_dirs": ["short_stories", "story_selections", "publication_offer_emails", "contract_negotiations"],
     },
     "story_revision": {
@@ -1587,9 +1683,14 @@ SCENARIOS = {
         "render_card": story_revision_card,
         "title": "Short Story Revisions",
         "default_n": 3,
+        "default_n_from_selected_stories": True,
+        "selected_story_targeting": "unique",
+        "selected_story_selection_dir": "story_selections",
+        "selected_story_story_dir": "short_stories",
+        "selected_story_filename_mode": "revision",
         "direct_plan": True,
         "input_markdown_dir": "story_selections",
-        "auxiliary_input_markdown_dirs": ["short_stories", "publication_contracts"],
+        "auxiliary_input_markdown_dirs": ["short_stories", "contract_drafts"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "revised_stories",
@@ -1598,7 +1699,7 @@ SCENARIOS = {
             "story_selections",
             "publication_offer_emails",
             "contract_negotiations",
-            "publication_contracts",
+            "contract_drafts",
         ],
     },
     "marketing_copy": {
@@ -1607,10 +1708,14 @@ SCENARIOS = {
         "system_prompt": MARKETING_COPY_SYSTEM,
         "render_card": marketing_copy_card,
         "title": "Publication Marketing Copy",
-        "default_n": 3,
+        "default_n": 10,
+        "selected_story_targeting": "cycle",
+        "selected_story_selection_dir": "story_selections",
+        "selected_story_story_dir": "revised_stories",
+        "selected_story_filename_mode": "marketing",
         "direct_plan": True,
         "input_markdown_dir": "revised_stories",
-        "auxiliary_input_markdown_dirs": ["publication_contracts", "story_selections"],
+        "auxiliary_input_markdown_dirs": ["contract_drafts", "story_selections"],
         "aggregate_input_markdown": True,
         "save_markdown": True,
         "markdown_dir": "marketing_copy",
@@ -1619,11 +1724,18 @@ SCENARIOS = {
             "story_selections",
             "publication_offer_emails",
             "contract_negotiations",
-            "publication_contracts",
+            "contract_drafts",
             "revised_stories",
         ],
     },
 
+}
+
+
+SCENARIO_ALIASES = {
+    # Older workshop drafts used publication_contract. Keep it working while the
+    # participant-facing name moves to the clearer contract_draft.
+    "publication_contract": "contract_draft",
 }
 
 
@@ -1633,11 +1745,17 @@ def get_scenario(name: str, n_agents: int = None) -> dict:
     run.sh/run.ps1은 이 함수를 호출해 agent 목록을 알아낸 뒤 창을 띄우고,
     orchestrator.py는 같은 함수를 호출해 task 생성과 HTML rendering에 사용합니다.
     """
+    name = SCENARIO_ALIASES.get(name, name)
     if name not in SCENARIOS:
         available = ", ".join(SCENARIOS.keys())
         raise KeyError(f"Unknown scenario '{name}'. Available: {available}")
     scenario = dict(SCENARIOS[name])
-    n = n_agents or scenario["default_n"]
+    if n_agents is not None:
+        n = n_agents
+    elif scenario.get("default_n_from_selected_stories"):
+        n = _infer_selected_story_count(scenario["default_n"])
+    else:
+        n = scenario["default_n"]
     scenario["agents"] = scenario["make_agents"](n)
     scenario["plan"] = {
         k: v.replace("{n_agents}", str(n)) if isinstance(v, str) else v

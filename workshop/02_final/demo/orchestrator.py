@@ -318,10 +318,12 @@ def rank_selected_short_stories(
     best_rank, first_seen 순입니다. 이렇게 해야 story_revision agent들이 같은 작품을
     중복 개정하지 않고 서로 다른 선정작을 맡습니다.
     """
-    available_stories = {
-        os.path.splitext(doc["filename"])[0]: doc
-        for doc in story_docs
-    }
+    available_stories = {}
+    for doc in story_docs:
+        filename_stem = os.path.splitext(doc["filename"])[0]
+        available_stories[filename_stem] = doc
+        for short_story_stem in extract_short_story_refs(doc["filename"]):
+            available_stories.setdefault(short_story_stem, doc)
     candidates = {}
     first_seen = 0
 
@@ -358,25 +360,38 @@ def rank_selected_short_stories(
     return ranked[:limit]
 
 
-def assign_story_revision_targets(
+def assign_selected_story_targets(
     agents: list[dict],
-    source_docs: list[dict],
+    selection_docs: list[dict],
     story_docs: list[dict],
     limit: int,
+    mode: str = "unique",
+    filename_mode: str = "",
 ) -> list[dict]:
-    """Attach one unique selected short story to each revision agent."""
-    assignments = rank_selected_short_stories(source_docs, story_docs, limit)
+    """Attach selected story metadata to agents.
+
+    mode="unique" assigns each selected story once. mode="cycle" is useful for
+    marketing copy because ten copywriters can create multiple variants across
+    three selected works without producing "missing story" placeholder outputs.
+    """
+    assignments = rank_selected_short_stories(selection_docs, story_docs, max(limit, 1))
     assigned_agents = []
 
     for i, agent in enumerate(agents):
         assigned = dict(agent)
-        if i < len(assignments):
-            story = assignments[i]
+        if assignments and (mode == "cycle" or i < len(assignments)):
+            story_index = i % len(assignments) if mode == "cycle" else i
+            story = assignments[story_index]
             assigned["selected_story_id"] = story["stem"]
             assigned["selected_story_filename"] = story["filename"]
             assigned["selected_story_votes"] = story["votes"]
-            assigned["selected_story_rank"] = i + 1
-            assigned["filename"] = f"{i+1:02d}_revised_{story['stem']}.md"
+            assigned["selected_story_rank"] = story_index + 1
+            assigned["slot"] = str(story_index + 1)
+            if filename_mode == "revision":
+                assigned["filename"] = f"{i+1:02d}_revised_{story['stem']}.md"
+            elif filename_mode == "marketing":
+                variant = assigned.get("variant_slug", "copy")
+                assigned["filename"] = f"{i+1:02d}_marketing_copy_{story['stem']}_{variant}.md"
         else:
             assigned["selected_story_id"] = "NO_SELECTED_STORY_FOUND"
             assigned["selected_story_filename"] = "NO_SELECTED_STORY_FOUND.md"
@@ -401,14 +416,19 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
         for input_dir in scenario.get("auxiliary_input_markdown_dirs", [])
     }
 
-    if scenario.get("name") == "story_revision":
-        # story_revision은 단순히 slot 번호로 작품을 고르게 하면 중복 개정이 생길 수 있습니다.
-        # 그래서 dispatch 전에 선정 보고서를 파싱해 agent별 개정 대상 원고를 명시적으로 배정합니다.
-        agents = assign_story_revision_targets(
+    if scenario.get("selected_story_targeting"):
+        # 선정 이후 단계는 단순히 slot 번호로 작품을 고르게 하면 중복 개정이나
+        # 존재하지 않는 slot이 생길 수 있습니다. dispatch 전에 선정 보고서를 파싱해
+        # agent별 대상 작품을 명시적으로 배정합니다.
+        selection_docs = load_markdown_files(scenario.get("selected_story_selection_dir", "story_selections"))
+        selected_story_docs = load_markdown_files(scenario.get("selected_story_story_dir", "short_stories"))
+        agents = assign_selected_story_targets(
             agents,
-            source_docs,
-            auxiliary_docs.get("short_stories", []),
-            scenario.get("select_count", len(agents)),
+            selection_docs,
+            selected_story_docs,
+            max(scenario.get("select_count", len(agents)), len(agents)),
+            mode=scenario.get("selected_story_targeting", "unique"),
+            filename_mode=scenario.get("selected_story_filename_mode", ""),
         )
         scenario["agents"] = agents
 
@@ -760,6 +780,7 @@ def main():
     clean_generated_dirs(scenario)
 
     tasks = plan_tasks(args.api_url, scenario, args.topic, reasoning=args.reasoning)
+    agents = scenario["agents"]
     dispatch(tasks, agents, system_prompt=scenario.get("system_prompt", ""))
     results = collect(tasks, agents)
     save_markdown_files(scenario, results, tasks)

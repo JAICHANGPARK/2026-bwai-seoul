@@ -1,7 +1,7 @@
 # run.ps1 - Launch the multi-agent demo with PowerShell windows.
 #
 # Usage:
-#   .\run.ps1 --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
+#   .\run.ps1 --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
 #
 # Examples:
 #   .\run.ps1 --scenario translate --topic "Hello world"
@@ -22,16 +22,16 @@ $Reasoning = "off"
 # macOS Terminal + AppleScript. Keep this file dependency-free so participants
 # can run it after installing only uv and LM Studio.
 function Show-Usage {
-    Write-Host "Usage: .\run.ps1 --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
+    Write-Host "Usage: .\run.ps1 --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
     Write-Host ""
     Write-Host "Options:"
     Write-Host "  --scenario   Scenario name. Starter includes translate; add more in demo/scenarios.py  [default: translate]"
-    Write-Host "  --topic      Topic or text to work on             [required]"
+    Write-Host "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
     Write-Host "  --port       OpenAI-compatible server port        [default: 1234]"
-    Write-Host "  --tasks      Number of LLMs to use                [default: scenario default]"
+    Write-Host "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"
     Write-Host "  --model      OpenAI-compatible model name         [default: default]"
     Write-Host "  --hires      Number of hires for hiring_decision  [default: 2]"
-    Write-Host "  --select     Number of stories to select          [default: 3]"
+    Write-Host "  --select     Number of stories to select in story_review_selection [default: 3]"
     Write-Host "  --reasoning  Enable model thinking/reasoning      [default: off]"
 }
 

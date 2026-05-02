@@ -8,6 +8,7 @@ compare their result with 02_final/demo/scenarios.py.
 
 import html
 import re
+from pathlib import Path
 
 
 _COLORS = [
@@ -30,6 +31,68 @@ _LANG_NAMES = [
     "vietnamese", "thai", "dutch", "polish", "swedish", "greek",
     "indonesian", "ukrainian",
 ]
+
+_BUILD_DIR = Path(__file__).resolve().parent / "website_build"
+_SHORT_STORY_REF_RE = re.compile(
+    r"(?:short_stories/)?(?P<stem>\d{2}_short_story_[A-Za-z0-9_-]+)(?:\.md)?"
+)
+
+
+def _extract_selected_section(text: str) -> str:
+    """Return only the body under the Markdown heading named 선정작."""
+    lines = text.splitlines()
+    selected_lines = []
+    in_section = False
+    selected_level = 0
+
+    for line in lines:
+        heading = re.match(r"^(#{1,6})\s+(.+?)\s*$", line)
+        if heading:
+            level = len(heading.group(1))
+            title = heading.group(2).strip().strip("#").strip()
+            normalized_title = re.sub(r"[*_`]", "", title)
+
+            if in_section and level <= selected_level:
+                break
+            if normalized_title == "선정작" or normalized_title.startswith("선정작 "):
+                in_section = True
+                selected_level = level
+                continue
+
+        if in_section:
+            selected_lines.append(line)
+
+    return "\n".join(selected_lines).strip()
+
+
+def _infer_selected_story_count(default: int) -> int:
+    """Infer selected-story count from story_selections/*.md for later labs."""
+    selection_dir = _BUILD_DIR / "story_selections"
+    story_dir = _BUILD_DIR / "short_stories"
+    if not selection_dir.is_dir():
+        return default
+
+    known_stems = set()
+    if story_dir.is_dir():
+        for path in story_dir.glob("*.md"):
+            match = _SHORT_STORY_REF_RE.search(path.name)
+            if match:
+                known_stems.add(match.group("stem"))
+
+    selected_stems = []
+    seen = set()
+    for path in sorted(selection_dir.glob("*.md")):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        selected_section = _extract_selected_section(text)
+        for match in _SHORT_STORY_REF_RE.finditer(selected_section or text):
+            stem = match.group("stem")
+            if known_stems and stem not in known_stems:
+                continue
+            if stem not in seen:
+                selected_stems.append(stem)
+                seen.add(stem)
+
+    return len(selected_stems) or default
 
 
 def make_translate_agents(n: int = 10) -> list[dict]:
@@ -73,6 +136,35 @@ TRANSLATE_PLAN = {
         "Create one instruction per agent."
     ),
 }
+
+
+# TODO Step 3~13:
+# Paste scenario implementation snippets from workshop/03_labs/README.md here.
+#
+# Put these blocks in this section, above the card renderer functions and above
+# SCENARIOS:
+# - def make_xxx_agents(...): ...
+# - XXX_SYSTEM = ...
+# - XXX_PLAN = ...
+# - Any extra renderer needed by the lab, for example novel_writing_card.
+#
+# Step 0~2 do not require pasting scenario code. Starting from Step 3, add each
+# scenario's implementation block here in order:
+# Step 3 resume
+# Step 4 interview_review
+# Step 5 hiring_decision
+# Step 6 interview_dialogue and hiring_decision_from_dialogue
+# Optional novel_writing
+# Step 7 short_story_writing
+# Step 8 story_review_selection
+# Step 9 publication_offer_email
+# Step 10 contract_negotiation
+# Step 11 contract_draft
+# Step 12 story_revision
+# Step 13 marketing_copy
+#
+# Do NOT paste SCENARIOS["xxx"] registry entries here. Those go inside the
+# SCENARIOS dict below.
 
 
 def translate_card(agent, result, task=None):
@@ -240,8 +332,12 @@ def contract_negotiation_card(agent, result, task=None):
     return markdown_card(agent, result, task, max_height="680px")
 
 
-def publication_contract_card(agent, result, task=None):
+def contract_draft_card(agent, result, task=None):
     return markdown_card(agent, result, task, max_height="680px")
+
+
+def publication_contract_card(agent, result, task=None):
+    return contract_draft_card(agent, result, task)
 
 
 def marketing_copy_card(agent, result, task=None):
@@ -263,6 +359,32 @@ SCENARIOS = {
         "title": "Translation Grid",
         "default_n": 10,
     },
+
+    # TODO Step 3~13:
+    # Paste each registry entry from workshop/03_labs/README.md here, inside
+    # this dict, after the translate entry.
+    #
+    # Step 0~2 do not add registry entries. Starting from Step 3, add the
+    # registry entries in the same order as the lab guide:
+    # resume, interview_review, hiring_decision, interview_dialogue,
+    # hiring_decision_from_dialogue, optional novel_writing,
+    # short_story_writing, story_review_selection, publication_offer_email,
+    # contract_negotiation, contract_draft, story_revision, marketing_copy.
+    #
+    # Example shape:
+    # "resume": {
+    #     "make_agents": make_resume_agents,
+    #     "plan": RESUME_PLAN,
+    #     "system_prompt": RESUME_SYSTEM,
+    #     "render_card": resume_card,
+    #     "title": "Publishing Fiction Planner Resumes",
+    #     "default_n": 10,
+    #     "direct_plan": True,
+    #     "save_markdown": True,
+    #     "markdown_dir": "resumes",
+    # },
+    #
+    # Keep the comma after each scenario entry.
 }
 
 
@@ -277,7 +399,12 @@ def get_scenario(name: str, n_agents: int = None) -> dict:
         available = ", ".join(SCENARIOS.keys())
         raise KeyError(f"Unknown scenario '{name}'. Available: {available}")
     scenario = dict(SCENARIOS[name])
-    n = n_agents or scenario["default_n"]
+    if n_agents is not None:
+        n = n_agents
+    elif scenario.get("default_n_from_selected_stories"):
+        n = _infer_selected_story_count(scenario["default_n"])
+    else:
+        n = scenario["default_n"]
     scenario["agents"] = scenario["make_agents"](n)
     scenario["plan"] = {
         k: v.replace("{n_agents}", str(n)) if isinstance(v, str) else v

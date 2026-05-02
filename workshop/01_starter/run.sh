@@ -7,7 +7,7 @@
 #   - Grid below: orchestrator + N specialist agents
 #
 # Usage:
-#   bash run.sh --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
+#   bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
 #
 # Examples:
 #   bash run.sh --scenario translate --topic "Hello world"
@@ -37,16 +37,16 @@ while [[ $# -gt 0 ]]; do
         --select)   SELECT="$2";   shift 2 ;;
         --reasoning) REASONING="$2"; shift 2 ;;
         --help)
-            echo "Usage: bash run.sh --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
+            echo "Usage: bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
             echo ""
             echo "Options:"
             echo "  --scenario   Scenario name. Starter includes translate; add more in demo/scenarios.py  [default: translate]"
-            echo "  --topic      Topic or text to work on             [required]"
+            echo "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
             echo "  --port       OpenAI-compatible server port        [default: 1234]"
-            echo "  --tasks      Number of LLMs to use                [default: scenario default]"
+            echo "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"
             echo "  --model      OpenAI-compatible model name         [default: default]"
             echo "  --hires      Number of hires for hiring_decision  [default: 2]"
-            echo "  --select     Number of stories to select          [default: 3]"
+            echo "  --select     Number of stories to select in story_review_selection [default: 3]"
             echo "  --reasoning  Enable model thinking/reasoning      [default: off]"
             exit 0 ;;
         *) echo "❌ Unknown argument: $1. Use --help for usage."; exit 1 ;;

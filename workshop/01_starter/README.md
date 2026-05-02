@@ -1,6 +1,6 @@
 # Workshop Starter
 
-참석자용 시작 코드입니다. `translate` 시나리오만 등록되어 있고, 핸즈온을 진행하면서 `demo/scenarios.py`에 시나리오를 하나씩 추가합니다.
+시작 코드입니다. `translate` 시나리오만 등록되어 있고, 핸즈온을 진행하면서 `demo/scenarios.py`에 시나리오를 하나씩 추가합니다.
 
 ## 실행
 

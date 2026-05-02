@@ -36,7 +36,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전
 - Gemini CLI preview에서 Gemma 4 모델을 선택할 수 있어도 실제 메시지 전송 시 “access 없음” 오류가 날 수 있다는 점을 추가했습니다.
 - `latest` 태그처럼 나중에 바뀔 수 있는 모델 태그는 사전 준비 기본값으로 쓰지 않도록 안내했습니다.
 - LM Studio에서 모델 이름이 짧게 보일 수 있으므로 모델 카드나 설명에서 `chat-ready`, `instruction-tuned`, `instruct` 계열인지 확인하도록 수정했습니다.
-- `참가자`, `참석자`, `기본 경로`처럼 독자 입장에서 어색하게 보일 수 있는 표현을 줄이고, 직접 안내하는 문장으로 정리했습니다.
+- 독자 입장에서 어색하게 보일 수 있는 역할 라벨과 경로 표현을 줄이고, 직접 안내하는 문장으로 정리했습니다.
 - `output/pdf/gemma4-hands-on-prep-guide.pdf`를 최신 문서 기준으로 다시 생성했습니다.
 
 ## 2026-04-30

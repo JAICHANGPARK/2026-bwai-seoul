@@ -7,7 +7,7 @@
 #   - Grid below: orchestrator + N specialist agents
 #
 # Usage:
-#   bash run.sh --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
+#   bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]
 #
 # Examples:
 #   bash run.sh --scenario translate --topic "Hello world"
@@ -19,11 +19,11 @@
 #   bash run.sh --scenario novel_writing --topic "서울의 독립출판사를 배경으로 한 미스터리 소설" --tasks 10
 #   bash run.sh --scenario short_story_writing --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 #   bash run.sh --scenario story_review_selection --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario publication_contract --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
-#   bash run.sh --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --select 3 --tasks 3
+#   bash run.sh --scenario publication_offer_email --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   bash run.sh --scenario contract_negotiation --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   bash run.sh --scenario contract_draft --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   bash run.sh --scenario story_revision --topic "문예지 신인상 투고용 도시 미스터리 단편"
+#   bash run.sh --scenario marketing_copy --topic "문예지 신인상 투고용 도시 미스터리 단편" --tasks 10
 # ─────────────────────────────────────────────────────────────
 
 PORT="1234"
@@ -49,16 +49,16 @@ while [[ $# -gt 0 ]]; do
         --select)   SELECT="$2";   shift 2 ;;
         --reasoning) REASONING="$2"; shift 2 ;;
         --help)
-            echo "Usage: bash run.sh --scenario <name> --topic <text> [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
+            echo "Usage: bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
             echo ""
             echo "Options:"
-            echo "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, publication_contract, story_revision, marketing_copy)  [default: translate]"
-            echo "  --topic      Topic or text to work on             [required]"
+            echo "  --scenario   Scenario name (translate, resume, interview_review, interview_dialogue, hiring_decision, hiring_decision_from_dialogue, novel_writing, short_story_writing, story_review_selection, publication_offer_email, contract_negotiation, contract_draft, story_revision, marketing_copy)  [default: translate]"
+            echo "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
             echo "  --port       OpenAI-compatible server port        [default: 1234]"
-            echo "  --tasks      Number of LLMs to use                [default: scenario default]"
+            echo "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"
             echo "  --model      OpenAI-compatible model name         [default: default]"
             echo "  --hires      Number of hires for hiring_decision  [default: 2]"
-            echo "  --select     Number of stories to select          [default: 3]"
+            echo "  --select     Number of stories to select in story_review_selection [default: 3]"
             echo "  --reasoning  Enable model thinking/reasoning      [default: off]"
             exit 0 ;;
         *) echo "❌ Unknown argument: $1. Use --help for usage."; exit 1 ;;
