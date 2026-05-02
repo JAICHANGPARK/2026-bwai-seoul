@@ -150,6 +150,31 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 
 핸즈온에서는 먼저 LM Studio 앱에서 user message만으로 이력서 1개를 직접 생성해보고, 이어서 system instruction을 사용해 시나리오 코드 초안을 생성해봅니다. 이후 같은 프롬프트를 코드의 멀티 에이전트 시나리오로 확장하고, 이력서/면접/채용 결정 흐름을 단계적으로 추가합니다.
 
+### 시나리오 이름표
+
+`--scenario` 뒤에 넣는 영어 이름은 아래 의미로 사용합니다.
+
+| 실행 이름 | 한국어 의미 | 주 입력 및 산출물 |
+| --- | --- | --- |
+| `translate` | 기본 번역 그리드 | `--topic` 문장을 여러 언어로 번역 |
+| `resume` | 소설 기획자/편집자 이력서 생성 | `--topic` 직무 기준으로 `resumes/` 생성 |
+| `interview_review` | 이력서 기반 면접 평가 | `resumes/`를 읽어 `interview_reviews/` 생성 |
+| `hiring_decision` | 편집자 최종 채용 결정 | `interview_reviews/`를 읽어 `hiring_decisions/` 생성 |
+| `interview_dialogue` | 이력서 기반 면접 대화록 생성 | `resumes/`를 읽어 `interview_dialogues/` 생성 |
+| `hiring_decision_from_dialogue` | 면접 대화록 기반 채용 결정 | `interview_dialogues/`를 읽어 `hiring_decisions_from_dialogue/` 생성 |
+| `marketer_resume` | 북 마케터 이력서 생성 | `--topic` 직무 기준으로 `marketer_resumes/` 생성 |
+| `marketer_interview_review` | 마케터 이력서 기반 면접 평가 | `marketer_resumes/`를 읽어 `marketer_interview_reviews/` 생성 |
+| `marketer_hiring_decision` | 마케터 최종 채용 결정 | `marketer_interview_reviews/`를 읽어 `marketer_hiring_decisions/` 생성 |
+| `novel_writing` | 장편 소설 기획 패키지 생성 | `--topic` 기준으로 `novel_outputs/` 생성 |
+| `short_story_writing` | 단편소설 투고작 생성 | `--topic` 기준으로 `short_stories/` 생성 |
+| `story_review_selection` | 단편소설 심사 및 선정 | `short_stories/`와 `hiring_decisions/`를 읽어 `story_selections/` 생성 |
+| `publication_offer_email` | 선정작 출간 의향 확인 메일 | `story_selections/`, `short_stories/`, `hiring_decisions/`를 읽어 `publication_offer_emails/` 생성 |
+| `contract_negotiation` | 계약 조건 협의 메모 | `publication_offer_emails/`와 선정작 맥락을 읽어 `contract_negotiations/` 생성 |
+| `contract_draft` | 출간 계약서 초안 작성 | `contract_negotiations/`와 선정작 맥락을 읽어 `contract_drafts/` 생성 |
+| `story_revision` | 선정작 개정 원고 작성 | `story_selections/`, `short_stories/`, `contract_drafts/`를 읽어 `revised_stories/` 생성 |
+| `marketing_copy` | 출간 마케팅 문구 생성 | `revised_stories/`, `contract_drafts/`, `marketer_hiring_decisions/`를 읽어 `marketing_copy/` 생성 |
+| `publication_contract` | 이전 이름 호환용 별칭 | 현재는 `contract_draft`와 같은 시나리오로 실행 |
+
 **0. 기본 실행**
 
 ```bash

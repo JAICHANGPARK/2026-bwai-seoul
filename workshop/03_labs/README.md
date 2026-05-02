@@ -5,6 +5,7 @@
 ## 목차
 
 - [진행 방식](#진행-방식)
+- [시나리오 이름표](#시나리오-이름표)
 - [LM Studio 권장 설정](#lm-studio-권장-설정)
 - [reasoning 옵션](#reasoning-옵션)
 - [Starter 기준](#starter-기준)
@@ -62,6 +63,45 @@ uv sync
 최종 완성 코드는 [02_final](../02_final) 폴더에 있습니다.
 
 이하 실행 명령은 별도 언급이 없으면 모두 `workshop/01_starter` 폴더 안에서 실행합니다.
+
+## 시나리오 이름표
+
+`--scenario` 옵션에는 아래 실행 이름을 넣습니다. Step 문서에서는 이 이름을 하나씩 `SCENARIOS`에 등록하면서 최종 흐름을 완성합니다.
+
+| 실행 이름 | 한국어 의미 | 추가 단계 | 산출물 폴더 |
+| --- | --- | --- | --- |
+| `translate` | 기본 번역 그리드 | Step 2. 기본 실행 | HTML 결과만 생성 |
+| `resume` | 소설 기획자/편집자 이력서 생성 | Step 3 | `resumes/` |
+| `interview_review` | 이력서 기반 면접 평가 | Step 4 | `interview_reviews/` |
+| `hiring_decision` | 편집자 최종 채용 결정 | Step 5 | `hiring_decisions/` |
+| `marketer_resume` | 북 마케터 이력서 생성 | 채용 확장 | `marketer_resumes/` |
+| `marketer_interview_review` | 마케터 이력서 기반 면접 평가 | 채용 확장 | `marketer_interview_reviews/` |
+| `marketer_hiring_decision` | 마케터 최종 채용 결정 | 채용 확장 | `marketer_hiring_decisions/` |
+| `interview_dialogue` | 이력서 기반 면접 대화록 생성 | Step 6 | `interview_dialogues/` |
+| `hiring_decision_from_dialogue` | 면접 대화록 기반 채용 결정 | Step 6 | `hiring_decisions_from_dialogue/` |
+| `novel_writing` | 장편 소설 기획 패키지 생성 | 선택 확장 | `novel_outputs/` |
+| `short_story_writing` | 단편소설 투고작 생성 | Step 7 | `short_stories/` |
+| `story_review_selection` | 단편소설 심사 및 선정 | Step 8 | `story_selections/` |
+| `publication_offer_email` | 선정작 출간 의향 확인 메일 | Step 9 | `publication_offer_emails/` |
+| `contract_negotiation` | 계약 조건 협의 메모 | Step 10 | `contract_negotiations/` |
+| `contract_draft` | 출간 계약서 초안 작성 | Step 11 | `contract_drafts/` |
+| `story_revision` | 선정작 개정 원고 작성 | Step 12 | `revised_stories/` |
+| `marketing_copy` | 출간 마케팅 문구 생성 | Step 13 | `marketing_copy/` |
+| `publication_contract` | 이전 이름 호환용 별칭 | 별도 추가 없음 | `contract_draft`와 동일 |
+
+출판 단계 시나리오는 아래 순서로 이어집니다.
+
+```text
+short_story_writing
+-> story_review_selection
+-> publication_offer_email
+-> contract_negotiation
+-> contract_draft
+-> story_revision
+-> marketing_copy
+```
+
+즉 문서의 Step 7부터 Step 13까지는 `단편소설 생성 -> 심사/선정 -> 출간 의향 확인 -> 계약 조건 협의 -> 계약서 초안 작성 -> 개정 작업 -> 마케팅 문구` 순서로 진행합니다.
 
 ## LM Studio 권장 설정
 
@@ -1589,7 +1629,7 @@ PUBLICATION_OFFER_EMAIL_PLAN = {
 }
 ```
 
-registry는 이전 단계의 선정 보고서만 읽도록 둡니다.
+registry는 선정 보고서를 주 입력으로 읽고, 원본 원고와 채용된 편집팀 맥락을 보조 입력으로 함께 읽도록 둡니다.
 
 ```python
 "publication_offer_email": {
