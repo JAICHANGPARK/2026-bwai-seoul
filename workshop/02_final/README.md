@@ -7,7 +7,10 @@
 ```bash
 uv sync
 bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
+
+`code` 기본 10개 agent에는 Dart가 포함됩니다.
 
 주요 완성 흐름:
 

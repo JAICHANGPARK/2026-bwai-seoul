@@ -26,6 +26,11 @@ from utils import (
 )
 
 POLL_INTERVAL = 0.5
+ARTIFACT_EXTENSIONS = (
+    ".md", ".py", ".js", ".ts", ".rs", ".go", ".c", ".h", ".java", ".rb",
+    ".swift", ".kt", ".php", ".scala", ".hs", ".ex", ".lua", ".pl", ".r",
+    ".R", ".jl", ".dart", ".zig",
+)
 
 
 def slugify(value: str) -> str:
@@ -92,18 +97,27 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
                 })
 
     markdown_dirs = []
-    # save_markdown=True인 시나리오는 결과를 폴더별 Markdown으로 저장합니다.
+    # save_markdown=True인 시나리오는 결과를 폴더별 파일로 저장합니다.
+    # Markdown뿐 아니라 code 시나리오의 .py/.js 같은 코드 파일도 함께 표시합니다.
     # 폴더마다 간단한 index.html을 만들어 참가자가 산출물을 브라우저에서 열 수 있게 합니다.
     for dirname in sorted(os.listdir(BUILD_DIR)):
         path = os.path.join(BUILD_DIR, dirname)
         if not os.path.isdir(path) or dirname == "runs":
             continue
-        md_files = sorted(name for name in os.listdir(path) if name.endswith(".md"))
-        if md_files:
+        artifact_extensions = ARTIFACT_EXTENSIONS
+        if dirname == "code_outputs":
+            artifact_extensions = tuple(ext for ext in ARTIFACT_EXTENSIONS if ext != ".md")
+        artifact_files = sorted(
+            name for name in os.listdir(path)
+            if os.path.isfile(os.path.join(path, name))
+            and name != "index.html"
+            and name.endswith(artifact_extensions)
+        )
+        if artifact_files:
             dir_index_path = os.path.join(path, "index.html")
             file_links = "\n".join(
                 f'<li><a href="{html.escape(name)}">{html.escape(name)}</a></li>'
-                for name in md_files
+                for name in artifact_files
             )
             dir_title = html.escape(dirname)
             with open(dir_index_path, "w", encoding="utf-8") as f:
@@ -128,7 +142,7 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
   <main>
     <a class="back" href="../index.html">← 결과 홈</a>
     <h1>{dir_title}</h1>
-    <p>{len(md_files)} Markdown files</p>
+    <p>{len(artifact_files)} files</p>
     <ul>{file_links}</ul>
   </main>
 </body>
@@ -137,7 +151,7 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
             markdown_dirs.append({
                 "name": dirname,
                 "href": f"{dirname}/index.html",
-                "count": len(md_files),
+                "count": len(artifact_files),
             })
 
     def page_link(item):
@@ -155,16 +169,26 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
     def markdown_item(item):
         name = html.escape(item["name"])
         href = html.escape(item["href"])
-        return f'<li><a href="{href}">{name}</a><span class="muted">{item["count"]} markdown files</span></li>'
+        return f'<li><a href="{href}">{name}</a><span class="muted">{item["count"]} files</span></li>'
 
     scenario_html = "\n".join(page_link(item) for item in scenario_pages) or "<li class=\"empty\">아직 생성된 시나리오 페이지가 없습니다.</li>"
     run_html = "\n".join(run_link(item) for item in archived_runs[:40]) or "<li class=\"empty\">아직 archive run이 없습니다.</li>"
-    markdown_html = "\n".join(markdown_item(item) for item in markdown_dirs) or "<li class=\"empty\">아직 저장된 Markdown 결과가 없습니다.</li>"
+    markdown_html = "\n".join(markdown_item(item) for item in markdown_dirs) or "<li class=\"empty\">아직 저장된 산출물이 없습니다.</li>"
 
     latest_link = ""
+    latest_preview = ""
     latest_path = os.path.join(BUILD_DIR, "latest.html")
     if os.path.isfile(latest_path):
         latest_link = '<a class="primary" href="latest.html">최근 실행 결과 열기</a>'
+        latest_preview = """
+    <section class="preview">
+      <div class="preview-head">
+        <h2>최근 실행 결과</h2>
+        <a href="latest.html">새 창 대신 전체 페이지로 보기</a>
+      </div>
+      <iframe src="latest.html" title="최근 실행 결과"></iframe>
+    </section>
+"""
 
     generated = time.strftime("%Y-%m-%d %H:%M:%S")
     index_html = f"""<!doctype html>
@@ -183,6 +207,12 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
     .primary {{ display: inline-block; padding: 10px 14px; border-radius: 6px; background: #1d4ed8; color: #fff; text-decoration: none; font-weight: 700; }}
     .grid {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }}
     section {{ background: #fff; border: 1px solid #dce3ee; border-radius: 8px; padding: 18px; }}
+    .preview {{ margin-top: 16px; padding: 0; overflow: hidden; }}
+    .preview-head {{ display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px; border-bottom: 1px solid #dce3ee; }}
+    .preview-head h2 {{ margin: 0; }}
+    iframe {{ display: block; width: 100%; height: 760px; border: 0; background: #fff; }}
+    footer {{ margin-top: 28px; padding-top: 18px; border-top: 1px solid #dce3ee; display: flex; flex-wrap: wrap; gap: 10px 18px; color: #5d687a; font-size: 13px; }}
+    footer span {{ color: #778294; }}
     ul {{ list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }}
     li {{ display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid #edf1f7; }}
     li:last-child {{ border-bottom: 0; padding-bottom: 0; }}
@@ -208,7 +238,7 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
         <ul>{scenario_html}</ul>
       </section>
       <section>
-        <h2>Markdown 산출물 폴더</h2>
+        <h2>산출물 폴더</h2>
         <ul>{markdown_html}</ul>
       </section>
       <section>
@@ -216,6 +246,12 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
         <ul>{run_html}</ul>
       </section>
     </div>
+{latest_preview}
+    <footer>
+      <span>Workshop links</span>
+      <a href="https://gdg.community.dev/events/details/google-gdg-seoul-presents-build-with-ai-seoul-2026-with-google-deepmind/" target="_blank" rel="noopener noreferrer">Build with AI Seoul 2026 with Google DeepMind</a>
+      <a href="https://github.com/JAICHANGPARK/2026-bwai-seoul" target="_blank" rel="noopener noreferrer">핸즈온 GitHub repository</a>
+    </footer>
   </main>
 </body>
 </html>
@@ -701,7 +737,18 @@ def save_markdown_files(scenario: dict, results: dict, tasks: list = None):
     if not scenario.get("save_markdown"):
         return []
 
+    def strip_code_fence(value: str) -> str:
+        value = value.strip()
+        if not value.startswith("```"):
+            return value
+        lines = value.splitlines()
+        lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        return "\n".join(lines).strip()
+
     out_dir = os.path.join(BUILD_DIR, scenario.get("markdown_dir", "markdown"))
+    raw_output_files = scenario.get("raw_output_files", False)
     run_id = scenario.get("run_id")
     archive_dir = None
     if run_id:
@@ -718,10 +765,11 @@ def save_markdown_files(scenario: dict, results: dict, tasks: list = None):
         filename = task.get("filename") or f"{idx:02d}_{name}.md"
         filename = filename.replace("/", "_").replace("\\", "_")
 
-        if not filename.endswith(".md"):
+        if not raw_output_files and not filename.endswith(".md"):
             filename += ".md"
 
-        body = content.strip() + "\n"
+        body = strip_code_fence(content) if raw_output_files else content.strip()
+        body += "\n"
         path = os.path.join(out_dir, filename)
         with open(path, "w", encoding="utf-8") as f:
             f.write(body)
@@ -732,9 +780,10 @@ def save_markdown_files(scenario: dict, results: dict, tasks: list = None):
             with open(archive_path, "w", encoding="utf-8") as f:
                 f.write(body)
 
-    print(f"  {GREEN}✅ Saved Markdown files:{RESET} {out_dir}")
+    output_label = "output files" if raw_output_files else "Markdown files"
+    print(f"  {GREEN}✅ Saved {output_label}:{RESET} {out_dir}")
     if archive_dir:
-        print(f"  {GREEN}✅ Archived Markdown files:{RESET} {archive_dir}")
+        print(f"  {GREEN}✅ Archived {output_label}:{RESET} {archive_dir}")
     print(f"  {DIM}{len(saved_paths)} files written{RESET}\n")
     return saved_paths
 

@@ -62,16 +62,39 @@ _SVG_STYLES = [
 ]
 
 _CODE_LANGS = [
-    "python", "javascript", "rust", "go", "c", "java", "ruby", "swift",
-    "kotlin", "typescript", "php", "scala", "haskell", "elixir",
-    "lua", "perl", "r", "julia", "dart", "zig",
+    "python", "javascript", "dart", "typescript", "rust", "go", "java",
+    "kotlin", "swift", "c", "ruby", "php", "scala", "haskell",
+    "elixir", "lua", "perl", "r", "julia", "zig",
 ]
 
 _CODE_EMOJIS = [
-    "🐍", "📜", "🦀", "🐹", "⚙️", "☕", "💎", "🍎",
-    "🟣", "🔷", "🐘", "🔴", "λ", "💧",
-    "🌙", "🐪", "📊", "🔮", "🎯", "⚡",
+    "🐍", "📜", "🎯", "🔷", "🦀", "🐹", "☕",
+    "🟣", "🍎", "⚙️", "💎", "🐘", "🔴", "λ",
+    "💧", "🌙", "🐪", "📊", "🔮", "⚡",
 ]
+
+_CODE_EXTENSIONS = {
+    "python": "py",
+    "javascript": "js",
+    "rust": "rs",
+    "go": "go",
+    "c": "c",
+    "java": "java",
+    "ruby": "rb",
+    "swift": "swift",
+    "kotlin": "kt",
+    "typescript": "ts",
+    "php": "php",
+    "scala": "scala",
+    "haskell": "hs",
+    "elixir": "ex",
+    "lua": "lua",
+    "perl": "pl",
+    "r": "R",
+    "julia": "jl",
+    "dart": "dart",
+    "zig": "zig",
+}
 
 _BUILD_DIR = Path(__file__).resolve().parent / "website_build"
 _SHORT_STORY_REF_RE = re.compile(
@@ -180,15 +203,18 @@ def make_svg_agents(n: int = 10) -> list[dict]:
 
 
 def make_code_agents(n: int = 10) -> list[dict]:
-    return [
-        {
-            "name": _CODE_LANGS[i % len(_CODE_LANGS)],
+    agents = []
+    for i in range(n):
+        language = _CODE_LANGS[i % len(_CODE_LANGS)]
+        extension = _CODE_EXTENSIONS.get(language, "txt")
+        agents.append({
+            "name": language,
             "emoji": _CODE_EMOJIS[i % len(_CODE_EMOJIS)],
             "color": _COLORS[i % len(_COLORS)],
-            "direct_instruction": f"Write a solution for {{topic}} in {_CODE_LANGS[i % len(_CODE_LANGS)]}. Output ONLY code.",
-        }
-        for i in range(n)
-    ]
+            "direct_instruction": f"Write a solution for {{topic}} in {language}. Output ONLY code.",
+            "filename": f"{i+1:02d}_{language}.{extension}",
+        })
+    return agents
 
 
 def make_ascii_agents(n: int = 10) -> list[dict]:
@@ -1701,6 +1727,22 @@ SCENARIOS = {
         "render_card": translate_card,
         "title": "Translation Grid",
         "default_n": 10,
+    },
+    "code": {
+        "make_agents": make_code_agents,
+        "plan": CODE_PLAN,
+        "system_prompt": CODE_SYSTEM,
+        "render_card": code_card,
+        "title": "Code Gallery",
+        "extra_head": (
+            '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">\n'
+            '    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>'
+        ),
+        "extra_body": "    <script>hljs.highlightAll();</script>",
+        "default_n": 10,
+        "save_markdown": True,
+        "markdown_dir": "code_outputs",
+        "raw_output_files": True,
     },
     "resume": {
         "make_agents": make_resume_agents,

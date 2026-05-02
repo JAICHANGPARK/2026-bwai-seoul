@@ -11,7 +11,7 @@
 - [Starter 기준](#starter-기준)
 - [Step 0. LM Studio 앱에서 이력서 1개 직접 생성](#step-0-lm-studio-앱에서-이력서-1개-직접-생성)
 - [Step 1. LM Studio 앱에서 system instruction으로 시나리오 코드 초안 생성](#step-1-lm-studio-앱에서-system-instruction으로-시나리오-코드-초안-생성)
-- [Step 2. 기본 translate 실행](#step-2-기본-translate-실행)
+- [Step 2. 기본 translate와 code 실행](#step-2-기본-translate와-code-실행)
 - [시나리오 추가 패턴](#시나리오-추가-패턴)
 - [Step 3. 이력서 생성 시나리오 추가](#step-3-이력서-생성-시나리오-추가)
 - [Step 4. 이력서 기반 면접 리뷰 시나리오 추가](#step-4-이력서-기반-면접-리뷰-시나리오-추가)
@@ -37,14 +37,14 @@
 ```text
 LM Studio 앱에서 이력서 1개 직접 생성
 -> LM Studio 앱에서 Gemma 4 E4B로 system instruction 기반 시나리오 코드 초안 생성
--> 기본 translate 실행
+-> 기본 translate와 code 실행
 -> 새 시나리오 코드 추가
 -> 실행
 -> Markdown 산출물 확인
 -> 다음 시나리오가 이전 산출물을 입력으로 사용
 ```
 
-[01_starter](../01_starter) 폴더에서 실습합니다. `01_starter`는 `translate` 시나리오만 바로 실행 가능하며, `orchestrator.py`, `specialist.py`, `dashboard.py`, `utils.py`, `run.sh`, `run.ps1`은 완성본과 동일하게 유지합니다. 실습에서는 주로 `01_starter/demo/scenarios.py`를 편집합니다.
+[01_starter](../01_starter) 폴더에서 실습합니다. `01_starter`는 `translate`, `code` 시나리오를 바로 실행 가능하며, `orchestrator.py`, `specialist.py`, `dashboard.py`, `utils.py`, `run.sh`, `run.ps1`은 완성본과 동일하게 유지합니다. 실습에서는 주로 `01_starter/demo/scenarios.py`를 편집합니다.
 
 macOS:
 
@@ -71,6 +71,7 @@ uv sync
 | 실행 이름 | 한국어 의미 | 추가 단계 | 산출물 폴더 |
 | --- | --- | --- | --- |
 | `translate` | 기본 번역 그리드 | Step 2. 기본 실행 | HTML 결과만 생성 |
+| `code` | 기본 코드 갤러리 | Step 2. 기본 실행 | `code_outputs/` |
 | `resume` | 소설 기획자/편집자 이력서 생성 | Step 3 | `resumes/` |
 | `interview_review` | 이력서 기반 면접 평가 | Step 4 | `interview_reviews/` |
 | `hiring_decision` | 편집자 최종 채용 결정 | Step 5 | `hiring_decisions/` |
@@ -164,11 +165,15 @@ Windows PowerShell:
 
 `01_starter/demo/scenarios.py`에는 아래 요소가 이미 들어 있다고 가정합니다.
 
-- `_COLORS`, `_LANG_NAMES`, `_LANG_EMOJIS`
+- `_COLORS`, `_LANG_NAMES`, `_LANG_EMOJIS`, `_CODE_LANGS`, `_CODE_EMOJIS`, `_CODE_EXTENSIONS`
 - `make_translate_agents`
+- `make_code_agents`
 - `TRANSLATE_SYSTEM`
+- `CODE_SYSTEM`
 - `TRANSLATE_PLAN`
+- `CODE_PLAN`
 - `translate_card`
+- `code_card`
 - Markdown 렌더링 helper와 각 Markdown용 card renderer
   - `resume_card`
   - `interview_review_card`
@@ -182,7 +187,7 @@ Windows PowerShell:
   - `contract_draft_card`
   - `publication_contract_card` (이전 문서 호환용 alias)
   - `marketing_copy_card`
-- `SCENARIOS`에는 처음에는 `translate`만 등록
+- `SCENARIOS`에는 처음에는 `translate`, `code`만 등록
 
 처음 registry는 아래처럼 둡니다.
 
@@ -195,6 +200,22 @@ SCENARIOS = {
         "render_card": translate_card,
         "title": "Translation Grid",
         "default_n": 10,
+    },
+    "code": {
+        "make_agents": make_code_agents,
+        "plan": CODE_PLAN,
+        "system_prompt": CODE_SYSTEM,
+        "render_card": code_card,
+        "title": "Code Gallery",
+        "extra_head": (
+            '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">\n'
+            '    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>'
+        ),
+        "extra_body": "    <script>hljs.highlightAll();</script>",
+        "default_n": 10,
+        "save_markdown": True,
+        "markdown_dir": "code_outputs",
+        "raw_output_files": True,
     },
 }
 ```
@@ -472,20 +493,22 @@ SCENARIOS["my_scenario"] = {
 - `selected_story_targeting`을 쓰는 경우 `selected_story_selection_dir`와 `selected_story_story_dir`가 들어 있는지
 - 실행 전에 `bash -n run.sh`를 통과하는지. Python 코드는 실행 시 import 오류가 나면 함수명/renderer명을 먼저 확인합니다.
 
-## Step 2. 기본 translate 실행
+## Step 2. 기본 translate와 code 실행
 
-목표는 서버, 실행 스크립트, dashboard, orchestrator, specialist 구조를 먼저 눈으로 확인하는 것입니다.
+목표는 서버, 실행 스크립트, dashboard, orchestrator, specialist 구조를 먼저 눈으로 확인하는 것입니다. `translate`는 여러 언어로 번역하는 예제이고, `code`는 같은 문제를 여러 프로그래밍 언어로 해결하는 cookbook 기본 예제입니다. 기본 10개 언어에는 Python, JavaScript, Dart, TypeScript, Rust, Go, Java, Kotlin, Swift, C가 포함됩니다.
 
 macOS:
 
 ```bash
 bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
 Windows PowerShell:
 
 ```powershell
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
 확인할 것:
@@ -493,6 +516,7 @@ Windows PowerShell:
 - dashboard에 agent 상태와 throughput이 표시되는지
 - orchestrator가 작업을 생성하고 specialist들이 응답하는지
 - `demo/website_build/index.html`이 생성되는지
+- `code` 실행 후 `demo/website_build/code_outputs/`에서 언어별 코드 파일을 열 수 있는지
 
 ## 시나리오 추가 패턴
 

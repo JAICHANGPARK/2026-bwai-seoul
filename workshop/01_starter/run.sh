@@ -11,6 +11,7 @@
 #
 # Examples:
 #   bash run.sh --scenario translate --topic "Hello world"
+#   bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 #   Add more scenarios in demo/scenarios.py during the hands-on.
 # ─────────────────────────────────────────────────────────────
 
@@ -40,7 +41,7 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: bash run.sh --scenario <name> [--topic <text>] [--port <port>] [--tasks <n>] [--model <name>] [--hires <n>] [--select <n>] [--reasoning on|off]"
             echo ""
             echo "Options:"
-            echo "  --scenario   Scenario name. Starter includes translate; add more in demo/scenarios.py  [default: translate]"
+            echo "  --scenario   Scenario name. Starter includes translate and code; add more in demo/scenarios.py  [default: translate]"
             echo "  --topic      Topic or text; optional when scenario reads prior Markdown outputs"
             echo "  --port       OpenAI-compatible server port        [default: 1234]"
             echo "  --tasks      Number of LLMs to use                [default: scenario default or selected-story count]"
@@ -80,6 +81,7 @@ if [ -n "$N_AGENTS" ]; then
     N_AGENTS_ARG=", n_agents=$N_AGENTS"
 fi
 
+AGENT_ERROR_FILE=$(mktemp)
 AGENT_DATA=$("$PYTHON" -c "
 import sys
 sys.path.insert(0, '$DEMO_DIR')
@@ -87,12 +89,19 @@ from scenarios import get_scenario
 s = get_scenario('$SCENARIO'${N_AGENTS_ARG})
 for a in s['agents']:
     print(f\"{a['name']}|{a['emoji']}|{a['color']}\")
-" 2>/dev/null)
+" 2>"$AGENT_ERROR_FILE")
+AGENT_STATUS=$?
 
-if [ -z "$AGENT_DATA" ]; then
+if [ "$AGENT_STATUS" -ne 0 ] || [ -z "$AGENT_DATA" ]; then
     echo "❌ Failed to load scenario '$SCENARIO'"
+    if [ -s "$AGENT_ERROR_FILE" ]; then
+        echo ""
+        cat "$AGENT_ERROR_FILE"
+    fi
+    rm -f "$AGENT_ERROR_FILE"
     exit 1
 fi
+rm -f "$AGENT_ERROR_FILE"
 
 NAMES=()
 EMOJIS=()
@@ -145,7 +154,12 @@ APPLESCRIPT="tell application \"Terminal\"
 queue_window() {
     # Queue one Terminal command into the AppleScript program. $5 is the command
     # that will run inside the new window, and $6 is the visible window title.
-    APPLESCRIPT+="    set W to do script \"$5\"
+    # The Python scripts pause with "Press Enter to close...". After that Enter,
+    # exit the shell too so the Terminal window closes instead of returning to a
+    # leftover prompt. If the command failed, keep the window open long enough to
+    # read the error.
+    wrapped_cmd="$5; status=\$?; if [ \$status -ne 0 ]; then printf '\\nProcess failed. Press Enter to close...'; read _close_status; fi; exit \$status"
+    APPLESCRIPT+="    set W to do script \"$wrapped_cmd\"
     set custom title of window 1 to \"$6\"
     set bounds of window 1 to {$1, $2, $3, $4}
 "

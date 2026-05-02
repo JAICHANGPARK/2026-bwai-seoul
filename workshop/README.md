@@ -2,7 +2,7 @@
 
 먼저 [03_labs/README.md](03_labs/README.md)를 열고, [01_starter](01_starter) 폴더에서 단계별로 실습하면 됩니다. 막히면 [02_final](02_final)을 참고 코드로 확인하세요.
 
-- `01_starter/`: 시작 코드입니다. `translate`만 바로 실행 가능하고, 핸즈온 중 `demo/scenarios.py`에 시나리오를 하나씩 추가합니다.
+- `01_starter/`: 시작 코드입니다. `translate`, `code`를 바로 실행 가능하고, 핸즈온 중 `demo/scenarios.py`에 시나리오를 하나씩 추가합니다.
 - `02_final/`: 최종 완성본입니다. 모든 시나리오가 등록되어 있습니다.
 - `03_labs/`: `01_starter`에서 `02_final`까지 단계별로 구현하는 실습 문서입니다.
 
@@ -38,6 +38,7 @@ uv sync
 
 ```bash
 bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
 이 명령은 macOS Terminal 창을 여러 개 엽니다. 위쪽에는 대시보드가 열리고, 아래쪽에는 오케스트레이터와 여러 전문 에이전트 창이 배치됩니다.
@@ -55,6 +56,7 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 ```powershell
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
 이 명령은 별도의 PowerShell 창들을 엽니다. 하나는 대시보드, 하나는 오케스트레이터, 나머지는 각 Gemma 4 인스턴스 역할을 하는 전문 에이전트입니다.
@@ -126,6 +128,7 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 
 ```powershell
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 5
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 5
 ```
 
 실행하면 PowerShell 창이 여러 개 열립니다.
@@ -157,6 +160,7 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 | 실행 이름 | 한국어 의미 | 주 입력 및 산출물 |
 | --- | --- | --- |
 | `translate` | 기본 번역 그리드 | `--topic` 문장을 여러 언어로 번역 |
+| `code` | 기본 코드 갤러리 | `--topic` 문제를 Python, JavaScript, Dart 등 여러 언어 코드로 생성하고 `code_outputs/`에 저장 |
 | `resume` | 소설 기획자/편집자 이력서 생성 | `--topic` 직무 기준으로 `resumes/` 생성 |
 | `interview_review` | 이력서 기반 면접 평가 | `resumes/`를 읽어 `interview_reviews/` 생성 |
 | `hiring_decision` | 편집자 최종 채용 결정 | `interview_reviews/`를 읽어 `hiring_decisions/` 생성 |
@@ -179,6 +183,7 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 
 ```bash
 bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
 **1. 이력서 생성 및 면접 평가 흐름**
@@ -268,3 +273,7 @@ Windows PowerShell에서는 이렇게 실행합니다.
 ```powershell
 .\run.ps1 --scenario my_scenario --topic "내 주제"
 ```
+
+## 참고
+
+본 워크숍 코드는 [google-gemma/cookbook](https://github.com/google-gemma/cookbook) 리포지토리 코드를 참고, 활용하였습니다.

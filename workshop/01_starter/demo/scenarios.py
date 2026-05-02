@@ -32,6 +32,41 @@ _LANG_NAMES = [
     "indonesian", "ukrainian",
 ]
 
+_CODE_LANGS = [
+    "python", "javascript", "dart", "typescript", "rust", "go", "java",
+    "kotlin", "swift", "c", "ruby", "php", "scala", "haskell",
+    "elixir", "lua", "perl", "r", "julia", "zig",
+]
+
+_CODE_EMOJIS = [
+    "🐍", "📜", "🎯", "🔷", "🦀", "🐹", "☕",
+    "🟣", "🍎", "⚙️", "💎", "🐘", "🔴", "λ",
+    "💧", "🌙", "🐪", "📊", "🔮", "⚡",
+]
+
+_CODE_EXTENSIONS = {
+    "python": "py",
+    "javascript": "js",
+    "rust": "rs",
+    "go": "go",
+    "c": "c",
+    "java": "java",
+    "ruby": "rb",
+    "swift": "swift",
+    "kotlin": "kt",
+    "typescript": "ts",
+    "php": "php",
+    "scala": "scala",
+    "haskell": "hs",
+    "elixir": "ex",
+    "lua": "lua",
+    "perl": "pl",
+    "r": "R",
+    "julia": "jl",
+    "dart": "dart",
+    "zig": "zig",
+}
+
 _BUILD_DIR = Path(__file__).resolve().parent / "website_build"
 _SHORT_STORY_REF_RE = re.compile(
     r"(?:short_stories/)?(?P<stem>\d{2}_short_story_[A-Za-z0-9_-]+)(?:\.md)?"
@@ -113,12 +148,36 @@ def make_translate_agents(n: int = 10) -> list[dict]:
     ]
 
 
+def make_code_agents(n: int = 10) -> list[dict]:
+    """Create one code-writing agent per programming language."""
+    agents = []
+    for i in range(n):
+        language = _CODE_LANGS[i % len(_CODE_LANGS)]
+        extension = _CODE_EXTENSIONS.get(language, "txt")
+        agents.append({
+            "name": language,
+            "emoji": _CODE_EMOJIS[i % len(_CODE_EMOJIS)],
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                f"Write a solution for {{topic}} in {language}. "
+                "Output ONLY code."
+            ),
+            "filename": f"{i+1:02d}_{language}.{extension}",
+        })
+    return agents
+
+
 TRANSLATE_SYSTEM = (
     # System prompt = scenario-wide behavior contract.
     # It applies to every translation specialist and keeps outputs clean enough
     # for the HTML renderer to display without post-processing.
     "You are a precise translator. Output only the translated text, "
     "without commentary or markdown fences."
+)
+
+CODE_SYSTEM = (
+    "You are a programmer. Output ONLY the code. "
+    "No explanations, no markdown fences, no language labels. Raw code only."
 )
 
 TRANSLATE_PLAN = {
@@ -137,6 +196,17 @@ TRANSLATE_PLAN = {
     ),
 }
 
+CODE_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name" and "instruction". '
+        "Keep each instruction to ONE sentence. Output ONLY valid JSON."
+    ),
+    "user": (
+        'Task: "{topic}". Agents (each is a programming language): {agent_list}\n'
+        'Each instruction: "Write [specific solution] in [language]". One sentence. That is all.'
+    ),
+}
+
 
 # TODO Step 3~13:
 # Paste scenario implementation snippets from workshop/03_labs/README.md here.
@@ -148,8 +218,9 @@ TRANSLATE_PLAN = {
 # - XXX_PLAN = ...
 # - Any extra renderer needed by the lab, for example novel_writing_card.
 #
-# Step 0~2 do not require pasting scenario code. Starting from Step 3, add each
-# scenario's implementation block here in order:
+# Step 0~2 do not require pasting scenario code because translate and code are
+# already included. Starting from Step 3, add each scenario's implementation
+# block here in order:
 # Step 3 resume
 # Step 4 interview_review
 # Step 5 hiring_decision
@@ -179,6 +250,29 @@ def translate_card(agent, result, task=None):
         f'    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">{name}</span>\n'
         f'</div>\n'
         f'<div class="text-sm text-gray-700 leading-relaxed">{html.escape(text)}</div>'
+    )
+
+
+def code_card(agent, result, task=None):
+    """Render one generated code snippet with syntax highlighting hooks."""
+    name = agent["name"]
+    emoji = agent.get("emoji", "💻")
+    code = result.strip()
+    if code.startswith("```"):
+        lines = code.split("\n")
+        lines = lines[1:]
+        if lines and lines[-1].strip() == "```":
+            lines = lines[:-1]
+        code = "\n".join(lines)
+    escaped = html.escape(code)
+    lang_class = f"language-{name}" if name in _CODE_LANGS else ""
+    return (
+        f'<div class="flex items-center gap-2 px-1 pb-3 mb-3 border-b border-gray-200">\n'
+        f'    <span class="text-lg">{emoji}</span>\n'
+        f'    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">{name}</span>\n'
+        f'</div>\n'
+        f'<pre class="m-0 text-xs leading-relaxed overflow-auto"><code class="{lang_class}" '
+        f'style="padding: 0; background: transparent;">{escaped}</code></pre>'
     )
 
 
@@ -345,6 +439,63 @@ def marketing_copy_card(agent, result, task=None):
     return markdown_card(agent, result, task, max_height="680px")
 
 
+def build_page(topic, scenario, results, tasks=None):
+    """Build the full HTML page from all agent results."""
+    agents = scenario["agents"]
+    title = scenario["title"]
+    render_card = scenario["render_card"]
+    extra_head = scenario.get("extra_head", "")
+    extra_body = scenario.get("extra_body", "")
+
+    task_map = {}
+    if tasks:
+        for task in tasks:
+            task_map[task.get("name", "")] = task
+
+    cards_html = []
+    for agent in agents:
+        result = results.get(agent["name"], "")
+        task = task_map.get(agent["name"])
+        inner = render_card(agent, result, task)
+        cards_html.append(
+            f'            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 '
+            f'hover:shadow-md transition-all">\n'
+            f'{inner}\n'
+            f'            </div>'
+        )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{html.escape(title)}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {{ font-family: 'Inter', sans-serif; }}
+        svg {{ width: 100%; height: 100%; }}
+    </style>
+{extra_head}
+</head>
+<body class="bg-white text-gray-900 min-h-screen">
+    <div class="mx-auto px-8 py-16" style="max-width: 1920px;">
+        <h1 class="text-4xl font-bold text-center mb-2 text-gray-900">
+            {html.escape(title)}
+        </h1>
+        <p class="text-center text-gray-500 text-base mb-12">{html.escape(topic)}</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+{chr(10).join(cards_html)}
+        </div>
+        <p class="text-center text-gray-400 text-xs mt-12 tracking-wide uppercase">
+            Generated by {len(agents)} concurrent Gemma 4 instances
+        </p>
+    </div>
+{extra_body}
+</body>
+</html>"""
+
+
 SCENARIOS = {
     # Registry entry contract:
     # - make_agents: returns agent metadata
@@ -360,13 +511,30 @@ SCENARIOS = {
         "title": "Translation Grid",
         "default_n": 10,
     },
+    "code": {
+        "make_agents": make_code_agents,
+        "plan": CODE_PLAN,
+        "system_prompt": CODE_SYSTEM,
+        "render_card": code_card,
+        "title": "Code Gallery",
+        "extra_head": (
+            '    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">\n'
+            '    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>'
+        ),
+        "extra_body": "    <script>hljs.highlightAll();</script>",
+        "default_n": 10,
+        "save_markdown": True,
+        "markdown_dir": "code_outputs",
+        "raw_output_files": True,
+    },
 
     # TODO Step 3~13:
     # Paste each registry entry from workshop/03_labs/README.md here, inside
     # this dict, after the translate entry.
     #
-    # Step 0~2 do not add registry entries. Starting from Step 3, add the
-    # registry entries in the same order as the lab guide:
+    # Step 0~2 do not add registry entries because translate and code are
+    # already registered. Starting from Step 3, add entries in the same order
+    # as the lab guide:
     # resume, interview_review, hiring_decision,
     # marketer_resume, marketer_interview_review, marketer_hiring_decision,
     # interview_dialogue, hiring_decision_from_dialogue, optional novel_writing,

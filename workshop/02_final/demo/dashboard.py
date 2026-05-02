@@ -185,7 +185,7 @@ def build_hero(metrics: dict[str, dict], server_metrics: dict = None) -> Panel:
 
     return Panel(
         content,
-        title="[bold cyan]⚡ THROUGHPUT[/]",
+        title="[bold cyan]💎 THROUGHPUT[/]",
         border_style="cyan",
         padding=(1, 2),
         expand=True,
@@ -435,7 +435,7 @@ def main():
 
     console.print(Panel(
         "\n".join(summary_lines),
-        title="[bold cyan]⚡ Final Summary[/]",
+        title="[bold cyan]💎 Final Summary[/]",
         border_style="cyan",
         padding=(1, 2),
     ))
