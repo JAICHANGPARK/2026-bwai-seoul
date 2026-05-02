@@ -162,7 +162,7 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 | --- | --- | --- |
 | `translate` | 기본 번역 그리드 | `--topic` 문장을 여러 언어로 번역 |
 | `code` | 기본 코드 갤러리 | `--topic` 문제를 Python, JavaScript, Dart 등 여러 언어 코드로 생성하고 `code_outputs/`에 저장 |
-| `resume` | 소설 기획자/편집자 이력서 생성 | `--topic` 직무 기준으로 `resumes/` 생성 |
+| `resume` | 소설 기획편집자 이력서 생성 | `--topic` 직무 기준으로 `resumes/` 생성 |
 | `interview_review` | 이력서 기반 면접 평가 | `resumes/`를 읽어 `interview_reviews/` 생성 |
 | `hiring_decision` | 편집자 최종 채용 결정 | `interview_reviews/`를 읽어 `hiring_decisions/` 생성 |
 | `interview_dialogue` | 이력서 기반 면접 대화록 생성 | `resumes/`를 읽어 `interview_dialogues/` 생성 |
@@ -190,22 +190,22 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 **1. 이력서 생성 및 면접 평가 흐름**
 
 ```bash
-bash run.sh --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
-bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획자" --tasks 10
-bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획자" --hires 2
+bash run.sh --scenario resume --topic "도서 출판사 소설 기획편집자" --tasks 10
+bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획편집자" --tasks 10
+bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획편집자" --hires 2
 
 bash run.sh --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
 bash run.sh --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
 bash run.sh --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2
 ```
 
-`resume`은 가상의 소설 기획자/편집자 이력서를 `resumes/`에 저장합니다. `interview_review`는 저장된 이력서를 읽어 면접관 평가를 `interview_reviews/`에 저장하고, `hiring_decision`은 평가 결과를 모아 최종 채용 결정을 `hiring_decisions/`에 저장합니다. 같은 방식으로 `marketer_resume`, `marketer_interview_review`, `marketer_hiring_decision`은 북 마케터 채용 결과를 `marketer_hiring_decisions/`에 저장합니다.
+`resume`은 가상의 소설 기획편집자 이력서를 `resumes/`에 저장합니다. `interview_review`는 저장된 이력서를 읽어 면접관 평가를 `interview_reviews/`에 저장하고, `hiring_decision`은 평가 결과를 모아 최종 채용 결정을 `hiring_decisions/`에 저장합니다. 같은 방식으로 `marketer_resume`, `marketer_interview_review`, `marketer_hiring_decision`은 북 마케터 채용 결과를 `marketer_hiring_decisions/`에 저장합니다.
 
 면접 대화 시뮬레이션까지 확장하려면 아래 흐름을 추가로 실행합니다.
 
 ```bash
-bash run.sh --scenario interview_dialogue --topic "도서 출판사 소설 기획자" --tasks 10
-bash run.sh --scenario hiring_decision_from_dialogue --topic "도서 출판사 소설 기획자" --hires 2
+bash run.sh --scenario interview_dialogue --topic "도서 출판사 소설 기획편집자" --tasks 10
+bash run.sh --scenario hiring_decision_from_dialogue --topic "도서 출판사 소설 기획편집자" --hires 2
 ```
 
 `interview_dialogue`는 이력서를 바탕으로 실제 면접 대화록을 `interview_dialogues/`에 저장하고, `hiring_decision_from_dialogue`는 면접 대화록을 근거로 채용 결정을 생성합니다.

@@ -15,9 +15,9 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 주요 완성 흐름:
 
 ```bash
-bash run.sh --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
-bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획자" --tasks 10
-bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획자" --hires 2
+bash run.sh --scenario resume --topic "도서 출판사 소설 기획편집자" --tasks 10
+bash run.sh --scenario interview_review --topic "도서 출판사 소설 기획편집자" --tasks 10
+bash run.sh --scenario hiring_decision --topic "도서 출판사 소설 기획편집자" --hires 2
 
 bash run.sh --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
 bash run.sh --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
@@ -34,4 +34,4 @@ bash run.sh --scenario marketing_copy --tasks 10
 
 Windows PowerShell에서는 `bash run.sh` 대신 `.\run.ps1`을 사용합니다.
 
-초반 채용 실습에서는 소설 기획자/편집자와 북 마케터를 함께 채용합니다. 단편소설 출간 실습은 `심사/선정 -> 출간 의향 확인 -> 계약 조건 협의 -> 계약서 초안 작성 -> 개정 작업 -> 마케팅 문구` 순서입니다. 심사/오퍼/계약/개정 단계는 채용된 편집자 결정 결과를 함께 참고하고, 오퍼/계약/개정 단계는 선정 결과에서 작품 수를 자동 추론합니다. 마케팅 단계는 기본 10개 agent가 선정작을 순환 배정받아 여러 문구 변형을 만들며, 채용된 마케터 결정 결과도 함께 참고합니다. 계약서 초안은 워크샵용 산출물이며, 실제 법적 계약서로 사용하지 않습니다.
+초반 채용 실습에서는 소설 기획편집자와 북 마케터를 함께 채용합니다. 단편소설 출간 실습은 `심사/선정 -> 출간 의향 확인 -> 계약 조건 협의 -> 계약서 초안 작성 -> 개정 작업 -> 마케팅 문구` 순서입니다. 심사/오퍼/계약/개정 단계는 채용된 편집자 결정 결과를 함께 참고하고, 오퍼/계약/개정 단계는 선정 결과에서 작품 수를 자동 추론합니다. 마케팅 단계는 기본 10개 agent가 선정작을 순환 배정받아 여러 문구 변형을 만들며, 채용된 마케터 결정 결과도 함께 참고합니다. 계약서 초안은 워크샵용 산출물이며, 실제 법적 계약서로 사용하지 않습니다.

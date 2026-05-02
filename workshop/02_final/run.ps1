@@ -6,7 +6,7 @@
 # Examples:
 #   .\run.ps1 --scenario translate --topic "Hello world"
 #   .\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
-#   .\run.ps1 --scenario resume --topic "도서 출판사 소설 기획자" --tasks 10
+#   .\run.ps1 --scenario resume --topic "도서 출판사 소설 기획편집자" --tasks 10
 #   .\run.ps1 --scenario marketer_resume --topic "도서 출판사 북 마케터" --tasks 10
 #   .\run.ps1 --scenario marketer_interview_review --topic "도서 출판사 북 마케터" --tasks 10
 #   .\run.ps1 --scenario marketer_hiring_decision --topic "도서 출판사 북 마케터" --hires 2

@@ -246,7 +246,7 @@ def make_resume_agents(n: int = 10) -> list[dict]:
             "color": _COLORS[i % len(_COLORS)],
             "direct_instruction": (
                 "Create one complete Korean Markdown resume for a fictional "
-                "book publishing company fiction planner. Topic: {topic}. "
+                "book publishing company fiction planning editor. Topic: {topic}. "
                 f"This is resume #{i+1}; make the candidate profile, career path, "
                 "publisher types, fiction genres, projects, achievements, and tools "
                 "clearly different from the other resumes. Output Markdown only."
@@ -674,16 +674,16 @@ ASCII_SYSTEM = (
 
 RESUME_SYSTEM = """
 You are a senior Korean resume writer for publishing and content industry roles.
-Create one realistic but fully fictional resume for a book publishing company fiction planner.
+Create one realistic but fully fictional resume for a book publishing company fiction planning editor.
 
 Output ONLY Markdown.
 Do not include explanations or markdown fences.
 Do not use real personal data, real phone numbers, real emails, or real company-confidential facts.
 Use fictional names, fictional employers, fictional projects, and fictional metrics.
-Make the resume specific to fiction/book publishing planning, not a generic IT product planner.
+Make the resume specific to fiction acquisition, editorial planning, manuscript development, and book publishing, not a generic IT product planner.
 
 Required structure:
-# [Fictional Korean Name] - 도서 출판사 소설 기획자 이력서
+# [Fictional Korean Name] - 도서 출판사 소설 기획편집자 이력서
 ## 프로필
 ## 핵심 역량
 ## 경력
@@ -696,7 +696,7 @@ Required structure:
 
 INTERVIEW_REVIEW_SYSTEM = """
 You are a senior interviewer and hiring committee reviewer for Korean book publishing companies.
-You are reviewing candidates for fiction planning, novel acquisition, IP development, and editorial planning roles.
+You are reviewing candidates for fiction planning editor roles: manuscript editing, novel acquisition, IP development, and editorial planning.
 
 Output ONLY Markdown.
 Do not include explanations outside the review.
@@ -722,7 +722,7 @@ Required structure:
 
 INTERVIEW_DIALOGUE_SYSTEM = """
 You are a senior Korean publishing-company interviewer and a realistic fictional candidate simulator.
-You are conducting interviews for fiction planning, novel acquisition, IP development, and editorial planning roles.
+You are conducting interviews for fiction planning editor roles: manuscript editing, novel acquisition, IP development, and editorial planning.
 
 Output ONLY Markdown.
 Do not include explanations outside the transcript.
@@ -1099,7 +1099,7 @@ RESUME_PLAN = {
         'Create {n_agents} different fictional Korean Markdown resumes for "{topic}".\n'
         "Agents: {agent_list}\n"
         "Each instruction should ask for one complete resume for a book publishing "
-        "company fiction planner, with differentiated seniority, genre focus, "
+        "company fiction planning editor, with differentiated seniority, genre focus, "
         "publisher type, projects, and achievements."
     ),
 }
@@ -1749,7 +1749,7 @@ SCENARIOS = {
         "plan": RESUME_PLAN,
         "system_prompt": RESUME_SYSTEM,
         "render_card": resume_card,
-        "title": "Publishing Fiction Planner Resumes",
+        "title": "Publishing Fiction Planning Editor Resumes",
         "default_n": 10,
         "direct_plan": True,
         "save_markdown": True,
