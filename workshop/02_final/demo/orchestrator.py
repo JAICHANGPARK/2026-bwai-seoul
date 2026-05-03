@@ -99,7 +99,7 @@ def write_website_index(current_run_id: str = None, current_scenario_slug: str =
     markdown_dirs = []
     # save_markdown=True인 시나리오는 결과를 폴더별 파일로 저장합니다.
     # Markdown뿐 아니라 code 시나리오의 .py/.js 같은 코드 파일도 함께 표시합니다.
-    # 폴더마다 간단한 index.html을 만들어 참가자가 산출물을 브라우저에서 열 수 있게 합니다.
+    # 폴더마다 간단한 index.html을 만들어 사용자가 산출물을 브라우저에서 열 수 있게 합니다.
     for dirname in sorted(os.listdir(BUILD_DIR)):
         path = os.path.join(BUILD_DIR, dirname)
         if not os.path.isdir(path) or dirname == "runs":
@@ -508,7 +508,7 @@ def build_direct_tasks(scenario: dict, topic: str) -> list[dict]:
         })
         instruction = agent.get("direct_instruction", "Work on: {topic}")
         # direct_instruction은 간단한 template string입니다. 복잡한 템플릿 엔진 대신
-        # 명시적인 replace만 사용해서 참가자가 데이터 흐름을 쉽게 따라갈 수 있게 했습니다.
+        # 명시적인 replace만 사용해서 사용자가 데이터 흐름을 쉽게 따라갈 수 있게 했습니다.
         instruction = (
             instruction
             .replace("{topic}", topic)

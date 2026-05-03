@@ -3,12 +3,12 @@
 Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위한 사전 준비 문서와 핸즈온 실습 코드 저장소입니다.
 
 - 세션명: `Build Your Own AI Office with Gemma 4`
-- 진행자: `박제창`
+- 세션 담당: `박제창`
 - 트랙: `Hands-On A`
 - 진행 시간: `13:30 ~ 14:30 (60분)`
-- 기준 확인일: `2026-05-02`
+- 기준 확인일: `2026-05-03`
 
-이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서와, 당일 실습에서 사용할 `workshop/` 코드가 들어 있습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 되고, 핸즈온 실습은 [workshop/03_labs/README.md](./workshop/03_labs/README.md)를 보면서 [workshop/01_starter](./workshop/01_starter)에서 진행하면 됩니다.
+이 저장소에는 행사 전에 자신의 운영체제와 장비 사양에 맞춰 **로컬 Gemma 4 실행 환경을 미리 준비**할 수 있도록 필요한 문서와, 당일 실습에서 사용할 `workshop/` 코드가 들어 있습니다. 처음 준비한다면 `LM Studio`를 기준으로 따라오면 됩니다. 단, **Intel Mac 사용자는 LM Studio 대신 Ollama 기준**으로 준비하세요. 핸즈온 실습은 [workshop/03_labs/README.md](./workshop/03_labs/README.md)를 보면서 [workshop/01_starter](./workshop/01_starter)에서 진행하면 됩니다.
 
 ## 빠른 시작
 
@@ -26,21 +26,22 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 
 | 내 상황 | 먼저 볼 문서 |
 | --- | --- |
-| 처음 준비하는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [19](./docs/19-code-editor-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
-| Windows를 쓰는 경우 | [02](./docs/02-windows-guide.md) -> [01](./docs/01-hardware-and-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [19](./docs/19-code-editor-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
-| ChromeOS를 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [06](./docs/06-ollama-setup.md) -> [16](./docs/16-troubleshooting-and-final-check.md) |
-| Apple Silicon Mac을 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [04](./docs/04-gguf-mlx-llamacpp-explainer.md) -> [05](./docs/05-lm-studio-setup.md) -> [08](./docs/08-apple-silicon-mlx.md) -> [19](./docs/19-code-editor-setup.md) |
-| 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) -> [18](./docs/18-uv-setup.md) (필요 시) |
+| 처음 준비하는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [17](./docs/17-code-editor-setup.md) -> [19](./docs/19-troubleshooting-and-final-check.md) |
+| Windows를 쓰는 경우 | [02](./docs/02-windows-guide.md) -> [01](./docs/01-hardware-and-model-selection.md) -> [05](./docs/05-lm-studio-setup.md) -> [17](./docs/17-code-editor-setup.md) -> [19](./docs/19-troubleshooting-and-final-check.md) |
+| ChromeOS를 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [06](./docs/06-ollama-setup.md) -> [19](./docs/19-troubleshooting-and-final-check.md) |
+| Apple Silicon Mac을 쓰는 경우 | [01](./docs/01-hardware-and-model-selection.md) -> [03](./docs/03-memory-based-model-selection.md) -> [04](./docs/04-gguf-mlx-llamacpp-explainer.md) -> [05](./docs/05-lm-studio-setup.md) -> [08](./docs/08-apple-silicon-mlx.md) -> [17](./docs/17-code-editor-setup.md) |
+| Intel Mac을 쓰는 경우 | [18](./docs/18-intel-mac-prep.md) -> [06](./docs/06-ollama-setup.md) -> [03](./docs/03-memory-based-model-selection.md) -> [17](./docs/17-code-editor-setup.md) -> [19](./docs/19-troubleshooting-and-final-check.md) |
+| 코딩 에이전트까지 해 보고 싶은 경우 | [09](./docs/09-gemma4-benchmarks-and-agent-expectations.md) -> [10](./docs/10-opencode-lmstudio-developer-agent.md) -> [11](./docs/11-pi-and-tool-selection-notes.md) -> [12](./docs/12-hermes-agent-overview.md) -> [13](./docs/13-hermes-agent-setup.md) -> [16](./docs/16-uv-setup.md) (필요 시) |
 | Gemini CLI에서 Gemma 4 preview / Gemma 라우팅을 확인해 보고 싶은 경우 | [15](./docs/15-gemini-cli-gemma-routing-prep.md) |
-| 자주 묻는 질문을 먼저 보고 싶은 경우 | [17](./docs/17-faq.md) |
-| `uv` 또는 `uvx`를 미리 설치하고 싶은 경우 | [18](./docs/18-uv-setup.md) |
-| 핸즈온 코드 수정을 위한 편집기를 준비하는 경우 | [19](./docs/19-code-editor-setup.md) |
+| `uv` 또는 `uvx`를 미리 설치하고 싶은 경우 | [16](./docs/16-uv-setup.md) |
+| 핸즈온 코드 수정을 위한 편집기를 준비하는 경우 | [17](./docs/17-code-editor-setup.md) |
+| 자주 묻는 질문을 먼저 보고 싶은 경우 | [20](./docs/20-faq.md) |
 
 ## 먼저 기억할 것
 
 - 행사 당일에 처음 모델을 받기 시작하면 시간이 부족할 수 있습니다. 미리 받아 주세요.
 - 가능하면 `16GB 이상` 메모리 장비를 준비하세요.
-- 하나만 설치한다면 `LM Studio`를 설치하세요.
+- 하나만 설치한다면 대부분의 환경에서는 `LM Studio`를 설치하세요. 단, **Intel Mac과 ChromeOS는 Ollama**를 기준으로 준비하세요.
 - `8GB` 장비는 `E2B`만 준비하세요. 실행 속도는 많이 느릴 수 있습니다.
 - 모델은 **instruction-tuned / chat-ready** 계열을 받으세요. `base`나 `pretrained`로 표시된 모델은 이번 기본 준비용으로 권장하지 않습니다.
 - 핸즈온에서 `workshop/01_starter` 코드를 수정하므로 `Visual Studio Code` 또는 `Google Antigravity` 중 하나를 준비하세요.
@@ -100,10 +101,11 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 13. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
-16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
-17. [자주 묻는 질문](./docs/17-faq.md)
-18. [uv 설치 가이드](./docs/18-uv-setup.md)
-19. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+16. [uv 설치 가이드](./docs/16-uv-setup.md)
+17. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+18. [Intel Mac 사용자 사전 준비 가이드](./docs/18-intel-mac-prep.md)
+19. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
+20. [자주 묻는 질문](./docs/20-faq.md)
 
 ## 저장소 구조
 
@@ -130,7 +132,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4**를 위
 - `workshop/02_final/`: 최종 완성 코드
 - `workshop/03_labs/`: 단계별 실습 문서
 - `gemma4-local-setup-guide.md`: 가장 먼저 볼 전체 안내 문서
-- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-19`을 하나의 PDF로 묶는 스크립트
+- `scripts/generate_hands_on_prep_pdf.py`: `docs/01-20`을 하나의 PDF로 묶는 스크립트
 - `output/pdf/`: 생성된 PDF 산출물
 - `tmp/pdfs/`: PDF 미리보기 contact sheet 이미지
 

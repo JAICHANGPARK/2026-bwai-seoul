@@ -12,6 +12,8 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 
 `code` 기본 10개 agent에는 Dart가 포함됩니다.
 
+Ollama를 쓰는 경우에는 모든 실행 명령에 `--port 11434 --model "gemma4:e2b"`를 붙입니다. 모델명이 다르면 `ollama list`에 표시된 이름을 사용합니다.
+
 ## 최종 실행 순서
 
 **0. 기본 실행**

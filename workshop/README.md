@@ -9,12 +9,14 @@
 ## 준비물
 
 - **macOS + Terminal** 또는 **Windows + PowerShell**
-- 코드 수정을 위한 **Visual Studio Code 또는 Google Antigravity**: 자세한 설치 방법은 [코드 편집기 설치 가이드](../docs/19-code-editor-setup.md)를 참고하세요.
+- 코드 수정을 위한 **Visual Studio Code 또는 Google Antigravity**: 자세한 설치 방법은 [코드 편집기 설치 가이드](../docs/17-code-editor-setup.md)를 참고하세요.
 - Python 패키지 관리를 위한 **[uv](https://github.com/astral-sh/uv)**
-- **LM Studio** 로컬 OpenAI 호환 서버
+- **LM Studio** 또는 **Ollama** 로컬 OpenAI 호환 서버
+- Intel Mac 사용자는 LM Studio 대신 **Ollama**를 사용합니다. 자세한 준비는 [Intel Mac 사용자 사전 준비 가이드](../docs/18-intel-mac-prep.md)를 참고하세요.
 
 > [!NOTE]
 > 실행 스크립트의 기본 포트는 `1234`입니다. LM Studio의 일반적인 로컬 서버 포트와 맞습니다.
+> Ollama는 OpenAI 호환 API 포트가 `11434`입니다. Ollama 사용자는 `--port 11434 --model "모델명"`을 붙여 실행합니다.
 
 ## 빠른 시작
 
@@ -35,6 +37,15 @@ uv sync
 2. OpenAI 호환 로컬 서버를 켭니다.
 3. 서버 주소를 `http://127.0.0.1:1234`로 유지합니다.
 
+Ollama를 쓰는 경우:
+
+```bash
+ollama pull gemma4:e2b
+curl http://127.0.0.1:11434/v1/models
+```
+
+Ollama 앱이 서버를 자동 실행하지 않는 환경에서는 별도 터미널에서 `ollama serve`를 먼저 실행합니다. `address already in use`가 나오면 이미 서버가 켜진 상태입니다.
+
 **3. macOS에서 데모 실행**
 
 ```bash
@@ -43,6 +54,13 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 ```
 
 이 명령은 macOS Terminal 창을 여러 개 엽니다. 위쪽에는 대시보드가 열리고, 아래쪽에는 오케스트레이터와 여러 전문 에이전트 창이 배치됩니다.
+
+Ollama 포트 `11434`를 쓰는 경우에는 모델명을 함께 지정하고 작은 task 수로 시작하세요.
+
+```bash
+bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 3 --port 11434 --model "gemma4:e2b"
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 3 --port 11434 --model "gemma4:e2b"
+```
 
 **4. Windows PowerShell에서 데모 실행**
 
@@ -106,7 +124,7 @@ PowerShell에서 확인합니다.
 uv --version
 ```
 
-`uv`가 없다면 [uv 설치 가이드](../docs/18-uv-setup.md)의 Windows PowerShell 섹션을 먼저 따라가면 됩니다.
+`uv`가 없다면 [uv 설치 가이드](../docs/16-uv-setup.md)의 Windows PowerShell 섹션을 먼저 따라가면 됩니다.
 
 **3. 워크샵 의존성 설치**
 
@@ -132,6 +150,13 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 .\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 5
 ```
 
+Ollama 포트 `11434`를 쓰는 경우:
+
+```powershell
+.\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 3 --port 11434 --model "gemma4:e2b"
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 3 --port 11434 --model "gemma4:e2b"
+```
+
 실행하면 PowerShell 창이 여러 개 열립니다.
 
 - `Dashboard`: 전체 처리량과 에이전트 상태
@@ -145,8 +170,43 @@ LM Studio 기본 포트 `1234`를 쓰는 경우:
 - `.venv not found`가 나오면 `workshop` 폴더에서 `uv sync`를 먼저 실행합니다.
 - `Connection refused` 또는 API 연결 오류가 나오면 LM Studio 로컬 서버가 켜져 있는지, 포트가 `1234`인지 확인합니다.
 - 모델 이름 오류가 나오면 `Invoke-RestMethod http://127.0.0.1:1234/v1/models`로 모델 ID를 확인한 뒤 `.\run.ps1 ... --model "모델ID"`를 붙입니다. `run.ps1`은 기본값일 때 가능한 경우 첫 모델 ID를 자동으로 사용합니다.
+- Ollama 사용자는 `Invoke-RestMethod http://127.0.0.1:11434/v1/models`로 서버를 확인하고, `ollama list`에 보이는 모델명을 `--model`에 그대로 넣습니다.
 - 한글이나 이모지가 깨지면 Windows Terminal 또는 최신 PowerShell을 사용합니다. `run.ps1`은 실행 창에서 UTF-8 출력을 자동으로 설정합니다.
 - LM Studio 로그에 `GET /metrics` 오류가 반복되면 최신 코드에서는 기본적으로 발생하지 않아야 합니다. 대시보드는 agent가 쓰는 로컬 metrics 파일을 사용하고, 서버 `/metrics` 폴링은 꺼져 있습니다.
+
+## Ollama 사용자 가이드
+
+Ollama는 기본 API 포트가 `11434`입니다. 이 워크샵 코드는 OpenAI 호환 `chat/completions` API를 사용하므로 Ollama의 OpenAI 호환 주소인 `http://127.0.0.1:11434/v1`에 연결합니다.
+
+핵심 규칙:
+
+- LM Studio: `--port` 생략 가능. 기본값 `1234`
+- Ollama: `--port 11434` 필요
+- Ollama: `--model`에 `ollama list`에 표시되는 모델명 지정
+
+macOS:
+
+```bash
+ollama pull gemma4:e2b
+curl http://127.0.0.1:11434/v1/models
+
+cd workshop/01_starter
+uv sync
+bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 5 --port 11434 --model "gemma4:e2b"
+```
+
+Windows PowerShell:
+
+```powershell
+ollama pull gemma4:e2b
+Invoke-RestMethod http://127.0.0.1:11434/v1/models
+
+cd .\workshop\01_starter
+uv sync
+.\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 5 --port 11434 --model "gemma4:e2b"
+```
+
+노트북 성능이 낮으면 처음에는 `--tasks 3` 또는 `--tasks 5`로 시작합니다. 모델명이 다르면 `gemma4:e2b` 대신 `ollama list`에 표시된 이름을 사용합니다. Ollama의 OpenAI 호환 API는 [공식 문서](https://docs.ollama.com/openai) 기준으로 `http://localhost:11434/v1/` 형식을 사용합니다.
 
 ## 주요 시나리오 흐름
 

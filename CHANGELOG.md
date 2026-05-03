@@ -2,24 +2,37 @@
 
 Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전 준비 문서의 주요 변경 이력입니다.
 
+## 2026-05-03
+
+### 추가
+
+- `docs/18-intel-mac-prep.md`를 추가해 Intel Mac 사용자의 사전 준비 경로를 Ollama 중심으로 분리했습니다.
+
+### 변경
+
+- `README.md`, `gemma4-local-setup-guide.md`, PDF 생성 스크립트의 문서 목록을 최신 20개 문서 구성에 맞게 갱신했습니다.
+- Intel Mac 사용자는 LM Studio 대신 Ollama와 `gemma4:e2b`를 기준으로 준비하도록 빠른 선택, FAQ, 트러블슈팅 안내를 보강했습니다.
+- 워크샵 코드 실행 시 Intel Mac에서는 `--port 11434 --model gemma4:e2b`를 사용하도록 안내를 추가했습니다.
+- 트러블슈팅과 FAQ가 마지막에 오도록 문서 번호를 재정렬했습니다. `uv`는 16번, 코드 편집기는 17번, Intel Mac은 18번, 트러블슈팅은 19번, FAQ는 20번입니다.
+
 ## 2026-05-02
 
 ### 추가
 
-- `docs/19-code-editor-setup.md`를 추가해 Visual Studio Code와 Google Antigravity 설치, 선택 기준, 핸즈온 코드 열기 방법을 정리했습니다.
+- `docs/17-code-editor-setup.md`를 추가해 Visual Studio Code와 Google Antigravity 설치, 선택 기준, 핸즈온 코드 열기 방법을 정리했습니다.
 
 ### 변경
 
-- `README.md`, `gemma4-local-setup-guide.md`, PDF 생성 스크립트의 문서 목록을 최신 19개 문서 구성에 맞게 갱신했습니다.
+- `README.md`, `gemma4-local-setup-guide.md`, PDF 생성 스크립트의 문서 목록을 당시 문서 구성에 맞게 갱신했습니다.
 - 핸즈온 코드 수정 준비 항목에 `Visual Studio Code` 또는 `Google Antigravity` 중 하나를 설치하도록 안내를 추가했습니다.
-- `output/pdf/gemma4-hands-on-prep-guide.pdf`를 최신 문서 기준으로 다시 생성할 수 있도록 수록 범위를 `docs/01-19`로 갱신했습니다.
+- `output/pdf/gemma4-hands-on-prep-guide.pdf`를 당시 문서 기준으로 다시 생성할 수 있도록 수록 범위를 갱신했습니다.
 
 ## 2026-05-01
 
 ### 추가
 
-- `docs/17-faq.md`를 추가해 자주 헷갈리는 질문을 한곳에서 확인할 수 있도록 정리했습니다.
-- `docs/18-uv-setup.md`를 추가해 `uv`와 `uvx` 설치, 업그레이드, Hermes Agent와의 관계를 별도 문서로 정리했습니다.
+- `docs/20-faq.md`를 추가해 자주 헷갈리는 질문을 한곳에서 확인할 수 있도록 정리했습니다.
+- `docs/16-uv-setup.md`를 추가해 `uv`와 `uvx` 설치, 업그레이드, Hermes Agent와의 관계를 별도 문서로 정리했습니다.
 - `docs/15-gemini-cli-gemma-routing-prep.md`를 추가해 Gemini CLI preview, Gemma 4 모델 선택, Gemma 로컬 라우팅 준비 흐름을 별도 문서로 분리했습니다.
 - Gemini CLI가 무엇인지, 로컬 Gemma 라우팅이 무엇인지, `gemini gemma setup`이 실제로 어떤 모델을 내려받는지 설명을 보강했습니다.
 - Gemma 4 preview 모델은 목록에서 선택 가능해도 계정/API 키/조직 설정에 따라 실제 호출이 막힐 수 있다는 주의사항을 추가했습니다.
@@ -29,7 +42,7 @@ Build with AI Seoul 2026 세션 **Build Your Own AI Office with Gemma 4** 사전
 
 ### 변경
 
-- 문서 순서를 조정해 Gemini CLI 사전 준비 문서를 15번, 트러블슈팅과 최종 체크 문서를 16번, FAQ를 17번으로 정리했습니다.
+- 문서 순서를 조정해 Gemini CLI 사전 준비 문서를 15번으로 정리했습니다.
 - `README.md`와 `gemma4-local-setup-guide.md`의 문서 목록을 최신 18개 문서 구성에 맞게 갱신했습니다.
 - 모델 선택 안내를 `instruction-tuned / chat-ready` 계열 기준으로 명확히 바꿨습니다.
 - Hugging Face 공식 Gemma 4 모델 예시로 `google/gemma-4-E2B-it`, `google/gemma-4-E4B-it`, `google/gemma-4-26B-A4B-it`, `google/gemma-4-31B-it`를 안내했습니다.

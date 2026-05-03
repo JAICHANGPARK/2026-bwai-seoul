@@ -83,7 +83,7 @@
 
 - 8GB Windows 노트북은 가능한 경우 다른 장비를 권장합니다.
 - 16GB가 가장 무난한 최소 기준에 가깝습니다.
-- 발표자 데모용으로는 32GB 이상이 훨씬 여유롭습니다.
+- 라이브 데모용으로는 32GB 이상이 훨씬 여유롭습니다.
 
 ## Windows에서 가장 먼저 해야 할 일
 
@@ -171,13 +171,13 @@ WSL2:
 ### 기본 준비
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
-2. [트러블슈팅 / 최종 체크 / 참고 링크](./16-troubleshooting-and-final-check.md)
+2. [트러블슈팅 / 최종 체크 / 참고 링크](./19-troubleshooting-and-final-check.md)
 
 ### CLI도 해 보고 싶은 경우
 
 1. [LM Studio 설치 가이드](./05-lm-studio-setup.md)
 2. [Ollama 설치 가이드](./06-ollama-setup.md)
-3. [트러블슈팅 / 최종 체크 / 참고 링크](./16-troubleshooting-and-final-check.md)
+3. [트러블슈팅 / 최종 체크 / 참고 링크](./19-troubleshooting-and-final-check.md)
 
 ### Hermes까지 해 보고 싶은 경우
 
@@ -201,7 +201,7 @@ wsl -d Ubuntu
 
 - WSL2 첫 설치
 - 큰 모델 첫 다운로드
-- `Hermes + WSL2 + local server`를 한 번도 테스트하지 않은 상태로 참석
+- `Hermes + WSL2 + local server`를 한 번도 테스트하지 않은 상태로 준비
 - 8GB 노트북에서 큰 모델을 현장에서 바로 시도
 
 ## 행사 전 최종 체크리스트

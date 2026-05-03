@@ -2,13 +2,16 @@
 
 이 문서는 `workshop/01_starter`에서 시작해 시나리오를 하나씩 추가하고, `workshop/02_final`의 최종 완성본까지 도달하는 진행안을 정리합니다.
 
-코드 편집기 설치는 사전준비 문서의 [코드 편집기 설치 가이드](../../docs/19-code-editor-setup.md)를 참고하세요.
+코드 편집기 설치는 사전준비 문서의 [코드 편집기 설치 가이드](../../docs/17-code-editor-setup.md)를 참고하세요.
+
+Intel Mac 사용자는 LM Studio 앱 대신 Ollama를 사용합니다. 사전 준비는 [Intel Mac 사용자 사전 준비 가이드](../../docs/18-intel-mac-prep.md)를 먼저 보고, 실행 명령에는 `--port 11434 --model "gemma4:e2b"`를 붙이세요.
 
 ## 목차
 
 - [진행 방식](#진행-방식)
 - [시나리오 이름표](#시나리오-이름표)
 - [LM Studio 권장 설정](#lm-studio-권장-설정)
+- [Ollama 사용자 실행 가이드](#ollama-사용자-실행-가이드)
 - [reasoning 옵션](#reasoning-옵션)
 - [Starter 기준](#starter-기준)
 - [코드 붙여넣기 위치](#코드-붙여넣기-위치)
@@ -46,6 +49,8 @@ LM Studio 앱에서 Flutter Todo 앱 코드와 이력서 1개 직접 생성
 -> Markdown 산출물 확인
 -> 다음 시나리오가 이전 산출물을 입력으로 사용
 ```
+
+Intel Mac에서는 위의 LM Studio 앱 단계에 같은 프롬프트를 `ollama run gemma4:e2b` 터미널 세션에 붙여 넣어 따라가면 됩니다.
 
 [01_starter](../01_starter) 폴더에서 실습합니다. `01_starter`는 `translate`, `code` 시나리오를 바로 실행 가능하며, `orchestrator.py`, `specialist.py`, `dashboard.py`, `utils.py` 실행 엔진은 완성본과 동일하게 유지합니다. `run.sh`, `run.ps1`도 같은 옵션을 지원하지만 도움말과 예시는 starter 기준으로 더 짧게 표시됩니다. 실습에서는 주로 `01_starter/demo/scenarios.py`를 편집합니다.
 
@@ -139,6 +144,44 @@ short_story_writing
 - `default_n_from_selected_stories: True`: `story_review_selection` 결과에서 선정작 수를 자동 추론
 - `selected_story_targeting: "unique"`: 선정작을 agent별로 하나씩 중복 없이 배정
 - `selected_story_targeting: "cycle"`: 선정작을 여러 agent에게 순환 배정. 마케팅 문구처럼 변형을 많이 만들 때 사용
+
+## Ollama 사용자 실행 가이드
+
+Ollama만 사용하는 환경에서는 LM Studio 앱 대신 Ollama 서버를 OpenAI 호환 API로 사용합니다. LM Studio 기본 포트는 `1234`이고, Ollama 기본 포트는 `11434`입니다. Ollama의 OpenAI 호환 API 주소는 [공식 문서](https://docs.ollama.com/openai) 기준으로 `http://localhost:11434/v1/` 형식입니다.
+
+먼저 모델과 서버를 확인합니다.
+
+macOS/Linux:
+
+```bash
+ollama pull gemma4:e2b
+curl http://127.0.0.1:11434/v1/models
+```
+
+Windows PowerShell:
+
+```powershell
+ollama pull gemma4:e2b
+Invoke-RestMethod http://127.0.0.1:11434/v1/models
+```
+
+Ollama 앱이 서버를 자동 실행하지 않는 환경에서는 별도 터미널에서 `ollama serve`를 실행합니다. `address already in use`가 나오면 이미 서버가 켜진 상태입니다.
+
+워크샵 실행 명령에는 항상 아래 두 옵션을 추가합니다.
+
+```text
+--port 11434 --model "gemma4:e2b"
+```
+
+모델명이 다르면 `ollama list`에 표시되는 이름을 그대로 넣습니다. 예를 들어 모델명이 `gemma4:e4b`라면 `--model "gemma4:e4b"`로 바꿉니다.
+
+Step 0과 Step 1에서 LM Studio 앱 채팅 화면을 쓰는 부분은 Ollama CLI로 대체할 수 있습니다.
+
+```bash
+ollama run gemma4:e2b
+```
+
+CLI가 열리면 문서의 user message 프롬프트를 그대로 붙여 넣습니다. system instruction까지 실습해야 하는 단계에서는 LM Studio 앱이 더 직관적입니다. Ollama만 쓰는 경우에는 이 문서에 제공된 코드 조각을 그대로 붙여 넣고, 실행 단계부터 `--port 11434 --model "gemma4:e2b"` 옵션을 붙여 진행하면 됩니다.
 
 ## reasoning 옵션
 
@@ -583,11 +626,25 @@ bash run.sh --scenario translate --topic "Gemma 4 is a family of models released
 bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
 
+macOS + Ollama:
+
+```bash
+bash run.sh --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 3 --port 11434 --model "gemma4:e2b"
+bash run.sh --scenario code --topic "Implement binary search for a sorted array" --tasks 3 --port 11434 --model "gemma4:e2b"
+```
+
 Windows PowerShell:
 
 ```powershell
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
 .\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
+```
+
+Windows PowerShell + Ollama:
+
+```powershell
+.\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 3 --port 11434 --model "gemma4:e2b"
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 3 --port 11434 --model "gemma4:e2b"
 ```
 
 확인할 것:
@@ -2339,4 +2396,5 @@ bash run.sh --scenario marketing_copy --tasks 10
 - `publication_offer_email`, `contract_negotiation`, `contract_draft`, `story_revision`이 기본 3개로만 뜨면 `story_review_selection` 결과에 선정작 파일명이 정확히 들어 있는지 확인합니다.
 - 선정작 자동 배정은 `## 선정작` 섹션과 `01_short_story_xxx.md` 같은 원본 파일명을 우선 파싱합니다.
 - Windows에서는 `bash run.sh` 대신 `.\run.ps1`을 사용합니다.
+- Ollama에서는 `--port 11434 --model "모델명"`을 붙입니다. 모델명은 `ollama list`로 확인합니다.
 - 노트북 성능이 부족하면 `--tasks 3` 또는 `--tasks 5`로 줄입니다.

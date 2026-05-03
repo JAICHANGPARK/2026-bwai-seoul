@@ -5,9 +5,9 @@
 ## 먼저 알아둘 점
 
 - 이번 세션은 개발자, 비개발자 모두 참여 가능한 세션이므로, 하나만 설치한다면 LM Studio를 기본 권장합니다.
-- LM Studio는 macOS, Windows, Linux를 지원합니다.
-- macOS는 Apple Silicon만 지원합니다.
-- macOS 앱은 공식 문서 기준 13.4 이상이 필요하며, MLX 모델은 macOS 14.0 이상이 필요합니다.
+- LM Studio는 macOS Apple Silicon, Windows, Linux를 지원합니다.
+- macOS는 Apple Silicon만 지원하며, Intel Mac은 지원 대상이 아닙니다.
+- macOS 앱은 공식 문서 기준 macOS 14.0 이상을 권장 기준으로 봅니다.
 - Windows는 x64와 ARM을 지원합니다.
 - Linux는 Ubuntu 20.04+ AppImage가 공식 기준입니다.
 - 모델 다운로드 후에는 완전 오프라인 사용이 가능합니다.
@@ -15,6 +15,14 @@
 - 이번 핸즈온은 채팅/실습/에이전트 흐름이 중심이므로 **instruction-tuned(chat-ready) 모델**을 선택하세요.
 - `base`나 `pretrained`로 표시된 모델은 기본 준비용으로 받지 않는 편이 안전합니다.
 - LM Studio에서는 모델 이름이 `...-it` 로 그대로 보일 수도 있고, `google/gemma-4-e4b`처럼 더 짧게 보일 수도 있으므로 **설명이나 모델 카드에서 chat-ready / instruct 계열인지** 함께 확인해 주세요.
+
+## Intel Mac은 이 문서를 따라가지 마세요
+
+Intel Mac에서는 LM Studio 데스크톱 앱을 행사 준비 경로로 쓰지 않습니다.
+
+- 공식 LM Studio 시스템 요구사항은 Mac에서 Apple Silicon을 요구합니다.
+- Intel Mac 사용자는 [Intel Mac 사용자 사전 준비 가이드](./18-intel-mac-prep.md)를 먼저 보세요.
+- 기본 준비는 [Ollama 설치 가이드](./06-ollama-setup.md)의 macOS 섹션을 따라 `gemma4:e2b`를 받는 방식입니다.
 
 ## Windows
 
@@ -59,8 +67,7 @@ lms --help
 이런 환경에 맞습니다:
 
 - Apple Silicon (M1/M2/M3/M4)
-- macOS 13.4 이상
-- MLX 모델까지 활용하려면 macOS 14.0 이상
+- macOS 14.0 이상
 
 설치 순서:
 
@@ -79,7 +86,7 @@ lms --help
 권장 메모:
 
 - LM Studio 공식 문서는 macOS에서 16GB+ RAM 권장입니다.
-- LM Studio 앱 자체는 macOS 13.4 이상을 지원하고, MLX 모델은 macOS 14.0 이상이 필요합니다.
+- LM Studio 앱은 Apple Silicon Mac 기준으로 준비하세요. Intel Mac은 지원 대상이 아닙니다.
 - 행사 준비 기준으로는 최신 macOS를 권장합니다.
 - 8GB Mac도 가능할 수 있지만, 작은 모델과 작은 컨텍스트만 권장합니다.
 - Apple Silicon에서도 GGUF 기반 fine-tuned 모델을 사용하는 것은 대체로 가능하지만, 양자화 방식, 채팅 템플릿, 멀티모달 지원 여부에 따라 모델별 확인이 필요합니다.

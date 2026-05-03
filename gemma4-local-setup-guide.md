@@ -2,12 +2,12 @@
 
 Build with AI Seoul 2026 with Google DeepMind  
 사전 준비 전체 안내 문서  
-기준 확인일: 2026-05-02
+기준 확인일: 2026-05-03
 
 ## 행사 정보
 
 - 세션명: **Build Your Own AI Office with Gemma 4**
-- 진행자: **박제창**
+- 세션 담당: **박제창**
 - 트랙: **Hands-On A**
 - 진행 시간: **13:30 ~ 14:30 (60분)**
 
@@ -24,7 +24,7 @@ Build with AI Seoul 2026 with Google DeepMind
 > 현장 인터넷 상황에 따라 다운로드만 오래 걸릴 수 있고, **핸즈온 60분 동안 모델만 받다가 세션이 끝날 수 있습니다.**
 >
 > **특히 8GB 메모리 노트북은 작은 모델(E2B)에서도 속도가 많이 느리거나, 경우에 따라 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다.**
-> 가능하면 **16GB 이상 메모리 노트북**으로 참석해 주세요.
+> 가능하면 **16GB 이상 메모리 노트북**으로 준비해 주세요.
 >
 > **반드시 행사 전에**
 > - 도구 설치 완료
@@ -39,22 +39,32 @@ Build with AI Seoul 2026 with Google DeepMind
 - 다만 `OpenCode`는 Windows에서 공식적으로 **WSL 경로를 권장**하므로, 이 부분은 PowerShell/CMD가 아니라 **WSL 터미널 기준**으로 보시면 됩니다.
 - `Hermes Agent`도 Windows 네이티브가 아니라 **WSL2 기준**으로 봐야 합니다.
 
+## Intel Mac 사용자 준비
+
+- LM Studio 데스크톱 앱은 공식 시스템 요구사항 기준으로 **Apple Silicon Mac만 지원**하며, Intel Mac은 지원 대상이 아닙니다.
+- Intel Mac 사용자는 [Intel Mac 사용자 사전 준비 가이드](./docs/18-intel-mac-prep.md)를 먼저 보세요.
+- 기본 경로는 **Ollama + `gemma4:e2b`** 입니다.
+- Intel Mac에서는 CPU 전용 실행이므로 응답이 많이 느릴 수 있습니다. 행사 전에 반드시 1회 실행 테스트를 끝내 주세요.
+- 워크샵 코드를 실행할 때는 LM Studio 기본 포트 `1234` 대신 Ollama 포트 `11434`와 모델명 `gemma4:e2b`를 지정해야 합니다.
+
 ## 먼저 결론
 
 - 가능하면 **Ollama와 LM Studio를 둘 다 설치**해 주세요.
-- 하나만 설치한다면 **LM Studio를 먼저 설치하세요**.
+- 하나만 설치한다면 대부분의 환경에서는 **LM Studio를 먼저 설치하세요**.
+- 단, **Intel Mac과 ChromeOS는 Ollama를 우선 권장**합니다.
 - `Hermes Agent`와 `llama.cpp`는 필수가 아닙니다. 터미널 사용에 익숙한 경우에만 추가로 준비하세요.
 - `uv`는 로컬 LLM 실행 도구가 아니라 Python 기반 도구와 실행 환경을 관리하는 보조 도구입니다. `Hermes Agent` 설치 중 문제가 날 때만 별도로 확인해도 됩니다.
 - 핸즈온에서 `workshop/01_starter` 코드를 수정하므로 `Visual Studio Code` 또는 `Google Antigravity` 중 하나를 준비하세요.
 - `Gemini CLI Gemma`도 필수 준비 항목은 아닙니다. preview에서는 Gemma 4 모델 선택이 가능하지만, `gemini gemma setup`은 Gemma 3 기반 로컬 라우팅 설정으로 이해해 주세요.
-- **ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
+- **Intel Mac과 ChromeOS 사용자는 예외적으로 Ollama를 우선 권장**합니다.
 - 이번 세션은 **개발자, 비개발자 모두 참여 가능한 세션**이므로, 처음 준비한다면 **GUI로 따라가기 쉬운 LM Studio**부터 설치하면 됩니다.
 - 이번 핸즈온은 채팅, 실습, 에이전트 흐름이 중심이므로 **instruction-tuned(chat-ready) 계열을 기준으로 준비하세요.** `base`나 `pretrained`로 표시된 모델은 기본 준비용으로 권장하지 않습니다.
 - 모델 다운로드까지 반드시 행사 전에 끝내고 와야 합니다.
 
 ## 빠른 선택
 
-- Windows/macOS/Linux에서 하나만 설치: **LM Studio**
+- Windows/macOS Apple Silicon/Linux에서 하나만 설치: **LM Studio**
+- Intel Mac: **Ollama + `gemma4:e2b`**
 - ChromeOS: **Ollama**
 - 8GB 노트북: **E2B만 시도, 속도 저하 감안**
 - 16GB 노트북: **E4B**
@@ -94,10 +104,11 @@ Build with AI Seoul 2026 with Google DeepMind
 13. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
 14. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
 15. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
-16. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
-17. [자주 묻는 질문](./docs/17-faq.md)
-18. [uv 설치 가이드](./docs/18-uv-setup.md)
-19. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
+16. [uv 설치 가이드](./docs/16-uv-setup.md)
+17. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+18. [Intel Mac 사용자 사전 준비 가이드](./docs/18-intel-mac-prep.md)
+19. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
+20. [자주 묻는 질문](./docs/20-faq.md)
 
 ## 어떤 문서를 먼저 보면 되나요?
 
@@ -106,23 +117,23 @@ Build with AI Seoul 2026 with Google DeepMind
 1. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 2. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
-5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### Windows를 쓰는 경우
 
 1. [Windows 빠른 준비 가이드](./docs/02-windows-guide.md)
 2. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
-4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
-5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### ChromeOS를 쓰는 경우
 
 1. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 2. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
 3. [Ollama 설치 가이드](./docs/06-ollama-setup.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### Apple Silicon Mac을 쓰는 경우
 
@@ -131,13 +142,21 @@ Build with AI Seoul 2026 with Google DeepMind
 3. [GGUF, MLX, llama.cpp 개념 설명](./docs/04-gguf-mlx-llamacpp-explainer.md)
 4. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 5. [Apple Silicon + MLX 안내](./docs/08-apple-silicon-mlx.md)
-6. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
-7. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+6. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+7. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
+
+### Intel Mac을 쓰는 경우
+
+1. [Intel Mac 사용자 사전 준비 가이드](./docs/18-intel-mac-prep.md)
+2. [Ollama 설치 가이드](./docs/06-ollama-setup.md)
+3. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
+4. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### 핸즈온 코드를 직접 수정해야 하는 경우
 
-1. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/19-code-editor-setup.md)
-2. [uv 설치 가이드](./docs/18-uv-setup.md)
+1. [코드 편집기 설치 가이드: Visual Studio Code / Google Antigravity](./docs/17-code-editor-setup.md)
+2. [uv 설치 가이드](./docs/16-uv-setup.md)
 3. [workshop/03_labs/README.md](./workshop/03_labs/README.md)
 
 ### 코딩 에이전트 경험이 있는 경우
@@ -148,7 +167,7 @@ Build with AI Seoul 2026 with Google DeepMind
 4. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 5. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
 6. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
-7. [uv 설치 가이드](./docs/18-uv-setup.md) (Hermes 설치 중 오류가 날 때)
+7. [uv 설치 가이드](./docs/16-uv-setup.md) (Hermes 설치 중 오류가 날 때)
 8. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 9. [Gemma 4 아키텍처 상세 정리](./docs/14-gemma4-architecture-deep-dive.md)
 10. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
@@ -156,11 +175,11 @@ Build with AI Seoul 2026 with Google DeepMind
 ### Gemini CLI에서 Gemma 4 preview 또는 Gemma 라우팅을 확인해 보고 싶은 경우
 
 1. [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./docs/15-gemini-cli-gemma-routing-prep.md)
-2. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+2. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### 자주 묻는 질문부터 보고 싶은 경우
 
-1. [자주 묻는 질문](./docs/17-faq.md)
+1. [자주 묻는 질문](./docs/20-faq.md)
 2. [하드웨어 / 운영체제 / 모델 선택 가이드](./docs/01-hardware-and-model-selection.md)
 3. [LM Studio 설치 가이드](./docs/05-lm-studio-setup.md)
 
@@ -168,16 +187,16 @@ Build with AI Seoul 2026 with Google DeepMind
 
 1. [Hermes Agent란 무엇인가](./docs/12-hermes-agent-overview.md)
 2. [Hermes Agent 설치 가이드](./docs/13-hermes-agent-setup.md)
-3. [uv 설치 가이드](./docs/18-uv-setup.md) (Hermes 설치 중 오류가 날 때)
+3. [uv 설치 가이드](./docs/16-uv-setup.md) (Hermes 설치 중 오류가 날 때)
 4. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
-5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+5. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### CLI 기반 로컬 서버를 직접 띄워 보고 싶은 경우
 
 1. [llama.cpp 설치 가이드](./docs/07-llamacpp-setup.md)
 2. [GGUF, MLX, llama.cpp 개념 설명](./docs/04-gguf-mlx-llamacpp-explainer.md)
 3. [메모리 기준으로 Gemma 4 모델 고르는 방법](./docs/03-memory-based-model-selection.md)
-4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/16-troubleshooting-and-final-check.md)
+4. [트러블슈팅 / 최종 체크 / 참고 링크](./docs/19-troubleshooting-and-final-check.md)
 
 ### 모델 구조가 궁금한 경우
 

@@ -142,7 +142,11 @@ def make_translate_agents(n: int = 10) -> list[dict]:
             "name": _LANG_NAMES[i % len(_LANG_NAMES)],
             "emoji": _LANG_EMOJIS[i % len(_LANG_EMOJIS)],
             "color": _COLORS[i % len(_COLORS)],
-            "direct_instruction": f"Translate this into {_LANG_NAMES[i % len(_LANG_NAMES)]}: {{topic}}",
+            "direct_instruction": (
+                f"Translate the following text into {_LANG_NAMES[i % len(_LANG_NAMES)]}. "
+                "Output only the translated sentence. Preserve proper nouns such as model names "
+                "and organization names, but translate all ordinary words.\n\nText: {topic}"
+            ),
         }
         for i in range(n)
     ]
@@ -172,7 +176,8 @@ TRANSLATE_SYSTEM = (
     # It applies to every translation specialist and keeps outputs clean enough
     # for the HTML renderer to display without post-processing.
     "You are a precise translator. Output only the translated text, "
-    "without commentary or markdown fences."
+    "without commentary or markdown fences. Preserve proper nouns, but translate "
+    "all ordinary words into the requested target language."
 )
 
 CODE_SYSTEM = (
@@ -237,6 +242,117 @@ CODE_PLAN = {
 #
 # Do NOT paste SCENARIOS["xxx"] registry entries here. Those go inside the
 # SCENARIOS dict below.
+
+def make_resume_agents(n: int = 10) -> list[dict]:
+    return [
+        {
+            "name": f"resume_{i+1:02d}",
+            "emoji": "📄",
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                "Create one complete Korean Markdown resume for a fictional "
+                "book publishing company fiction planning editor. Topic: {topic}. "
+                f"This is resume #{i+1}; make the candidate profile, career path, "
+                "publisher types, fiction genres, projects, achievements, and tools "
+                "clearly different from the other resumes. Output Markdown only."
+            ),
+            "filename": f"{i+1:02d}_resume_{i+1:02d}.md",
+        }
+        for i in range(n)
+    ]
+
+RESUME_SYSTEM = """
+You are a senior Korean resume writer for publishing and content industry roles.
+Create one realistic but fully fictional resume for a book publishing company fiction planning editor.
+
+Output ONLY Markdown.
+Do not include explanations or markdown fences.
+Do not use real personal data, real phone numbers, real emails, or real company-confidential facts.
+Use fictional names, fictional employers, fictional projects, and fictional metrics.
+Make the resume specific to fiction acquisition, editorial planning, manuscript development, and book publishing, not a generic IT product planner.
+
+Required structure:
+# [Fictional Korean Name] - 도서 출판사 소설 기획편집자 이력서
+## 프로필
+## 핵심 역량
+## 경력
+## 주요 기획 프로젝트
+## 성과 지표
+## 사용 도구
+## 학력 및 자격
+## 포트폴리오 요약
+""".strip()
+
+RESUME_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name", '
+        '"instruction", and "filename". Use agent names exactly as provided. '
+        "Output ONLY valid JSON."
+    ),
+    "user": (
+        'Create {n_agents} different fictional Korean Markdown resumes for "{topic}".\n'
+        "Agents: {agent_list}\n"
+        "Each instruction should ask for one complete resume for a book publishing "
+        "company fiction planning editor, with differentiated seniority, genre focus, "
+        "publisher type, projects, and achievements."
+    ),
+}
+
+def make_interview_review_agents(n: int = 10) -> list[dict]:
+    return [
+        {
+            "name": f"interview_{i+1:02d}",
+            "emoji": "🧑‍⚖️",
+            "color": _COLORS[i % len(_COLORS)],
+            "direct_instruction": (
+                "Review the following resume as a senior interviewer for {topic}.\n"
+                "Source resume file: {source_filename}\n\n"
+                "<resume>\n{resume_text}\n</resume>\n\n"
+                "Write one structured Korean Markdown interview review. "
+                "Evaluate only evidence visible in the resume. If evidence is weak, say what must be verified in the interview."
+            ),
+            "filename": f"{i+1:02d}_interview_review_{i+1:02d}.md",
+        }
+        for i in range(n)
+    ]
+
+INTERVIEW_REVIEW_SYSTEM = """
+You are a senior interviewer and hiring committee reviewer for Korean book publishing companies.
+You are reviewing candidates for fiction planning editor roles: manuscript editing, novel acquisition, IP development, and editorial planning.
+
+Output ONLY Markdown.
+Do not include explanations outside the review.
+Do not invent facts not present in the resume.
+When a claim needs verification, state the interview question that would verify it.
+Use a realistic, strict interviewer tone.
+For treatment negotiation, make fictional but plausible recommendations based only on resume seniority and role fit.
+
+Required structure:
+# [Candidate or Source File] - 면접관 리뷰
+## 한줄 평가
+## 직무 적합도
+## 강점 근거
+## 우려점 및 검증 리스크
+## 면접 질문 7개
+## 꼬리 질문
+## 처우협의 포인트
+## 예상 연봉/직급 제안
+## 평가 루브릭
+## 채용 추천
+""".strip()
+
+INTERVIEW_REVIEW_PLAN = {
+    "system": (
+        'Output a JSON array with {n_agents} objects. Each has "name", '
+        '"instruction", and "filename". Use agent names exactly as provided. '
+        "Output ONLY valid JSON."
+    ),
+    "user": (
+        'Create {n_agents} interviewer review tasks for "{topic}".\n'
+        "Agents: {agent_list}\n"
+        "Each task reviews one generated resume from the resumes folder."
+    ),
+}
 
 
 def translate_card(agent, result, task=None):
@@ -510,6 +626,7 @@ SCENARIOS = {
         "render_card": translate_card,
         "title": "Translation Grid",
         "default_n": 10,
+        "direct_plan": True,
     },
     "code": {
         "make_agents": make_code_agents,
@@ -523,10 +640,36 @@ SCENARIOS = {
         ),
         "extra_body": "    <script>hljs.highlightAll();</script>",
         "default_n": 10,
+        "direct_plan": True,
         "save_markdown": True,
         "markdown_dir": "code_outputs",
         "raw_output_files": True,
     },
+    "resume": {
+    "make_agents": make_resume_agents,
+    "plan": RESUME_PLAN,
+    "system_prompt": RESUME_SYSTEM,
+    "render_card": resume_card,
+    "title": "Publishing Fiction Planning Editor Resumes",
+    "default_n": 10,
+    "direct_plan": True,
+    "save_markdown": True,
+    "markdown_dir": "resumes",
+
+},
+"interview_review": {
+    "make_agents": make_interview_review_agents,
+    "plan": INTERVIEW_REVIEW_PLAN,
+    "system_prompt": INTERVIEW_REVIEW_SYSTEM,
+    "render_card": interview_review_card,
+    "title": "Interview Reviews",
+    "default_n": 10,
+    "direct_plan": True,
+    "input_markdown_dir": "resumes",
+    "save_markdown": True,
+    "markdown_dir": "interview_reviews",
+    "preserve_build_dirs": ["resumes"],
+},
 
     # TODO Step 3~13:
     # Paste each registry entry from workshop/03_labs/README.md here, inside

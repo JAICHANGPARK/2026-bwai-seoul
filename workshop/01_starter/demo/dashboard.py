@@ -411,7 +411,7 @@ def main():
             time.sleep(POLL_INTERVAL)
 
     # Final summary: live screen을 닫은 뒤에도 마지막 처리량 요약을 남겨서
-    # 참가자가 창이 닫히기 전에 총 토큰과 처리량을 확인할 수 있게 합니다.
+    # 사용자가 창이 닫히기 전에 총 토큰과 처리량을 확인할 수 있게 합니다.
     console.clear()
     metrics = read_agent_metrics(agent_names)
     server_metrics = fetch_server_metrics(args.server_url, enabled=args.server_metrics == "on")

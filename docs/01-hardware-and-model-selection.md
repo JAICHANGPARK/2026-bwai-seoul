@@ -8,6 +8,7 @@
 - 운영체제별 권장 경로
 - 8GB, 16GB, 32GB, 36GB 메모리별 권장 모델
 - 행사 전에 어떤 모델을 미리 받아야 하는지
+- Intel Mac 사용자가 LM Studio 대신 어떤 경로로 준비해야 하는지
 
 추가 참고:
 
@@ -16,6 +17,7 @@
 - OpenCode를 개발자 에이전트처럼 연결해 보고 싶다면 [OpenCode 설치 및 LM Studio 연동 가이드](./10-opencode-lmstudio-developer-agent.md) 문서를 확인해 주세요.
 - Hermes Agent가 정확히 어떤 도구인지 먼저 이해하고 싶다면 [Hermes Agent란 무엇인가](./12-hermes-agent-overview.md) 문서를 확인해 주세요.
 - Gemini CLI에서 Gemma 4 preview 모델 선택이나 Gemma 라우팅 실험 기능을 미리 확인해 보고 싶다면 [Gemini CLI Gemma 4 Preview 및 Gemma 라우팅 사전 준비 가이드](./15-gemini-cli-gemma-routing-prep.md) 문서를 확인해 주세요.
+- Intel Mac을 쓰고 있다면 [Intel Mac 사용자 사전 준비 가이드](./18-intel-mac-prep.md)를 먼저 확인해 주세요.
 
 ## Ollama와 LM Studio 비교
 
@@ -37,7 +39,7 @@
 | --- | --- | --- | --- |
 | Windows | LM Studio | Ollama | 하나만 설치한다면 LM Studio를 권장합니다. |
 | macOS Apple Silicon | LM Studio | Ollama | LM Studio는 Apple Silicon 전용이며, GGUF를 기본으로 쓰고 필요하면 MLX도 활용할 수 있습니다. |
-| macOS Intel | Ollama | 없음에 가까움 | LM Studio 데스크톱 앱은 Intel Mac 미지원입니다. |
+| macOS Intel | Ollama | 없음에 가까움 | LM Studio 데스크톱 앱은 Intel Mac 미지원입니다. [Intel Mac 사용자 사전 준비 가이드](./18-intel-mac-prep.md)를 먼저 보세요. |
 | Linux (Ubuntu) | LM Studio | Ollama | GUI 설치가 가능하면 LM Studio를 우선 권장합니다. |
 | ChromeOS | Ollama | 가능하면 다른 노트북 준비 | Linux 개발 환경에서는 로컬 LLM용 전용 GPU/VRAM 가속을 기대하기 어렵습니다. |
 
@@ -45,6 +47,8 @@
 
 아래 권장은 행사 당일 안정적인 진행을 기준으로 잡았습니다.
 모델 페이지의 표시 크기나 최소 메모리는 더 낮게 보일 수 있지만, 실제로는 운영체제와 브라우저도 메모리를 함께 사용하므로 여유가 필요합니다.
+
+Intel Mac은 아래 표의 메모리와 관계없이 **LM Studio가 아니라 Ollama 기준**으로 보세요. CPU 전용 실행이라 같은 16GB/32GB라도 Apple Silicon Mac이나 GPU가 있는 Windows 노트북보다 훨씬 느릴 수 있습니다.
 
 | 노트북 메모리 | 행사 권장 모델 | 권장 도구 | 안내 |
 | --- | --- | --- | --- |
@@ -89,7 +93,7 @@
 - Windows와 macOS에서 LM Studio 공식 권장 메모리는 16GB 이상입니다.
 - 따라서 8GB는 "무난한 기본 조합"이 아니라, 작은 모델(E2B)만 시도하는 최소 준비로 이해해 주세요.
 - 8GB Apple Silicon Mac도 E2B/E4B 실행 중 속도가 크게 떨어지거나 시스템이 멈춘 것처럼 보일 수 있으므로, 안정적인 실습 장비로 보기 어렵습니다.
-- 8GB 장비로 참석하는 경우에는 작은 컨텍스트, 브라우저 탭 최소화, 다른 앱 종료를 전제로 준비해 주세요.
+- 8GB 장비로 사용하는 경우에는 작은 컨텍스트, 브라우저 탭 최소화, 다른 앱 종료를 전제로 준비해 주세요.
 
 ## 로컬 모델 크기 참고
 
@@ -127,13 +131,14 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 
 - 행사 당일에 모델 다운로드를 시작하지 마세요.
 - 모델 파일이 커서 네트워크 상황이 좋지 않으면 실습 시간 대부분을 다운로드에 쓰게 될 수 있습니다.
-- 최소한 설치, 모델 다운로드, 1회 실행 테스트까지 끝낸 상태로 참석해 주세요.
+- 최소한 설치, 모델 다운로드, 1회 실행 테스트까지 끝낸 상태로 준비해 주세요.
 
 ## 권장 준비 시나리오
 
 ### 가장 안전한 시나리오
 
-- Windows/macOS/Linux 사용자: LM Studio 설치 + **chat-ready / instruction-tuned** `google/gemma-4-e2b` 또는 `google/gemma-4-e4b` 다운로드
+- Windows/macOS Apple Silicon/Linux 사용자: LM Studio 설치 + **chat-ready / instruction-tuned** `google/gemma-4-e2b` 또는 `google/gemma-4-e4b` 다운로드
+- Intel Mac 사용자: Ollama 설치 + `gemma4:e2b` 다운로드 + `--port 11434 --model gemma4:e2b` 실행 경로 확인
 - 추가로 CLI/API 실습도 원하면 Ollama까지 설치
 - 공통 필수 조건: 행사 전 모델 다운로드와 실행 테스트까지 완료
 
@@ -143,6 +148,7 @@ Ollama Gemma 4 태그 페이지 기준으로는 기본 태그가 `gemma4:e2b` 7.
 - 16GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-e4b`
 - 32GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-e4b` 또는 `google/gemma-4-26b-a4b`
 - 36GB: LM Studio + **chat-ready / instruction-tuned** `google/gemma-4-26b-a4b` 또는 `google/gemma-4-31b`
+- Intel Mac: 메모리가 충분해도 Ollama + `gemma4:e2b`부터 시작, `E4B`는 선택 사항
 - ChromeOS: Ollama + `gemma4:e2b`
 
 ### 가장 비추천하는 조합

@@ -56,6 +56,14 @@
 - 학교/회사 정책으로 Linux가 막혀 있지 않은지 확인
 - 로컬 LLM용 전용 GPU/VRAM 가속을 기대하기 어려우므로 성능 기대치를 낮추고 작은 모델만 사용
 
+### Intel Mac
+
+- LM Studio 앱 설치로 시간을 쓰지 말고 [Intel Mac 사용자 사전 준비 가이드](./18-intel-mac-prep.md)의 Ollama 경로를 따름
+- `uname -m` 결과가 `x86_64`이면 Intel Mac으로 보고 `gemma4:e2b`부터 준비
+- `ollama run gemma4:e2b`가 너무 느리면 브라우저 탭과 다른 앱을 닫고 다시 테스트
+- 워크샵 코드 실행 시 `--port 11434 --model gemma4:e2b`를 붙였는지 확인
+- `Connection refused`가 나오면 Ollama 앱을 실행하거나 별도 터미널에서 `ollama serve` 실행
+
 ## 행사 전 최종 확인
 
 아래 중 하나 이상이 되면 준비 완료입니다.
@@ -76,7 +84,7 @@ lms --help
 8GB 메모리 노트북은 작은 모델(E2B)에서도 속도가 많이 느리거나 시스템이 일시적으로 멈춘 것처럼 보일 수 있습니다.
 
 - 가능하면 16GB 이상 메모리 장비를 권장합니다.
-- 8GB 장비로 참석하는 경우에는 `E2B`만 미리 다운로드하세요.
+- 8GB 장비로 사용하는 경우에는 `E2B`만 미리 다운로드하세요.
 - 다른 앱을 종료한 상태에서 행사 전에 반드시 1회 실행 테스트를 완료해 주세요.
 
 ### Ollama 준비 완료 기준
@@ -86,6 +94,14 @@ macOS / Linux:
 ```bash
 ollama --version
 ollama run gemma4:e2b
+```
+
+Intel Mac에서 워크샵 코드까지 확인할 경우:
+
+```bash
+cd workshop/01_starter
+uv sync
+bash run.sh --scenario translate --topic "short test" --tasks 3 --port 11434 --model gemma4:e2b
 ```
 
 Windows PowerShell:

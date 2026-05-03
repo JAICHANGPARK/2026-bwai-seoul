@@ -8,6 +8,8 @@
 - ChromeOS를 쓸 때
 - Intel Mac처럼 LM Studio 데스크톱 앱이 맞지 않는 환경일 때
 
+Intel Mac을 쓰고 있다면 이 문서와 함께 [Intel Mac 사용자 사전 준비 가이드](./18-intel-mac-prep.md)를 먼저 확인하세요.
+
 ## Windows
 
 이런 환경에 맞습니다:
@@ -112,6 +114,26 @@ ollama run gemma4:e2b
 
 - 첫 실행 시 CLI 경로 연결을 요청하면 허용하세요.
 - Apple Silicon에서는 CPU/GPU를 함께 활용하기 쉽고, 행사 진행에도 유리합니다.
+- Intel Mac은 CPU 전용으로 동작하므로 `gemma4:e2b`를 기본값으로 준비하세요.
+- Intel Mac에서 워크샵 코드를 실행할 때는 LM Studio 기본 포트가 아니라 `--port 11434 --model gemma4:e2b`를 붙입니다.
+
+Intel Mac 확인:
+
+```bash
+uname -m
+sw_vers -productVersion
+```
+
+- `x86_64`: Intel Mac입니다. `gemma4:e2b`를 먼저 준비하세요.
+- `arm64`: Apple Silicon Mac입니다. LM Studio 경로도 사용할 수 있습니다.
+
+Intel Mac용 워크샵 실행 예:
+
+```bash
+cd workshop/01_starter
+uv sync
+bash run.sh --scenario translate --topic "short test" --tasks 3 --port 11434 --model gemma4:e2b
+```
 
 ## Linux (Ubuntu 등)
 

@@ -180,7 +180,11 @@ def make_translate_agents(n: int = 10) -> list[dict]:
             "name": _LANG_NAMES[i % len(_LANG_NAMES)],
             "emoji": _LANG_EMOJIS[i % len(_LANG_EMOJIS)],
             "color": _COLORS[i % len(_COLORS)],
-            "direct_instruction": f"Translate this into {_LANG_NAMES[i % len(_LANG_NAMES)]}: {{topic}}",
+            "direct_instruction": (
+                f"Translate the following text into {_LANG_NAMES[i % len(_LANG_NAMES)]}. "
+                "Output only the translated sentence. Preserve proper nouns such as model names "
+                "and organization names, but translate all ordinary words.\n\nText: {topic}"
+            ),
         }
         for i in range(n)
     ]
@@ -653,7 +657,8 @@ def make_marketing_copy_agents(n: int = 10) -> list[dict]:
 
 TRANSLATE_SYSTEM = (
     "You are a translator. Output ONLY the translated text. "
-    "No explanations, no preamble, no original text, no quotes."
+    "No explanations, no preamble, no original text, no quotes. Preserve proper "
+    "nouns, but translate all ordinary words into the requested target language."
 )
 
 SVG_SYSTEM = (
@@ -1030,7 +1035,7 @@ Required structure:
 # PLAN을 호출하지 않습니다. 그래도 남겨두는 이유는 다음과 같습니다.
 # - direct_plan=False로 바꾸면 orchestrator LLM이 agent별 작업 JSON을 생성할 수 있음
 # - system instruction / user message 분리 예시를 보여줄 수 있음
-# - 참가자가 LM Studio에서 "시나리오 코드 생성" 프롬프트를 만들 때 참고 가능
+# - 사용자가 LM Studio에서 "시나리오 코드 생성" 프롬프트를 만들 때 참고 가능
 
 TRANSLATE_PLAN = {
     "system": (
@@ -1719,6 +1724,7 @@ SCENARIOS = {
         "render_card": translate_card,
         "title": "Translation Grid",
         "default_n": 10,
+        "direct_plan": True,
     },
     "code": {
         "make_agents": make_code_agents,
@@ -1732,6 +1738,7 @@ SCENARIOS = {
         ),
         "extra_body": "    <script>hljs.highlightAll();</script>",
         "default_n": 10,
+        "direct_plan": True,
         "save_markdown": True,
         "markdown_dir": "code_outputs",
         "raw_output_files": True,

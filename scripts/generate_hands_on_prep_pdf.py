@@ -74,7 +74,7 @@ EVENT_NAME = "Build with AI Seoul 2026"
 TRACK = "Hands-On A"
 PRESENTER = "박제창"
 DURATION = "13:30 ~ 14:30 (60분)"
-CHECK_DATE = "2026-05-02"
+CHECK_DATE = "2026-05-03"
 
 DOC_FILES = [
     ROOT / "docs/01-hardware-and-model-selection.md",
@@ -92,10 +92,11 @@ DOC_FILES = [
     ROOT / "docs/13-hermes-agent-setup.md",
     ROOT / "docs/14-gemma4-architecture-deep-dive.md",
     ROOT / "docs/15-gemini-cli-gemma-routing-prep.md",
-    ROOT / "docs/16-troubleshooting-and-final-check.md",
-    ROOT / "docs/17-faq.md",
-    ROOT / "docs/18-uv-setup.md",
-    ROOT / "docs/19-code-editor-setup.md",
+    ROOT / "docs/16-uv-setup.md",
+    ROOT / "docs/17-code-editor-setup.md",
+    ROOT / "docs/18-intel-mac-prep.md",
+    ROOT / "docs/19-troubleshooting-and-final-check.md",
+    ROOT / "docs/20-faq.md",
 ]
 
 
@@ -732,7 +733,7 @@ def prep_summary_page(styles: StyleSheet1) -> list:
             "가장 중요한 기준",
             [
                 "하나만 설치한다면 **LM Studio**를 우선 권장합니다. ChromeOS 또는 Intel Mac은 **Ollama**를 우선 고려하세요.",
-                "8GB 장비는 **E2B only, best-effort**입니다. 가능하면 16GB 이상 장비로 참석해 주세요.",
+                "8GB 장비는 **E2B only, best-effort**입니다. 가능하면 16GB 이상 장비로 준비해 주세요.",
             ],
             styles,
             warm=True,
@@ -816,18 +817,18 @@ def build_story(styles: StyleSheet1) -> list:
             cover_info_table(
                 [
                     ["세션명", SESSION_NAME],
-                    ["진행자", PRESENTER],
+                    ["세션 담당", PRESENTER],
                     ["행사", EVENT_NAME],
                     ["트랙", TRACK],
                     ["진행 시간", DURATION],
-                    ["수록 범위", "docs/01-19 전체 문서 원문"],
+                    ["수록 범위", "docs/01-20 전체 문서 원문"],
                     ["기준 확인일", CHECK_DATE],
                 ],
                 styles,
             ),
             Spacer(1, 14 * mm),
             Paragraph(
-                "이 PDF는 저장소의 01-19번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
+                "이 PDF는 저장소의 01-20번 사전 준비 문서를 순서대로 하나의 배포본으로 묶은 버전입니다.",
                 styles["CoverMeta"],
             ),
             Spacer(1, 2 * mm),
@@ -860,7 +861,7 @@ def build_story(styles: StyleSheet1) -> list:
         info_box(
             "편집 방침",
             [
-                "세션명과 진행자명은 표지에 반영했습니다.",
+                "세션명과 담당 정보는 표지에 반영했습니다.",
                 "기존 요약 위주의 본문은 제거하고, 각 마크다운 문서의 전체 내용을 넣도록 생성 방식을 바꿨습니다.",
                 "문서 내부의 상대 링크는 PDF 안에서는 링크 라벨 텍스트로 정리해 표시합니다.",
             ],
