@@ -12,6 +12,17 @@ bash run.sh --scenario code --topic "Implement binary search for a sorted array"
 
 `code` 기본 10개 agent에는 Dart가 포함됩니다.
 
+Windows PowerShell:
+
+```powershell
+uv sync
+Invoke-RestMethod http://127.0.0.1:1234/v1/models
+.\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
+.\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
+```
+
+`Invoke-RestMethod`가 실패하면 LM Studio Local Server가 켜져 있는지, 포트가 `1234`인지 먼저 확인하세요.
+
 Ollama를 쓰는 경우에는 모든 실행 명령에 `--port 11434 --model "gemma4:e2b"`를 붙입니다. 모델명이 다르면 `ollama list`에 표시된 이름을 사용합니다.
 
 ## 최종 실행 순서

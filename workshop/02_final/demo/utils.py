@@ -86,23 +86,50 @@ def stream_llm(
     # dummy key를 사용합니다.
     client = OpenAI(base_url=base_url, api_key="sk-no-key")
     reasoning = (reasoning or "off").lower()
+    requested_model = os.environ.get("LLM_MODEL", "default")
+
+    def detect_model_id():
+        """Return the first model exposed by /v1/models, when available."""
+        try:
+            models = client.models.list()
+            data = getattr(models, "data", None) or []
+            if not data:
+                return None
+            first = data[0]
+            if isinstance(first, dict):
+                return first.get("id")
+            return getattr(first, "id", None)
+        except Exception:
+            return None
+
+    model_name = requested_model
+    if requested_model == "default":
+        # LM Studio/Ollama servers usually expose the loaded model at /v1/models.
+        # Resolving it here keeps run.sh and run.ps1 behavior consistent.
+        detected_model = detect_model_id()
+        if detected_model:
+            model_name = detected_model
 
     full = ""
     chunk_count = 0
     server_tokens = None  # Will be set from usage if available
     start_t = time.time()
 
-    def create_response(use_reasoning_controls: bool):
+    def create_response(use_reasoning_controls: bool, include_stream_usage: bool):
         # 모든 specialist와 orchestrator planning 호출이 이 request builder를 탑니다.
         # 모델 이름은 run.sh/run.ps1이 환경변수 LLM_MODEL로 넘겨주며, LM Studio에서
         # 모델 ID를 자동 감지하지 못하는 경우 --model로 직접 지정할 수 있습니다.
         request = {
-            "model": os.environ.get("LLM_MODEL", "default"),
+            "model": model_name,
             "messages": messages,
             "max_tokens": max_tokens,
             "stream": True,
-            "stream_options": {"include_usage": True},
         }
+        if include_stream_usage:
+            # 최신 OpenAI-compatible 서버는 usage 포함 스트리밍을 지원하지만,
+            # 일부 LM Studio/Ollama 버전은 이 필드를 거절할 수 있어 아래에서
+            # minimal request로 한 번 더 재시도합니다.
+            request["stream_options"] = {"include_usage": True}
         if use_reasoning_controls:
             # Gemma 계열 서버/런타임마다 thinking 옵션 이름이 조금 다를 수 있어
             # 흔히 쓰이는 camelCase와 snake_case를 함께 보냅니다. 서버가 모르는
@@ -116,7 +143,9 @@ def stream_llm(
                 request["reasoning_effort"] = "medium"
         return client.chat.completions.create(**request)
 
-    use_reasoning_controls = reasoning in {"on", "off"}
+    # 기본값 off에서는 thinking 제어 필드를 아예 보내지 않습니다. 일부 LM Studio
+    # 버전은 알 수 없는 extra_body를 요청 오류로 처리하기 때문입니다.
+    use_reasoning_controls = reasoning == "on"
     last_poll_t = start_t
     poll_interval = 0.3
     chunks_since_poll = 0
@@ -164,24 +193,40 @@ def stream_llm(
 
     try:
         write_metrics(agent_name, "running", 0, 0.0, 0.0)
+        attempts = [(use_reasoning_controls, True, None)]
+        if use_reasoning_controls:
+            attempts.append((
+                False,
+                True,
+                "\n\033[33m[reasoning controls unsupported; retrying without them]\033[0m\n",
+            ))
+        attempts.append((
+            False,
+            False,
+            "\n\033[33m[retrying with a minimal OpenAI-compatible request]\033[0m\n",
+        ))
 
-        consume_response(create_response(use_reasoning_controls))
+        last_error = None
+        for attempt_reasoning, include_stream_usage, retry_message in attempts:
+            if retry_message:
+                sys.stdout.write(retry_message)
+                sys.stdout.flush()
+            try:
+                consume_response(create_response(attempt_reasoning, include_stream_usage))
+                last_error = None
+                break
+            except Exception as e:
+                last_error = e
+                # If streaming already started, do not repeat the request and risk
+                # duplicated output or duplicated side effects in downstream prompts.
+                if full or chunk_count:
+                    break
+
+        if last_error is not None:
+            sys.stdout.write(f"\n\033[31m[ERROR] {last_error}\033[0m\n")
 
     except Exception as e:
-        if use_reasoning_controls and not full and chunk_count == 0:
-            # 일부 OpenAI-compatible 서버는 reasoning 관련 extra body를 알 수 없는
-            # 필드로 보고 요청 자체를 거절합니다. 워크샵 진행이 막히지 않도록,
-            # 아직 출력이 시작되지 않은 경우에만 옵션 없이 재시도합니다.
-            sys.stdout.write(
-                "\n\033[33m[reasoning controls unsupported; retrying without them]\033[0m\n"
-            )
-            sys.stdout.flush()
-            try:
-                consume_response(create_response(False))
-            except Exception as retry_error:
-                sys.stdout.write(f"\n\033[31m[ERROR] {retry_error}\033[0m\n")
-        else:
-            sys.stdout.write(f"\n\033[31m[ERROR] {e}\033[0m\n")
+        sys.stdout.write(f"\n\033[31m[ERROR] {e}\033[0m\n")
 
     total_elapsed = time.time() - start_t
     # Use server-reported token count if available, otherwise fall back to chunk count

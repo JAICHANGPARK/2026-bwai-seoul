@@ -14,9 +14,12 @@ Windows PowerShell:
 
 ```powershell
 uv sync
+Invoke-RestMethod http://127.0.0.1:1234/v1/models
 .\run.ps1 --scenario translate --topic "Gemma 4 is a family of models released by Google DeepMind." --tasks 10
 .\run.ps1 --scenario code --topic "Implement binary search for a sorted array" --tasks 10
 ```
+
+`Invoke-RestMethod`가 실패하면 LM Studio Local Server가 켜져 있는지, 포트가 `1234`인지 먼저 확인하세요. `run.ps1`은 실행 시 `Server`와 `Model`을 출력하고, 모델을 확인하지 못하면 여러 agent 창을 띄우기 전에 멈춥니다.
 
 Ollama를 쓰는 경우에는 포트와 모델명을 지정합니다.
 

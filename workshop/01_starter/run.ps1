@@ -168,10 +168,10 @@ function Resolve-ModelName {
         }
     }
     catch {
-        return $Model
+        throw "Could not reach an OpenAI-compatible server at $ServerUrl/v1/models. Start the LM Studio Local Server, check --port, or pass --model explicitly. Details: $($_.Exception.Message)"
     }
 
-    return $Model
+    throw "No model was returned from $ServerUrl/v1/models. Load a model in LM Studio, start the Local Server, or pass --model explicitly."
 }
 
 function New-EncodedChildCommand {
@@ -253,6 +253,9 @@ $env:PYTHONUTF8 = "1"
 $env:WORKSHOP_DEMO_DIR = $DemoDir
 $env:WORKSHOP_SCENARIO = $Scenario
 $env:WORKSHOP_TASKS = $Tasks
+
+Write-Host "Server: $ServerUrl"
+Write-Host "Model:  $Model"
 
 $loadAgentsScript = @'
 import os

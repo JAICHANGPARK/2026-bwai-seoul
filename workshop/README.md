@@ -167,9 +167,10 @@ Ollama 포트 `11434`를 쓰는 경우:
 
 **Windows 문제 해결**
 
-- `.venv not found`가 나오면 `workshop` 폴더에서 `uv sync`를 먼저 실행합니다.
-- `Connection refused` 또는 API 연결 오류가 나오면 LM Studio 로컬 서버가 켜져 있는지, 포트가 `1234`인지 확인합니다.
+- `.venv not found`가 나오면 실행 중인 폴더(`workshop/01_starter` 또는 `workshop/02_final`)에서 `uv sync`를 먼저 실행합니다.
+- `Connection refused` 또는 API 연결 오류가 나오면 LM Studio 로컬 서버가 켜져 있는지, 포트가 `1234`인지 확인합니다. 최신 `run.ps1`은 서버나 모델을 확인하지 못하면 agent 창 10개를 띄우기 전에 멈춥니다.
 - 모델 이름 오류가 나오면 `Invoke-RestMethod http://127.0.0.1:1234/v1/models`로 모델 ID를 확인한 뒤 `.\run.ps1 ... --model "모델ID"`를 붙입니다. `run.ps1`은 기본값일 때 가능한 경우 첫 모델 ID를 자동으로 사용합니다.
+- PowerShell 창이 여러 개 뜬 뒤 모든 agent가 같은 `[ERROR]`를 보이면 한 창의 에러 첫 줄을 확인합니다. 서버 옵션 호환 문제는 코드가 자동으로 최소 요청으로 재시도하고, 모델/포트 문제는 `--port` 또는 `--model`을 명시해야 합니다.
 - Ollama 사용자는 `Invoke-RestMethod http://127.0.0.1:11434/v1/models`로 서버를 확인하고, `ollama list`에 보이는 모델명을 `--model`에 그대로 넣습니다.
 - 한글이나 이모지가 깨지면 Windows Terminal 또는 최신 PowerShell을 사용합니다. `run.ps1`은 실행 창에서 UTF-8 출력을 자동으로 설정합니다.
 - LM Studio 로그에 `GET /metrics` 오류가 반복되면 최신 코드에서는 기본적으로 발생하지 않아야 합니다. 대시보드는 agent가 쓰는 로컬 metrics 파일을 사용하고, 서버 `/metrics` 폴링은 꺼져 있습니다.
